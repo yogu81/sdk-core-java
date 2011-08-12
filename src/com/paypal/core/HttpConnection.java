@@ -4,12 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.Authenticator;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.PasswordAuthentication;
+import java.net.Proxy;
+import java.net.SocketAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -53,7 +57,6 @@ public class HttpConnection {
 		String errorResponse = Constants.EMPTY_STRING;
 		BufferedReader reader = null;
 		OutputStreamWriter writer = null;
-
 		connection.setRequestProperty("Content-Length", "" + payload.length());
 		setHttpHeaders(this.connection, headers);
 
@@ -76,12 +79,10 @@ public class HttpConnection {
 					writer.write(payload.toString());
 					writer.flush();
 					writer.close();
-
 					int responsecode = connection.getResponseCode();
 					reader = new BufferedReader(new InputStreamReader(
 							connection.getInputStream(),
 							Constants.ENCODING_FORMAT));
-
 					if (responsecode == 200) {
 						successResponse = read(reader);
 						reader.close();
@@ -103,14 +104,17 @@ public class HttpConnection {
 				} catch (IOException e) {
 					try {
 						int responsecode = connection.getResponseCode();
-						reader = new BufferedReader(new InputStreamReader(
-								connection.getErrorStream(),
-								Constants.ENCODING_FORMAT));
-						errorResponse = read(reader);
-						reader.close();
-						LoggingManager.severe(HttpConnection.class,
-								"Error code : " + responsecode
-										+ " with response : " + errorResponse);
+						if (connection.getErrorStream() != null) {
+							reader = new BufferedReader(new InputStreamReader(
+									connection.getErrorStream(),
+									Constants.ENCODING_FORMAT));
+							errorResponse = read(reader);
+							reader.close();
+							LoggingManager.severe(HttpConnection.class,
+									"Error code : " + responsecode
+											+ " with response : "
+											+ errorResponse);
+						}
 						if (responsecode < 500) {
 							throw new HttpErrorException("Error code : "
 									+ responsecode + " with response : "
@@ -198,23 +202,42 @@ public class HttpConnection {
 		this.config = clientConfiguration;
 		try {
 
-			URL server = new URL(this.config.getEndPointUrl());
+			URL url = new URL(this.config.getEndPointUrl());
 
-			this.connection = (HttpsURLConnection) server.openConnection();
+			Proxy proxy = null;
+			String proxyHost = this.config.getProxyHost();
+			int proxyPort = this.config.getProxyPort();
+			if ((proxyHost != null) && (proxyPort > 0)) {
+				SocketAddress addr = new InetSocketAddress(proxyHost, proxyPort);
+				proxy = new Proxy(Proxy.Type.HTTP, addr);
+			}
+			if (proxy != null) {
+				this.connection = (HttpsURLConnection) url
+						.openConnection(proxy);
+			} else {
+				this.connection = (HttpsURLConnection) url
+						.openConnection(Proxy.NO_PROXY);
+			}
+
 			this.connection.setSSLSocketFactory(this.sslContext
 					.getSocketFactory());
 			if (isDefaultSSL()) {
 				this.connection.setHostnameVerifier(hv);
 			}
-			Properties systemProperties = System.getProperties();
-			String proxyHost = this.config.getProxyHost();
-			int proxyPort = this.config.getProxyPort();
-			if ((proxyHost != null) && (proxyPort > 0)) {
 
-				systemProperties.setProperty("http.proxyHost", proxyHost);
-				systemProperties.setProperty("http.proxyPort",
-						String.valueOf(proxyPort));
+			if (this.config.getProxyUserName() != null
+					&& this.config.getProxyPassword() != null) {
+				final String username = this.config.getProxyUserName();
+				final String password = this.config.getProxyPassword();
+				Authenticator authenticator = new Authenticator() {
+					public PasswordAuthentication getPasswordAuthentication() {
+						return (new PasswordAuthentication(username,
+								password.toCharArray()));
+					}
+				};
+				Authenticator.setDefault(authenticator);
 			}
+
 			System.setProperty("http.maxConnections",
 					String.valueOf(this.config.getMaxHttpConnection()));
 			System.setProperty("sun.net.http.errorstream.enableBuffering",

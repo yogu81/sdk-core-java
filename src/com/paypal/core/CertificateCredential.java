@@ -27,14 +27,14 @@ public class CertificateCredential extends ICredential {
 			throw new MissingCredentialException("username can't be empty");
 		}
 		if (this.certificatePath == null || this.certificatePath == "") {
-			throw new MissingCredentialException("certificate can't be empty");
+			throw new MissingCredentialException("certificatePath can't be empty");
 		}
 		if (this.certificateKey == null || this.certificateKey == "") {
 			throw new MissingCredentialException(
 					"certificateKey can't be empty");
 		}
 		if (getPassword() == null || getPassword() == "") {
-			throw new MissingCredentialException("applicationId can't be empty");
+			throw new MissingCredentialException("password can't be empty");
 		}
 		if (getApplicationId() == null || getApplicationId() == "") {
 			throw new MissingCredentialException("applicationId can't be empty");

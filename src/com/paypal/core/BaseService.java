@@ -12,6 +12,7 @@ import com.paypal.exception.HttpErrorException;
 import com.paypal.exception.InvalidCredentialException;
 import com.paypal.exception.InvalidResponseDataException;
 import com.paypal.exception.MissingCredentialException;
+import com.paypal.sdk.exceptions.OAuthException;
 
 /**
  * wrapper class for APIService.
@@ -20,6 +21,24 @@ public class BaseService {
 
 	private String serviceName;
 	private String version;
+	protected String accessToken = null;
+	protected String tokenSecret = null;
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
+	public String getTokenSecret() {
+		return tokenSecret;
+	}
+
+	public void setTokenSecret(String tokenSecret) {
+		this.tokenSecret = tokenSecret;
+	}
 
 	public BaseService(String serviceName, String version) {
 		this.serviceName = serviceName;
@@ -32,9 +51,10 @@ public class BaseService {
 
 	/**
 	 * overloaded static method used to load the configuration file.
+	 * 
 	 * @param is
 	 */
-	public static void initConfig(InputStream is)throws IOException {
+	public static void initConfig(InputStream is) throws IOException {
 		try {
 			ConfigManager.getInstance().load(is);
 		} catch (IOException ioe) {
@@ -48,13 +68,14 @@ public class BaseService {
 	 * 
 	 * @param file
 	 */
-	public static void initConfig(File file) throws FileNotFoundException,IOException {
+	public static void initConfig(File file) throws FileNotFoundException,
+			IOException {
 		try {
 			if (!file.exists()) {
 				throw new FileNotFoundException("File doesn't exist: "
 						+ file.getAbsolutePath());
 			}
-			FileInputStream fis=new FileInputStream(file);
+			FileInputStream fis = new FileInputStream(file);
 			initConfig(fis);
 		} catch (FileNotFoundException fe) {
 			LoggingManager.debug(BaseService.class, fe.getMessage(), fe);
@@ -64,12 +85,14 @@ public class BaseService {
 			throw ioe;
 		}
 	}
-	
+
 	/**
 	 * overloaded static method used to load the configuration file
+	 * 
 	 * @param filepath
 	 */
-	public static void initConfig(String filepath)throws IOException,FileNotFoundException {
+	public static void initConfig(String filepath) throws IOException,
+			FileNotFoundException {
 		try {
 			File file = new File(filepath);
 			initConfig(file);
@@ -81,6 +104,7 @@ public class BaseService {
 			throw ioe;
 		}
 	}
+
 	/**
 	 * Wrapper call for APIservice.makeRequest(), used by InvoiceService class.
 	 * 
@@ -90,6 +114,8 @@ public class BaseService {
 	 *            (request parameters)
 	 * @param apiUsername
 	 *            (PayPal account)
+	 * @param tokenSecret
+	 * @param accessToken
 	 * @return String response
 	 * @throws HttpErrorException
 	 * @throws InterruptedException
@@ -100,17 +126,20 @@ public class BaseService {
 	 * @throws InvalidCredentialException
 	 * @throws FileNotFoundException
 	 * @throws IOException
+	 * @throws OAuthException
 	 */
 	public String call(String method, String payload, String apiUsername)
 			throws HttpErrorException, InterruptedException,
 			InvalidResponseDataException, ClientActionRequiredException,
 			MissingCredentialException, SSLConfigurationException,
-			InvalidCredentialException, FileNotFoundException, IOException {
+			InvalidCredentialException, FileNotFoundException, IOException,
+			OAuthException {
 		if (!ConfigManager.getInstance().isPropertyLoaded()) {
 			throw new FileNotFoundException("Property file not loaded");
 		}
 		APIService apiService = new APIService(serviceName);
-		return apiService.makeRequest(method, payload, apiUsername);
+		return apiService.makeRequest(method, payload, apiUsername,
+				accessToken, tokenSecret);
 	}
 
 	public String getServiceName() {

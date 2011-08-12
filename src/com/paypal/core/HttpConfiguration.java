@@ -12,11 +12,13 @@ public class HttpConfiguration {
 	private boolean proxySet;
 	private String proxyHost;
 	private int proxyPort;
+	private String proxyUserName;
+	private String proxyPassword;
 	private int readTimeout;
 	private int connectionTimeout;
 	private int maxHttpConnection;
 	private String endPointUrl;
-
+	
 	private boolean trustAll;
 	private int retryDelay;
 
@@ -27,8 +29,12 @@ public class HttpConfiguration {
 		this.proxySet = false;
 
 		this.proxyHost = null;
-
+		
 		this.proxyPort = -1;
+		
+		this.proxyUserName = null;
+		
+		this.proxyPassword = null;
 
 		this.readTimeout = 0;
 
@@ -42,6 +48,27 @@ public class HttpConfiguration {
 
 		this.retryDelay = 1000;
 	}
+	
+	
+	public String getProxyUserName() {
+		return proxyUserName;
+	}
+
+
+	public void setProxyUserName(String proxyUserName) {
+		this.proxyUserName = proxyUserName;
+	}
+
+
+	public String getProxyPassword() {
+		return proxyPassword;
+	}
+
+
+	public void setProxyPassword(String proxyPassword) {
+		this.proxyPassword = proxyPassword;
+	}
+
 
 	public int getMaxHttpConnection() {
 		return maxHttpConnection;

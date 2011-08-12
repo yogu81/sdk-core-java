@@ -11,6 +11,7 @@ import com.paypal.exception.HttpErrorException;
 import com.paypal.exception.InvalidCredentialException;
 import com.paypal.exception.InvalidResponseDataException;
 import com.paypal.exception.MissingCredentialException;
+import com.paypal.sdk.exceptions.OAuthException;
 
 /**
  * Wrapper class for api calls
@@ -44,6 +45,10 @@ public class APIService {
 						.getValue("http.ProxyPort")));
 				httpConfiguration.setProxyHost(config
 						.getValue("http.ProxyHost"));
+				httpConfiguration.setProxyUserName(config
+						.getValue("http.ProxyUserName"));
+				httpConfiguration.setProxyPassword(config
+						.getValue("http.ProxyPassword"));
 			}
 			httpConfiguration.setConnectionTimeout(Integer.parseInt(config
 					.getValue("http.ConnectionTimeOut")));
@@ -68,6 +73,8 @@ public class APIService {
 	 *            (request parameters)
 	 * @param apiUsername
 	 *            (PayPal account)
+	 * @param tokenSecret
+	 * @param accessToken
 	 * @return response String
 	 * @throws HttpErrorException
 	 * @throws InterruptedException
@@ -77,35 +84,26 @@ public class APIService {
 	 * @throws SSLConfigurationException
 	 * @throws InvalidCredentialException
 	 * @throws IOException
+	 * @throws OAuthException
 	 */
 	public String makeRequest(String apiMethod, String payload,
-			String apiUsername) throws HttpErrorException,
-			InterruptedException, InvalidResponseDataException,
-			ClientActionRequiredException, MissingCredentialException,
-			SSLConfigurationException, InvalidCredentialException, IOException {
-
-		CredentialManager credMgr = null;
-		ICredential apiCredential = null;
+			String apiUsername, String accessToken, String tokenSecret)
+			throws HttpErrorException, InterruptedException,
+			InvalidResponseDataException, ClientActionRequiredException,
+			MissingCredentialException, SSLConfigurationException,
+			InvalidCredentialException, IOException, OAuthException {
 
 		ConnectionManager connectionMgr = ConnectionManager.getInstance();
 		HttpConnection connection = connectionMgr.getConnection();
 		String url = endPoint + serviceName + '/' + apiMethod;
 		httpConfiguration.setEndPointUrl(url);
-		try {
-			credMgr = CredentialManager.getInstance();
-			apiCredential = credMgr.getCredentialObject(apiUsername);
-			headers = getPayPalHeaders(apiCredential, connection);
-		} catch (MissingCredentialException mis) {
-			LoggingManager.debug(APIService.class, mis.getMessage());
-			throw mis;
-		} catch (SSLConfigurationException cfg) {
-			LoggingManager.debug(APIService.class, cfg.getMessage());
-			throw cfg;
-		} catch (InvalidCredentialException inv) {
-			LoggingManager.debug(APIService.class, inv.getMessage());
-			throw inv;
-		}
-
+		AuthenticationService auth = new AuthenticationService();
+		headers = auth.getPayPalHeaders(apiUsername, connection, accessToken,
+				tokenSecret, httpConfiguration);
+		/*
+		 * connection.setDefaultSSL(true); connection.setupClientSSL(null, null,
+		 * httpConfiguration.isTrustAll());
+		 */
 		try {
 			connection.CreateAndconfigureHttpConnection(httpConfiguration);
 		} catch (MalformedURLException me) {

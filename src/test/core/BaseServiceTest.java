@@ -22,6 +22,7 @@ import com.paypal.exception.InvalidCredentialException;
 import com.paypal.exception.InvalidResponseDataException;
 import com.paypal.exception.MissingCredentialException;
 import com.paypal.exception.SSLConfigurationException;
+import com.paypal.sdk.exceptions.OAuthException;
 
 public class BaseServiceTest {
 	BaseService service;
@@ -47,20 +48,21 @@ public class BaseServiceTest {
 		Assert.assertEquals("1.6.0", service.getVersion());
 	}
 
-	/*@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
+	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
 	public void callTest(ConfigManager conf) throws HttpErrorException,
 			InvalidResponseDataException, ClientActionRequiredException,
 			MissingCredentialException, SSLConfigurationException,
 			InvalidCredentialException, FileNotFoundException,
-			InterruptedException, IOException {
-		String payload = "requestEnvelope.detailLevel=ReturnAll&requestEnvelope.errorLanguage=en_US&invoice.merchantEmail=jb-us-seller1@paypal.com&invoice.payerEmail=jbui-us-personal1@paypal.com&invoice.items[0].name=product1&invoice.items[0].quantity=10.0&invoice.items[0].unitPrice=1.2&invoice.currencyCode=USD&invoice.paymentTerms=DueOnReceipt";
-		String response = service.call("CreateInvoice", payload,
+			InterruptedException, IOException, OAuthException {
+
+		String response = service.call("CreateInvoice",
+				UnitTestConstants.REQUEST_STRING,
 				UnitTestConstants.API_USER_NAME);
 		Assert.assertNotNull(response);
 		assert (response.contains("Success"));
 		assert (response.contains("invoiceID"));
 		assert (response.contains("invoiceNumber"));
-	}*/
+	}
 
 	@Test(expectedExceptions = FileNotFoundException.class)
 	public void initConfigTestUsingFilePath() throws Exception {
