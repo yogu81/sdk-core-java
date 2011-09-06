@@ -38,23 +38,6 @@ public class HttpConnectionTest {
 
 	}
 
-	@Test(dependsOnMethods = "setupClientSSLTest", dataProvider = "headers", dataProviderClass = DataProviderClass.class)
-	public void executeTest(Map<String, String> map)
-			throws SocketTimeoutException, ConnectException,
-			InvalidResponseDataException, HttpErrorException, SocketException,
-			IOException, InterruptedException, ClientActionRequiredException {
-		httpConfiguration.setEndPointUrl(UnitTestConstants.API_ENDPOINT
-				+ "Invoice/CreateInvoice");
-		connection.CreateAndconfigureHttpConnection(httpConfiguration);
-		String response = connection.execute(
-				httpConfiguration.getEndPointUrl(),
-				UnitTestConstants.REQUEST_STRING, map);
-		Assert.assertNotNull(response);
-		assert (response.contains("Success"));
-		assert (response.contains("invoiceID"));
-		assert (response.contains("invoiceNumber"));
-	}
-
 	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
 	public void setupClientSSLTest(ConfigManager conf)
 			throws SSLConfigurationException {
