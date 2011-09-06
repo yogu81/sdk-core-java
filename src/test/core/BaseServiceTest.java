@@ -30,7 +30,7 @@ public class BaseServiceTest {
 
 	@BeforeClass
 	public void beforeClass() {
-		service = new BaseService("Invoice", "1.6.0");
+		service = new BaseService("Service", "1.6.0");
 	}
 
 	@AfterClass
@@ -40,28 +40,12 @@ public class BaseServiceTest {
 
 	@Test
 	public void getServiceNameTest() {
-		Assert.assertEquals("Invoice", service.getServiceName());
+		Assert.assertEquals("Service", service.getServiceName());
 	}
 
 	@Test
 	public void getVersionTest() {
 		Assert.assertEquals("1.6.0", service.getVersion());
-	}
-
-	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
-	public void callTest(ConfigManager conf) throws HttpErrorException,
-			InvalidResponseDataException, ClientActionRequiredException,
-			MissingCredentialException, SSLConfigurationException,
-			InvalidCredentialException, FileNotFoundException,
-			InterruptedException, IOException, OAuthException {
-
-		String response = service.call("CreateInvoice",
-				UnitTestConstants.REQUEST_STRING,
-				UnitTestConstants.API_USER_NAME);
-		Assert.assertNotNull(response);
-		assert (response.contains("Success"));
-		assert (response.contains("invoiceID"));
-		assert (response.contains("invoiceNumber"));
 	}
 
 	@Test(expectedExceptions = FileNotFoundException.class)
