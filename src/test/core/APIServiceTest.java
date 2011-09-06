@@ -40,7 +40,7 @@ public class APIServiceTest {
 			SSLConfigurationException, FileNotFoundException, IOException {
 		ConfigManager.getInstance().load(
 				new FileInputStream(new File(UnitTestConstants.FILE_PATH)));
-		service = new APIService("Invoice");
+		service = new APIService("Service");
 		ConnectionManager connectionMgr = ConnectionManager.getInstance();
 		connection = connectionMgr.getConnection();
 	}
@@ -59,26 +59,11 @@ public class APIServiceTest {
 
 	}
 
-	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
-	public void makeRequestTest(ConfigManager conf)
-			throws SSLConfigurationException, InvalidCredentialException,
-			IOException, HttpErrorException, InvalidResponseDataException,
-			ClientActionRequiredException, MissingCredentialException,
-			InterruptedException, OAuthException {
-
-		String response = service.makeRequest("CreateInvoice",
-				UnitTestConstants.REQUEST_STRING,
-				UnitTestConstants.API_USER_NAME,
-				null,null);
-		Assert.assertNotNull(response);
-		assert (response.contains("Success"));
-		assert (response.contains("invoiceID"));
-		assert (response.contains("invoiceNumber"));
-	}
+	
 
 	@Test
 	public void getServiceNameTest() {
-		Assert.assertEquals("Invoice", service.getServiceName());
+		Assert.assertEquals("Service", service.getServiceName());
 	}
 
 	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
