@@ -28,5 +28,4 @@ public class UnitTestConstants {
 	public static final String CERT_PATH = "resource/sdk-cert.p12";
 	public static final String CERT_PASSWORD = "password";
 
-	public static final String REQUEST_STRING = "requestEnvelope.detailLevel=ReturnAll&requestEnvelope.errorLanguage=en_US&invoice.merchantEmail=jb-us-seller@paypal.com&invoice.payerEmail=jbui-us-personal1@paypal.com&invoice.items[0].name=product1&invoice.items[0].quantity=10.0&invoice.items[0].unitPrice=1.2&invoice.currencyCode=USD&invoice.paymentTerms=DueOnReceipt";
 }
