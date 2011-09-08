@@ -16,9 +16,11 @@ import org.testng.annotations.Test;
 import test.UnitTestConstants;
 
 import com.paypal.core.APIService;
+import com.paypal.core.AuthenticationService;
 import com.paypal.core.ConfigManager;
 import com.paypal.core.ConnectionManager;
 import com.paypal.core.CredentialManager;
+import com.paypal.core.HttpConfiguration;
 import com.paypal.core.HttpConnection;
 import com.paypal.core.ICredential;
 import com.paypal.exception.ClientActionRequiredException;
@@ -40,7 +42,7 @@ public class APIServiceTest {
 			SSLConfigurationException, FileNotFoundException, IOException {
 		ConfigManager.getInstance().load(
 				new FileInputStream(new File(UnitTestConstants.FILE_PATH)));
-		service = new APIService("Service");
+		service = new APIService("Invoice");
 		ConnectionManager connectionMgr = ConnectionManager.getInstance();
 		connection = connectionMgr.getConnection();
 	}
@@ -48,22 +50,32 @@ public class APIServiceTest {
 	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class, expectedExceptions = InvalidCredentialException.class)
 	public void getInvalidCredentialExceptionTest(ConfigManager conf)
 			throws Exception {
-		Method method = APIService.class.getDeclaredMethod("getPayPalHeaders",
-				ICredential.class, HttpConnection.class);
-		method.setAccessible(true);
-		CredentialManager credMgr = CredentialManager.getInstance();
-		ICredential apiCredential = credMgr
-				.getCredentialObject("invalid@gmail.com");
-		map = (Map<String, String>) method.invoke(service, apiCredential,
-				connection);
+		AuthenticationService auth = new AuthenticationService();
+		HttpConfiguration httpConfiguration = new HttpConfiguration();
+		map = auth.getPayPalHeaders("invalid@gmail.com", connection, null,
+				null, httpConfiguration);
 
 	}
 
-	
+	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
+	public void makeRequestTest(ConfigManager conf)
+			throws SSLConfigurationException, InvalidCredentialException,
+			IOException, HttpErrorException, InvalidResponseDataException,
+			ClientActionRequiredException, MissingCredentialException,
+			InterruptedException, OAuthException {
+
+		String response = service.makeRequest("CreateInvoice",
+				UnitTestConstants.REQUEST_STRING,
+				UnitTestConstants.API_USER_NAME, null, null);
+		Assert.assertNotNull(response);
+		assert (response.contains("Success"));
+		assert (response.contains("invoiceID"));
+		assert (response.contains("invoiceNumber"));
+	}
 
 	@Test
 	public void getServiceNameTest() {
-		Assert.assertEquals("Service", service.getServiceName());
+		Assert.assertEquals("Invoice", service.getServiceName());
 	}
 
 	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
