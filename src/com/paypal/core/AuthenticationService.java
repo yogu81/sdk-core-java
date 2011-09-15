@@ -49,7 +49,7 @@ public class AuthenticationService {
 			authString = generateAuthString(apiCred, accessToken, tokenSecret,
 					httpConfiguration.getEndPointUrl());
 			headers.put("X-PAYPAL-AUTHORIZATION", authString);
-			//headers.put("CLIENT-AUTH", "No cert");
+			// headers.put("CLIENT-AUTH", "No cert");
 			connection.setDefaultSSL(true);
 			connection.setupClientSSL(null, null,
 					httpConfiguration.isTrustAll());
@@ -85,6 +85,8 @@ public class AuthenticationService {
 			headers.put("X-PAYPAL-SANDBOX-EMAIL-ADDRESS",
 					Constants.SANDBOX_EMAIL_ADDRESS);
 		}
+		headers.put("X-PAYPAL-DEVICE-IPADDRESS",
+				httpConfiguration.getIpAddress());
 
 		return headers;
 

@@ -38,7 +38,7 @@ public class APIService {
 		endPoint = config.getValue("service.EndPoint");
 		httpConfiguration.setTrustAll(Boolean.parseBoolean(config
 				.getValue("http.TrustAllConnection")));
-
+		httpConfiguration.setIpAddress(config.getValue("http.IPAddress"));
 		try {
 			if (Boolean.parseBoolean(config.getValue("http.UseProxy"))) {
 				httpConfiguration.setProxyPort(Integer.parseInt(config
@@ -140,7 +140,54 @@ public class APIService {
 
 	}
 
-	
+	/**
+	 * get a map containing paypal headers and set SSLContext if it is a
+	 * certificate authentication.
+	 * 
+	 * @param apiCred
+	 * @param connection
+	 * @return Map
+	 * @throws SSLConfigurationException
+	 */
+	private Map<String, String> getPayPalHeaders(ICredential apiCred,
+			HttpConnection connection) throws SSLConfigurationException {
+		/* Add headers required for service authentication */
+		if (apiCred instanceof SignatureCredential) {
+			headers.put("X-PAYPAL-SECURITY-USERID",
+					((SignatureCredential) apiCred).getUserName());
+			headers.put("X-PAYPAL-SECURITY-PASSWORD",
+					((SignatureCredential) apiCred).getPassword());
+			headers.put("X-PAYPAL-SECURITY-SIGNATURE",
+					((SignatureCredential) apiCred).getSignature());
+			connection.setDefaultSSL(true);
+			connection.setupClientSSL(null, null,
+					this.httpConfiguration.isTrustAll());
+		} else if (apiCred instanceof CertificateCredential) {
+			connection.setDefaultSSL(false);
+			headers.put("X-PAYPAL-SECURITY-USERID",
+					((CertificateCredential) apiCred).getUserName());
+			headers.put("X-PAYPAL-SECURITY-PASSWORD",
+					((CertificateCredential) apiCred).getPassword());
+			connection.setupClientSSL(
+					((CertificateCredential) apiCred).getCertificatePath(),
+					((CertificateCredential) apiCred).getCertificateKey(),
+					this.httpConfiguration.isTrustAll());
+		}
+
+		/* Add other headers */
+		headers.put("X-PAYPAL-APPLICATION-ID", apiCred.getApplicationId());
+		headers.put("X-PAYPAL-REQUEST-DATA-FORMAT",
+				config.getValue("service.Binding"));
+		headers.put("X-PAYPAL-RESPONSE-DATA-FORMAT",
+				config.getValue("service.Binding"));
+		if (endPoint.contains("sandbox")) {
+			headers.put("X-PAYPAL-SANDBOX-EMAIL-ADDRESS",
+					"Platform.sdk.seller@gmail.com");
+		}
+		headers.put("X-PAYPAL-DEVICE-IPADDRESS", "127.0.0.1");
+		return headers;
+
+	}
 
 	public String getServiceName() {
 		return serviceName;
