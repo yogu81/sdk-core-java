@@ -4,26 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.ConnectException;
 import java.net.MalformedURLException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.util.Map;
 
-import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import test.UnitTestConstants;
 
 import com.paypal.core.ConfigManager;
 import com.paypal.core.ConnectionManager;
 import com.paypal.core.HttpConfiguration;
 import com.paypal.core.HttpConnection;
-import com.paypal.exception.ClientActionRequiredException;
-import com.paypal.exception.HttpErrorException;
-import com.paypal.exception.InvalidResponseDataException;
 import com.paypal.exception.SSLConfigurationException;
 
 public class HttpConnectionTest {

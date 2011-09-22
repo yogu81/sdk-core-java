@@ -58,8 +58,9 @@ public class HttpConnection {
 		BufferedReader reader = null;
 		OutputStreamWriter writer = null;
 		connection.setRequestProperty("Content-Length", "" + payload.length());
-		setHttpHeaders(this.connection, headers);
-
+		if(headers != null){
+			setHttpHeaders(this.connection, headers);
+		}
 		try {
 			for (int retry = 0; retry < this.config.getMaxRetry(); retry++) {
 

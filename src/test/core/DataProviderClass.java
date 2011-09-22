@@ -4,22 +4,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.testng.annotations.DataProvider;
 
 import test.UnitTestConstants;
 
-import com.paypal.core.APIService;
 import com.paypal.core.AuthenticationService;
 import com.paypal.core.ConfigManager;
 import com.paypal.core.ConnectionManager;
-import com.paypal.core.CredentialManager;
 import com.paypal.core.HttpConfiguration;
 import com.paypal.core.HttpConnection;
-import com.paypal.core.ICredential;
 import com.paypal.exception.InvalidCredentialException;
 import com.paypal.exception.MissingCredentialException;
 import com.paypal.exception.SSLConfigurationException;
@@ -41,24 +36,19 @@ public class DataProviderClass {
 	}
 
 	@DataProvider(name = "headers")
-	public static Object[][] getPayPalHeaders() throws SecurityException,
-			NoSuchMethodException, IllegalArgumentException,
-			IllegalAccessException, InvocationTargetException,
-			InvalidCredentialException, IOException,
+	public static Object[][] getPayPalHeaders()
+			throws InvalidCredentialException, IOException,
 			MissingCredentialException, SSLConfigurationException,
 			OAuthException {
 		AuthenticationService auth = new AuthenticationService();
 		ConnectionManager connectionMgr = ConnectionManager.getInstance();
 		HttpConnection connection = connectionMgr.getConnection();
 		HttpConfiguration httpConfiguration = new HttpConfiguration();
-		httpConfiguration.setEndPointUrl(UnitTestConstants.API_ENDPOINT
-				+ "Invoice/CreateInvoice");
+		httpConfiguration.setEndPointUrl(UnitTestConstants.API_ENDPOINT);
 		Map<String, String> map = auth.getPayPalHeaders(
-				UnitTestConstants.API_USER_NAME, connection,
-				null, null,
+				UnitTestConstants.API_USER_NAME, connection, null, null,
 				httpConfiguration);
 		return new Object[][] { new Object[] { map } };
 
 	}
-
 }

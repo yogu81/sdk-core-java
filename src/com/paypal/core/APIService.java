@@ -21,6 +21,7 @@ public class APIService {
 
 	private String serviceName;
 	private String endPoint;
+	private String serviceBinding;
 	private ConfigManager config = null;
 	private HttpConfiguration httpConfiguration = new HttpConfiguration();
 	private Map<String, String> headers = new HashMap<String, String>();
@@ -36,9 +37,10 @@ public class APIService {
 		this.serviceName = serviceName;
 		config = ConfigManager.getInstance();
 		endPoint = config.getValue("service.EndPoint");
+		serviceBinding = config.getValue("service.Binding");
 		httpConfiguration.setTrustAll(Boolean.parseBoolean(config
 				.getValue("http.TrustAllConnection")));
-		httpConfiguration.setIpAddress(config.getValue("http.IPAddress"));
+
 		try {
 			if (Boolean.parseBoolean(config.getValue("http.UseProxy"))) {
 				httpConfiguration.setProxyPort(Integer.parseInt(config
@@ -93,19 +95,36 @@ public class APIService {
 			MissingCredentialException, SSLConfigurationException,
 			InvalidCredentialException, IOException, OAuthException {
 
+		LoggingManager.info(APIService.class, payload);
 		ConnectionManager connectionMgr = ConnectionManager.getInstance();
 		HttpConnection connection = connectionMgr.getConnection();
-		String url = endPoint + serviceName + '/' + apiMethod;
+		String url = Constants.EMPTY_STRING;
+
+		if (serviceBinding.equalsIgnoreCase(Constants.SOAP)) {
+			url = endPoint;
+		} else {
+			url = endPoint + serviceName + '/' + apiMethod;
+		}
 		httpConfiguration.setEndPointUrl(url);
 		AuthenticationService auth = new AuthenticationService();
-		headers = auth.getPayPalHeaders(apiUsername, connection, accessToken,
-				tokenSecret, httpConfiguration);
-		/*
-		 * connection.setDefaultSSL(true); connection.setupClientSSL(null, null,
-		 * httpConfiguration.isTrustAll());
-		 */
 		try {
+
+			headers = auth.getPayPalHeaders(apiUsername, connection,
+					accessToken, tokenSecret, httpConfiguration);
 			connection.CreateAndconfigureHttpConnection(httpConfiguration);
+
+		} catch (SSLConfigurationException ssl) {
+			LoggingManager.severe(APIService.class, ssl.getMessage());
+			throw ssl;
+		} catch (MissingCredentialException mis) {
+			LoggingManager.severe(APIService.class, mis.getMessage());
+			throw mis;
+		} catch (InvalidCredentialException ivl) {
+			LoggingManager.severe(APIService.class, ivl.getMessage());
+			throw ivl;
+		} catch (OAuthException oauth) {
+			LoggingManager.severe(APIService.class, oauth.getMessage());
+			throw oauth;
 		} catch (MalformedURLException me) {
 			LoggingManager.severe(APIService.class, me.getMessage());
 			throw me;
@@ -114,10 +133,27 @@ public class APIService {
 			throw ioe;
 		}
 
-		LoggingManager.info(APIService.class, payload);
 		String response = Constants.EMPTY_STRING;
 		try {
-			response = connection.execute(url, payload, headers);
+			if (serviceBinding.equalsIgnoreCase(Constants.SOAP)) {
+				String soapPayload = auth.appendSoapHeader(headers, payload,
+						accessToken, tokenSecret);
+				if ((Constants.EMPTY_STRING != accessToken && accessToken != null)
+						&& (Constants.EMPTY_STRING != tokenSecret && tokenSecret != null)) {
+					response = connection.execute(url, soapPayload, headers);
+				} else {
+					response = connection.execute(url, soapPayload, null);
+				}
+			} else {
+				response = connection.execute(url, payload, headers);
+			}
+
+		} catch (MissingCredentialException mis) {
+			LoggingManager.severe(APIService.class, mis.getMessage());
+			throw mis;
+		} catch (InvalidCredentialException ivl) {
+			LoggingManager.severe(APIService.class, ivl.getMessage());
+			throw ivl;
 		} catch (ClientActionRequiredException car) {
 			LoggingManager.severe(APIService.class, car.getMessage());
 			throw car;
@@ -137,55 +173,6 @@ public class APIService {
 
 		LoggingManager.info(APIService.class, response);
 		return response;
-
-	}
-
-	/**
-	 * get a map containing paypal headers and set SSLContext if it is a
-	 * certificate authentication.
-	 * 
-	 * @param apiCred
-	 * @param connection
-	 * @return Map
-	 * @throws SSLConfigurationException
-	 */
-	private Map<String, String> getPayPalHeaders(ICredential apiCred,
-			HttpConnection connection) throws SSLConfigurationException {
-		/* Add headers required for service authentication */
-		if (apiCred instanceof SignatureCredential) {
-			headers.put("X-PAYPAL-SECURITY-USERID",
-					((SignatureCredential) apiCred).getUserName());
-			headers.put("X-PAYPAL-SECURITY-PASSWORD",
-					((SignatureCredential) apiCred).getPassword());
-			headers.put("X-PAYPAL-SECURITY-SIGNATURE",
-					((SignatureCredential) apiCred).getSignature());
-			connection.setDefaultSSL(true);
-			connection.setupClientSSL(null, null,
-					this.httpConfiguration.isTrustAll());
-		} else if (apiCred instanceof CertificateCredential) {
-			connection.setDefaultSSL(false);
-			headers.put("X-PAYPAL-SECURITY-USERID",
-					((CertificateCredential) apiCred).getUserName());
-			headers.put("X-PAYPAL-SECURITY-PASSWORD",
-					((CertificateCredential) apiCred).getPassword());
-			connection.setupClientSSL(
-					((CertificateCredential) apiCred).getCertificatePath(),
-					((CertificateCredential) apiCred).getCertificateKey(),
-					this.httpConfiguration.isTrustAll());
-		}
-
-		/* Add other headers */
-		headers.put("X-PAYPAL-APPLICATION-ID", apiCred.getApplicationId());
-		headers.put("X-PAYPAL-REQUEST-DATA-FORMAT",
-				config.getValue("service.Binding"));
-		headers.put("X-PAYPAL-RESPONSE-DATA-FORMAT",
-				config.getValue("service.Binding"));
-		if (endPoint.contains("sandbox")) {
-			headers.put("X-PAYPAL-SANDBOX-EMAIL-ADDRESS",
-					"Platform.sdk.seller@gmail.com");
-		}
-		headers.put("X-PAYPAL-DEVICE-IPADDRESS", "127.0.0.1");
-		return headers;
 
 	}
 

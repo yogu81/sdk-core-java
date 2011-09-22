@@ -49,7 +49,6 @@ public class AuthenticationService {
 			authString = generateAuthString(apiCred, accessToken, tokenSecret,
 					httpConfiguration.getEndPointUrl());
 			headers.put("X-PAYPAL-AUTHORIZATION", authString);
-			// headers.put("CLIENT-AUTH", "No cert");
 			connection.setDefaultSSL(true);
 			connection.setupClientSSL(null, null,
 					httpConfiguration.isTrustAll());
@@ -81,15 +80,65 @@ public class AuthenticationService {
 				config.getValue("service.Binding"));
 		headers.put("X-PAYPAL-RESPONSE-DATA-FORMAT",
 				config.getValue("service.Binding"));
+		headers.put("X-PAYPAL-DEVICE-IPADDRESS",
+				httpConfiguration.getIpAddress());
 		if (httpConfiguration.getEndPointUrl().contains("sandbox")) {
 			headers.put("X-PAYPAL-SANDBOX-EMAIL-ADDRESS",
 					Constants.SANDBOX_EMAIL_ADDRESS);
 		}
-		headers.put("X-PAYPAL-DEVICE-IPADDRESS",
-				httpConfiguration.getIpAddress());
 
 		return headers;
 
+	}
+
+	public String appendSoapHeader(Map<String, String> headers, String payload,
+			String accessToken, String tokenSecret)
+			throws InvalidCredentialException, MissingCredentialException {
+
+		StringBuffer soapMsg = new StringBuffer(
+				"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:ebay:api:PayPalAPI\" xmlns:ebl=\"urn:ebay:apis:eBLBaseComponents\">");
+		if ((Constants.EMPTY_STRING != accessToken && accessToken != null)
+				&& (Constants.EMPTY_STRING != tokenSecret && tokenSecret != null)) {
+			soapMsg.append("<soapenv:Header>");
+			soapMsg.append("<urn:RequesterCredentials/>");
+			soapMsg.append("</soapenv:Header>");
+		} else if (apiCred instanceof SignatureCredential) {
+			soapMsg.append("<soapenv:Header>");
+			soapMsg.append("<urn:RequesterCredentials>");
+			soapMsg.append("<ebl:Credentials>");
+			soapMsg.append("<ebl:Username>"
+					+ headers.get("X-PAYPAL-SECURITY-USERID")
+					+ "</ebl:Username>");
+			soapMsg.append("<ebl:Password>"
+					+ headers.get("X-PAYPAL-SECURITY-PASSWORD")
+					+ "</ebl:Password>");
+			soapMsg.append("<ebl:Signature>"
+					+ headers.get("X-PAYPAL-SECURITY-SIGNATURE")
+					+ "</ebl:Signature>");
+			soapMsg.append("</ebl:Credentials>");
+			soapMsg.append("</urn:RequesterCredentials>");
+			soapMsg.append("</soapenv:Header>");
+		} else if (apiCred instanceof CertificateCredential) {
+			soapMsg.append("<soapenv:Header>");
+			soapMsg.append("<urn:RequesterCredentials>");
+			soapMsg.append("<ebl:Credentials>");
+			soapMsg.append("<ebl:Username>"
+					+ headers.get("X-PAYPAL-SECURITY-USERID")
+					+ "</ebl:Username>");
+			soapMsg.append("<ebl:Password>"
+					+ headers.get("X-PAYPAL-SECURITY-PASSWORD")
+					+ "</ebl:Password>");
+			soapMsg.append("</ebl:Credentials>");
+			soapMsg.append("</urn:RequesterCredentials>");
+			soapMsg.append("</soapenv:Header>");
+		}
+
+		soapMsg.append("<soapenv:Body>");
+		soapMsg.append(payload);
+		soapMsg.append("</soapenv:Body>");
+		soapMsg.append("</soapenv:Envelope>");
+		LoggingManager.info(AuthenticationService.class, soapMsg.toString());
+		return soapMsg.toString();
 	}
 
 	private String generateAuthString(ICredential apiCred, String accessToken,

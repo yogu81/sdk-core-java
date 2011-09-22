@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="PayPal_Invoicing_SDK" default="all">
+<project name="PayPal_SDK" default="all">
 	<property file="build.properties" />
-	<property name="jarfile" value="${invoiceJar.name}_${release.version}.jar" />
+	<property name="jarfile" value="${jar.name}_${release.version}.jar" />
 	<taskdef resource="testngtasks" classpath="lib/testng.jar" />
 
 	<path id="lib.classpath">

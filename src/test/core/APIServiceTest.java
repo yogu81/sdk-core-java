@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,17 +18,10 @@ import com.paypal.core.APIService;
 import com.paypal.core.AuthenticationService;
 import com.paypal.core.ConfigManager;
 import com.paypal.core.ConnectionManager;
-import com.paypal.core.CredentialManager;
 import com.paypal.core.HttpConfiguration;
 import com.paypal.core.HttpConnection;
-import com.paypal.core.ICredential;
-import com.paypal.exception.ClientActionRequiredException;
-import com.paypal.exception.HttpErrorException;
 import com.paypal.exception.InvalidCredentialException;
-import com.paypal.exception.InvalidResponseDataException;
-import com.paypal.exception.MissingCredentialException;
 import com.paypal.exception.SSLConfigurationException;
-import com.paypal.sdk.exceptions.OAuthException;
 
 public class APIServiceTest {
 	APIService service;
@@ -55,22 +47,6 @@ public class APIServiceTest {
 		map = auth.getPayPalHeaders("invalid@gmail.com", connection, null,
 				null, httpConfiguration);
 
-	}
-
-	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
-	public void makeRequestTest(ConfigManager conf)
-			throws SSLConfigurationException, InvalidCredentialException,
-			IOException, HttpErrorException, InvalidResponseDataException,
-			ClientActionRequiredException, MissingCredentialException,
-			InterruptedException, OAuthException {
-
-		String response = service.makeRequest("CreateInvoice",
-				UnitTestConstants.REQUEST_STRING,
-				UnitTestConstants.API_USER_NAME, null, null);
-		Assert.assertNotNull(response);
-		assert (response.contains("Success"));
-		assert (response.contains("invoiceID"));
-		assert (response.contains("invoiceNumber"));
 	}
 
 	@Test
