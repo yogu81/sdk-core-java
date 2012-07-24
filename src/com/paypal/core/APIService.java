@@ -41,6 +41,8 @@ public class APIService {
 		httpConfiguration.setTrustAll(Boolean.parseBoolean(config
 				.getValue("http.TrustAllConnection")));
 
+		httpConfiguration.setGoogleAppEngine(Boolean.parseBoolean(config.getValue("http.GoogleAppEngine")));
+		
 		try {
 			if (Boolean.parseBoolean(config.getValue("http.UseProxy"))) {
 				httpConfiguration.setProxyPort(Integer.parseInt(config
@@ -97,7 +99,7 @@ public class APIService {
 
 		LoggingManager.info(APIService.class, payload);
 		ConnectionManager connectionMgr = ConnectionManager.getInstance();
-		HttpConnection connection = connectionMgr.getConnection();
+		HttpConnection connection = connectionMgr.getConnection(httpConfiguration);
 		String url = Constants.EMPTY_STRING;
 
 		if (serviceBinding.equalsIgnoreCase(Constants.SOAP)) {
@@ -139,6 +141,7 @@ public class APIService {
 				String soapPayload = auth.appendSoapHeader(payload,
 						accessToken, tokenSecret);
 				response = connection.execute(url, soapPayload, headers);
+
 			} else {
 				response = connection.execute(url, payload, headers);
 			}
