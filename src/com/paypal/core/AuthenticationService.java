@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.paypal.core;
 
@@ -14,7 +14,7 @@ import com.paypal.sdk.util.OAuthSignature;
 
 /**
  * @author lvairamani
- * 
+ *
  */
 public class AuthenticationService {
 	private Map<String, String> headers = new HashMap<String, String>();
@@ -82,6 +82,8 @@ public class AuthenticationService {
 				config.getValue("service.Binding"));
 		headers.put("X-PAYPAL-DEVICE-IPADDRESS",
 				httpConfiguration.getIpAddress());
+		headers.put("X-PAYPAL-REQUEST-SOURCE", Constants.SDK_NAME + "-"
+				+ Constants.SDK_VERSION);
 		if (httpConfiguration.getEndPointUrl().contains("sandbox")) {
 			headers.put("X-PAYPAL-SANDBOX-EMAIL-ADDRESS",
 					Constants.SANDBOX_EMAIL_ADDRESS);
