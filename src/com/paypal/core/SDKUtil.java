@@ -108,8 +108,6 @@ public class SDKUtil {
 											.replaceAll("&lt;")).replaceAll(
 									"&gt;")).replaceAll("&quot;")).replaceAll(
 					"&apos;");
-		} else {
-			response = textContent;
 		}
 		return response;
 	}
@@ -137,8 +135,6 @@ public class SDKUtil {
 											.replaceAll("&lt;")).replaceAll(
 									"&gt;")).replaceAll("&quot;")).replaceAll(
 					"&apos;");
-		} else {
-			response = textContent;
 		}
 		return response;
 	}
@@ -166,8 +162,6 @@ public class SDKUtil {
 											.replaceAll("&lt;")).replaceAll(
 									"&gt;")).replaceAll("&quot;")).replaceAll(
 					"&apos;");
-		} else {
-			response = textContent;
 		}
 		return response;
 	}
