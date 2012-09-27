@@ -1,7 +1,6 @@
 package com.paypal.core;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -113,8 +112,7 @@ public abstract class SSLUtil {
 	 */
 	public static KeyStore p12ToKeyStore(String p12Path, String password)
 			throws NoSuchProviderException, KeyStoreException,
-			CertificateException, NoSuchAlgorithmException,
-			FileNotFoundException, IOException {
+			CertificateException, NoSuchAlgorithmException, IOException {
 		KeyStore ks = null;
 		ks = KeyStore.getInstance("PKCS12", "SunJSSE");
 		FileInputStream in;

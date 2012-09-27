@@ -2,10 +2,8 @@ package com.paypal.core;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
-import java.net.UnknownHostException;
 
 import com.paypal.exception.SSLConfigurationException;
 
@@ -37,8 +35,7 @@ public class GoogleAppEngineHttpConnection extends HttpConnection {
 
 	@Override
 	public void createAndconfigureHttpConnection(
-			HttpConfiguration clientConfiguration)
-			throws MalformedURLException, UnknownHostException, IOException {
+			HttpConfiguration clientConfiguration) throws IOException {
 
 		this.config = clientConfiguration;
 

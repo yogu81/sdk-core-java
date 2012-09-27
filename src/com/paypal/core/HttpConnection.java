@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.MalformedURLException;
-import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -154,8 +152,7 @@ public abstract class HttpConnection {
 	 * @throws IOException
 	 */
 	public abstract void createAndconfigureHttpConnection(
-			HttpConfiguration clientConfiguration)
-			throws MalformedURLException, UnknownHostException, IOException;
+			HttpConfiguration clientConfiguration) throws IOException;
 
 	public boolean isDefaultSSL() {
 		return defaultSSL;
