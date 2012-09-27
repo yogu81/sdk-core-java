@@ -143,11 +143,10 @@ public abstract class HttpConnection {
 	 * 
 	 * @param certPath
 	 * @param certKey
-	 * @param trustAll
 	 * @throws SSLConfigurationException
 	 */
-	public abstract void setupClientSSL(String certPath, String certKey,
-			boolean trustAll) throws SSLConfigurationException;
+	public abstract void setupClientSSL(String certPath, String certKey)
+			throws SSLConfigurationException;
 
 	/**
 	 * create and configure HttpsURLConnection object

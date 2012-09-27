@@ -13,35 +13,8 @@ import java.security.cert.CertificateException;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 import com.paypal.exception.SSLConfigurationException;
-
-/**
- * Default TrustManager to relax verification on server certificate.
- */
-class RelaxedX509TrustManager implements X509TrustManager {
-	public boolean checkClientTrusted(java.security.cert.X509Certificate[] chain) {
-		return true;
-	}
-
-	public boolean isServerTrusted(java.security.cert.X509Certificate[] chain) {
-		return true;
-	}
-
-	public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-		return null;
-	}
-
-	public void checkClientTrusted(java.security.cert.X509Certificate[] chain,
-			String authType) {
-	}
-
-	public void checkServerTrusted(java.security.cert.X509Certificate[] chain,
-			String authType) {
-	}
-}
 
 public abstract class SSLUtil {
 	public static KeyManagerFactory kmf = null;
@@ -54,18 +27,12 @@ public abstract class SSLUtil {
 	 * @throws IOException
 	 *             if an IOException occurs
 	 */
-	public static SSLContext getSSLContext(KeyManager[] keymanagers,
-			boolean trustAll) throws SSLConfigurationException {
+	public static SSLContext getSSLContext(KeyManager[] keymanagers) throws SSLConfigurationException  {
 		try {
 			SSLContext ctx = SSLContext.getInstance("SSL"); // TLS, SSLv3, SSL
 			SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 			random.setSeed(System.currentTimeMillis());
-			if (trustAll) {
-				TrustManager[] tm = { new RelaxedX509TrustManager() };
-				ctx.init(keymanagers, tm, random);
-			} else {
-				ctx.init(keymanagers, null, random);
-			}
+			ctx.init(keymanagers, null, random);		
 			return ctx;
 		} catch (Exception e) {
 			throw new SSLConfigurationException(e.getMessage(), e);
@@ -73,23 +40,16 @@ public abstract class SSLUtil {
 	}
 
 	/**
-	 * @param trustAll
 	 * @return default SSLContext if client certificate is not provided.
 	 * @throws SSLConfigurationException
 	 */
-	public static SSLContext getDefaultSSLContext(boolean trustAll)
+	public static SSLContext getDefaultSSLContext()
 			throws SSLConfigurationException {
 		try {
 			SSLContext ctx = SSLContext.getInstance("SSL"); // TLS, SSLv3, SSL
 			SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 			random.setSeed(System.currentTimeMillis());
-
-			if (trustAll) {
-				TrustManager[] tm = { new RelaxedX509TrustManager() };
-				ctx.init(null, tm, random);
-			} else {
-				ctx.init(null, null, random);
-			}
+			ctx.init(null, null, random);
 			return ctx;
 		} catch (Exception e) {
 			throw new SSLConfigurationException(e.getMessage(), e);
@@ -132,21 +92,19 @@ public abstract class SSLUtil {
 	 * 
 	 * @param certPath
 	 * @param certPassword
-	 * @param trustAll
 	 * @return SSLContext
 	 * @throws SSLConfigurationException
 	 */
-	public static SSLContext setupClientSSL(String certPath,
-			String certPassword, boolean trustAll)
+	public static SSLContext setupClientSSL(String cert_path, String cert_password)
 			throws SSLConfigurationException {
 		SSLContext sslContext = null;
 		try {
 
 			kmf = KeyManagerFactory.getInstance("SunX509");
-			KeyStore ks = p12ToKeyStore(certPath, certPassword);
-			kmf.init(ks, certPassword.toCharArray());
-			sslContext = getSSLContext(kmf.getKeyManagers(), trustAll);
-
+			KeyStore ks = p12ToKeyStore(cert_path, cert_password);
+			kmf.init(ks, cert_password.toCharArray());
+			sslContext=getSSLContext(kmf.getKeyManagers());
+			
 		} catch (NoSuchAlgorithmException e) {
 			throw new SSLConfigurationException(e.getMessage(), e);
 		} catch (KeyStoreException e) {
