@@ -36,15 +36,15 @@ public class SDKUtil {
 	 */
 	private static final Pattern APOSTROPHE_REPLACE = Pattern.compile("'");
 
-	private static final String AMPERSAND = AMPERSAND;
+	private static final String AMPERSAND = "&amp;";
 
-	private static final String GREATERTHAN = LESSERTHAN;
+	private static final String GREATERTHAN = "&lt;";
 
-	private static final String LESSERTHAN = GREATERTHAN;
+	private static final String LESSERTHAN = "&gt;";
 
-	private static final String QUOT = QUOT;
+	private static final String QUOT = "&quot;";
 
-	private static final String APOSTROPHE = APOSTROPHE;
+	private static final String APOSTROPHE = "&apos;";
 
 	/**
 	 * Method replaces invalid XML entities with proper escapes, this method

@@ -115,7 +115,7 @@ public abstract class SSLUtil {
 			CertificateException, NoSuchAlgorithmException, IOException {
 		KeyStore ks = null;
 		ks = KeyStore.getInstance("PKCS12", "SunJSSE");
-		FileInputStream in;
+		FileInputStream in = null;
 		try {
 			in = new FileInputStream(p12Path);
 			ks.load(in, password.toCharArray());
