@@ -115,10 +115,6 @@ public abstract class SSLUtil {
 			throws NoSuchProviderException, KeyStoreException,
 			CertificateException, NoSuchAlgorithmException,
 			FileNotFoundException, IOException {
-		/*
-		 * if (log.isDebugEnabled()) {
-		 * log.debug("PPCrypto.p12ToKeyStore, keystore = " + p12Path); }
-		 */
 		KeyStore ks = null;
 		ks = KeyStore.getInstance("PKCS12", "SunJSSE");
 		FileInputStream in;
@@ -136,21 +132,21 @@ public abstract class SSLUtil {
 	/**
 	 * Create a SSLContext with certificate provided
 	 * 
-	 * @param cert_path
-	 * @param cert_password
+	 * @param certPath
+	 * @param certPassword
 	 * @param trustAll
 	 * @return SSLContext
 	 * @throws SSLConfigurationException
 	 */
-	public static SSLContext setupClientSSL(String cert_path,
-			String cert_password, boolean trustAll)
+	public static SSLContext setupClientSSL(String certPath,
+			String certPassword, boolean trustAll)
 			throws SSLConfigurationException {
 		SSLContext sslContext = null;
 		try {
 
 			kmf = KeyManagerFactory.getInstance("SunX509");
-			KeyStore ks = p12ToKeyStore(cert_path, cert_password);
-			kmf.init(ks, cert_password.toCharArray());
+			KeyStore ks = p12ToKeyStore(certPath, certPassword);
+			kmf.init(ks, certPassword.toCharArray());
 			sslContext = getSSLContext(kmf.getKeyManagers(), trustAll);
 
 		} catch (NoSuchAlgorithmException e) {

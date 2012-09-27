@@ -42,7 +42,7 @@ public class DefaultHttpConnection extends HttpConnection {
 	}
 
 	@Override
-	public void CreateAndconfigureHttpConnection(
+	public void createAndconfigureHttpConnection(
 			HttpConfiguration clientConfiguration)
 			throws MalformedURLException, UnknownHostException, IOException {
 		this.config = clientConfiguration;

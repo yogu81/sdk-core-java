@@ -22,13 +22,13 @@ public abstract class HttpConnection {
 
 	/**
 	 * Subclasses must set the http configuration in the
-	 * CreateAndconfigureHttpConnection() method.
+	 * createAndconfigureHttpConnection() method.
 	 */
 	protected HttpConfiguration config;
 
 	/**
 	 * Subclasses must create and set the connection in the
-	 * CreateAndconfigureHttpConnection() method.
+	 * createAndconfigureHttpConnection() method.
 	 */
 	protected HttpURLConnection connection;
 
@@ -74,7 +74,7 @@ public abstract class HttpConnection {
 				try {
 					writer = new OutputStreamWriter(
 							this.connection.getOutputStream());
-					writer.write(payload.toString());
+					writer.write(payload);
 					writer.flush();
 					int responsecode = connection.getResponseCode();
 					reader = new BufferedReader(new InputStreamReader(
@@ -147,13 +147,13 @@ public abstract class HttpConnection {
 			boolean trustAll) throws SSLConfigurationException;
 
 	/**
-	 * Create and configure HttpsURLConnection object
+	 * create and configure HttpsURLConnection object
 	 * 
 	 * @param clientConfiguration
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 */
-	public abstract void CreateAndconfigureHttpConnection(
+	public abstract void createAndconfigureHttpConnection(
 			HttpConfiguration clientConfiguration)
 			throws MalformedURLException, UnknownHostException, IOException;
 
