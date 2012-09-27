@@ -49,18 +49,19 @@ public final class CredentialManager {
 			String password = (String) credMap.get(prefix + suffix
 					+ ".Password");
 			String appId = (String) credMap.get(prefix + suffix + ".AppId");
+			String subject = (String) credMap.get(prefix + suffix + ".Subject");
 			if (credMap.get(prefix + suffix + ".Signature") != null) {
 				String signature = (String) credMap.get(prefix + suffix
 						+ ".Signature");
 				credentialMap.put(userName, new SignatureCredential(userName,
-						password, signature, appId));
+						password, signature, appId, subject));
 			} else if (credMap.get(prefix + suffix + ".CertPath") != null) {
 				String certPath = (String) credMap.get(prefix + suffix
 						+ ".CertPath");
 				String certKey = (String) credMap.get(prefix + suffix
 						+ ".CertKey");
 				credentialMap.put(userName, new CertificateCredential(userName,
-						password, certPath, certKey, appId));
+						password, certPath, certKey, appId, subject));
 			}
 			if (defaultAcctName == null) {
 				defaultAcctName = (String) credMap.get(prefix + suffix
