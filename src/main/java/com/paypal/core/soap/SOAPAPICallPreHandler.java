@@ -170,9 +170,7 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 				CertificateCredential certCred = (CertificateCredential) returnCredential;
 				certCred.setThirdPartyAuthorization(tokenAuth);
 			}
-		} else {
-			// TODO subject authorization set in credential
-		}
+		} 
 		return returnCredential;
 	}
 

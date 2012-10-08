@@ -22,7 +22,7 @@ public interface APICallPreHandler {
 	 * @throws MissingCredentialException
 	 * @throws OAuthException
 	 */
-	public Map<String, String> getHeader() throws InvalidCredentialException,
+	Map<String, String> getHeader() throws InvalidCredentialException,
 			MissingCredentialException, OAuthException;
 
 	/**
@@ -31,20 +31,20 @@ public interface APICallPreHandler {
 	 * 
 	 * @return Payload as String
 	 */
-	public String getPayLoad();
+	String getPayLoad();
 
 	/**
 	 * Returns the endpoint for the API call
 	 * 
 	 * @return Endpoint
 	 */
-	public String getEndPoint();
+	String getEndPoint();
 
 	/**
 	 * Returns {@link ICredential} configured for the api call
 	 * 
 	 * @return ICredential object
 	 */
-	public ICredential getCredential();
+	ICredential getCredential();
 
 }
