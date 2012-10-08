@@ -17,10 +17,11 @@ import javax.net.ssl.SSLContext;
 import com.paypal.exception.SSLConfigurationException;
 
 public abstract class SSLUtil {
-	public static KeyManagerFactory kmf = null;
+	private static KeyManagerFactory kmf = null;
 
 	/**
 	 * Returns a SSLContext
+	 * 
 	 * @param keymanagers
 	 *            KeyManager[] The key managers
 	 * @return SSLContext with proper client certificate
@@ -28,12 +29,13 @@ public abstract class SSLUtil {
 	 * @throws IOException
 	 *             if an IOException occurs
 	 */
-	public static SSLContext getSSLContext(KeyManager[] keymanagers) throws SSLConfigurationException  {
+	public static SSLContext getSSLContext(KeyManager[] keymanagers)
+			throws SSLConfigurationException {
 		try {
 			SSLContext ctx = SSLContext.getInstance("SSL"); // TLS, SSLv3, SSL
 			SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 			random.setSeed(System.currentTimeMillis());
-			ctx.init(keymanagers, null, random);		
+			ctx.init(keymanagers, null, random);
 			return ctx;
 		} catch (Exception e) {
 			throw new SSLConfigurationException(e.getMessage(), e);
@@ -78,14 +80,14 @@ public abstract class SSLUtil {
 	 * @return SSLContext
 	 * @throws SSLConfigurationException
 	 */
-	public static SSLContext setupClientSSL(String cert_path, String cert_password)
+	public static SSLContext setupClientSSL(String certPath, String certPassword)
 			throws SSLConfigurationException {
 		SSLContext sslContext = null;
 		try {
 			kmf = KeyManagerFactory.getInstance("SunX509");
-			KeyStore ks = p12ToKeyStore(cert_path, cert_password);
-			kmf.init(ks, cert_password.toCharArray());
-			sslContext=getSSLContext(kmf.getKeyManagers());
+			KeyStore ks = p12ToKeyStore(certPath, certPassword);
+			kmf.init(ks, certPassword.toCharArray());
+			sslContext = getSSLContext(kmf.getKeyManagers());
 		} catch (NoSuchAlgorithmException e) {
 			throw new SSLConfigurationException(e.getMessage(), e);
 		} catch (KeyStoreException e) {
