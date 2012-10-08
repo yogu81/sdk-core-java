@@ -9,12 +9,12 @@ import com.paypal.exception.InvalidCredentialException;
 public class CertificateSOAPHeaderAuthStrategy implements
 		AuthenticationStrategy<String, CertificateCredential> {
 
-	private final String rawPayLoad;
-
+	/**
+	 * Instance of ThirdPartyAuthorization
+	 */
 	private ThirdPartyAuthorization thirdPartyAuthorization;
 
-	public CertificateSOAPHeaderAuthStrategy(String rawPayLoad) {
-		this.rawPayLoad = rawPayLoad;
+	public CertificateSOAPHeaderAuthStrategy() {
 	}
 	
 	/**
@@ -49,15 +49,17 @@ public class CertificateSOAPHeaderAuthStrategy implements
 		return payLoad;
 	}
 
+	/**
+	 * Returns a empty soap header String, token authorization does
+	 * not bear a credential part
+	 * @return
+	 */
 	private String tokenAuthPayLoad() {
 		String payLoad = null;
 		StringBuilder soapMsg = new StringBuilder();
-		soapMsg.append(getSoapEnvelopeStart());
 		soapMsg.append("<soapenv:Header>");
 		soapMsg.append("<urn:RequesterCredentials/>");
 		soapMsg.append("</soapenv:Header>");
-		soapMsg.append(getSoapBody());
-		soapMsg.append(getSoapEnvelopeEnd());
 		return payLoad;
 	}
 
@@ -65,7 +67,6 @@ public class CertificateSOAPHeaderAuthStrategy implements
 			SubjectAuthorization subjectAuth) {
 		String payLoad = null;
 		StringBuilder soapMsg = new StringBuilder();
-		soapMsg.append(getSoapEnvelopeStart());
 		soapMsg.append("<soapenv:Header>");
 		soapMsg.append("<urn:RequesterCredentials>");
 		soapMsg.append("<ebl:Credentials>");
@@ -73,6 +74,8 @@ public class CertificateSOAPHeaderAuthStrategy implements
 				+ "</ebl:Username>");
 		soapMsg.append("<ebl:Password>" + credential.getPassword()
 				+ "</ebl:Password>");
+		
+		// Append subject credential  if available
 		if (subjectAuth != null) {
 			soapMsg.append("<ebl:Subject>" + subjectAuth.getSubject()
 					+ "</ebl:Subject>");
@@ -80,25 +83,7 @@ public class CertificateSOAPHeaderAuthStrategy implements
 		soapMsg.append("</ebl:Credentials>");
 		soapMsg.append("</urn:RequesterCredentials>");
 		soapMsg.append("</soapenv:Header>");
-		soapMsg.append(getSoapBody());
-		soapMsg.append(getSoapEnvelopeEnd());
 		return payLoad;
-	}
-
-	private String getSoapEnvelopeStart() {
-		return "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:ebay:api:PayPalAPI\" xmlns:ebl=\"urn:ebay:apis:eBLBaseComponents\" xmlns:cc=\"urn:ebay:apis:CoreComponentTypes\" xmlns:ed=\"urn:ebay:apis:EnhancedDataTypes\">";
-	}
-
-	private String getSoapEnvelopeEnd() {
-		return "</soapenv:Envelope>";
-	}
-
-	private String getSoapBody() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("<soapenv:Body>");
-		stringBuilder.append(rawPayLoad);
-		stringBuilder.append("</soapenv:Body>");
-		return stringBuilder.toString();
 	}
 
 }

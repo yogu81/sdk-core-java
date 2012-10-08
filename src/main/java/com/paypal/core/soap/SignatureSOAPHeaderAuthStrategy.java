@@ -10,12 +10,9 @@ import com.paypal.exception.InvalidCredentialException;
 public class SignatureSOAPHeaderAuthStrategy implements
 		AuthenticationStrategy<String, SignatureCredential> {
 
-	private final String rawPayLoad;
-
 	private ThirdPartyAuthorization thirdPartyAuthorization;
 
-	public SignatureSOAPHeaderAuthStrategy(String rawPayLoad) {
-		this.rawPayLoad = rawPayLoad;
+	public SignatureSOAPHeaderAuthStrategy() {
 	}
 
 	/**
@@ -52,12 +49,9 @@ public class SignatureSOAPHeaderAuthStrategy implements
 	private String tokenAuthPayLoad() {
 		String payLoad = null;
 		StringBuilder soapMsg = new StringBuilder();
-		soapMsg.append(getSoapEnvelopeStart());
 		soapMsg.append("<soapenv:Header>");
 		soapMsg.append("<urn:RequesterCredentials/>");
 		soapMsg.append("</soapenv:Header>");
-		soapMsg.append(getSoapBody());
-		soapMsg.append(getSoapEnvelopeEnd());
 		return payLoad;
 	}
 
@@ -65,7 +59,6 @@ public class SignatureSOAPHeaderAuthStrategy implements
 			SubjectAuthorization subjectAuth) {
 		String payLoad = null;
 		StringBuilder soapMsg = new StringBuilder();
-		soapMsg.append(getSoapEnvelopeStart());
 		soapMsg.append("<soapenv:Header>");
 		soapMsg.append("<urn:RequesterCredentials>");
 		soapMsg.append("<ebl:Credentials>");
@@ -82,25 +75,7 @@ public class SignatureSOAPHeaderAuthStrategy implements
 		soapMsg.append("</ebl:Credentials>");
 		soapMsg.append("</urn:RequesterCredentials>");
 		soapMsg.append("</soapenv:Header>");
-		soapMsg.append(getSoapBody());
-		soapMsg.append(getSoapEnvelopeEnd());
 		return payLoad;
-	}
-
-	private String getSoapEnvelopeStart() {
-		return "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:ebay:api:PayPalAPI\" xmlns:ebl=\"urn:ebay:apis:eBLBaseComponents\" xmlns:cc=\"urn:ebay:apis:CoreComponentTypes\" xmlns:ed=\"urn:ebay:apis:EnhancedDataTypes\">";
-	}
-
-	private String getSoapEnvelopeEnd() {
-		return "</soapenv:Envelope>";
-	}
-
-	private String getSoapBody() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("<soapenv:Body>");
-		stringBuilder.append(rawPayLoad);
-		stringBuilder.append("</soapenv:Body>");
-		return stringBuilder.toString();
 	}
 
 }

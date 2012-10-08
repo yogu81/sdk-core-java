@@ -18,7 +18,7 @@ import com.paypal.sdk.exceptions.OAuthException;
 
 /**
  * <code>SOAPAPICallPreHandler</code> is an implementation of
- * {@link APICallPreHandler} for NVP based API service
+ * {@link APICallPreHandler} for SOAP based API service
  * 
  * @author kjayakumar
  * 
@@ -105,25 +105,28 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 	}
 
 	public String getPayLoad() {
+		
+		// This method appends SOAP Headers to payload
+		// if the credentials mandate soap headers
 		String payLoad = null;
+		String headerPart = null;
 		if (credential instanceof SignatureCredential) {
 			SignatureCredential sigCredential = (SignatureCredential) credential;
-			SignatureSOAPHeaderAuthStrategy signatureSoapHeaderAuthStrategy = new SignatureSOAPHeaderAuthStrategy(
-					rawPayLoad);
+			SignatureSOAPHeaderAuthStrategy signatureSoapHeaderAuthStrategy = new SignatureSOAPHeaderAuthStrategy();
 			signatureSoapHeaderAuthStrategy
 					.setThirdPartyAuthorization(sigCredential
 							.getThirdPartyAuthorization());
-			payLoad = signatureSoapHeaderAuthStrategy.realize(sigCredential);
+			headerPart = signatureSoapHeaderAuthStrategy.realize(sigCredential);
 		} else if (credential instanceof CertificateCredential) {
 			CertificateCredential certCredential = (CertificateCredential) credential;
-			CertificateSOAPHeaderAuthStrategy certificateSoapHeaderAuthStrategy = new CertificateSOAPHeaderAuthStrategy(
-					rawPayLoad);
+			CertificateSOAPHeaderAuthStrategy certificateSoapHeaderAuthStrategy = new CertificateSOAPHeaderAuthStrategy();
 			certificateSoapHeaderAuthStrategy
 					.setThirdPartyAuthorization(certCredential
 							.getThirdPartyAuthorization());
-			payLoad = certificateSoapHeaderAuthStrategy.realize(certCredential);
+			headerPart = certificateSoapHeaderAuthStrategy.realize(certCredential);
 
 		}
+		payLoad = getPayLoadUsingSOAPHeader(headerPart);
 		return payLoad;
 	}
 
@@ -144,12 +147,22 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 		this.tokenSecret = tokenSecret;
 	}
 
+	/**
+	 * Returns a credential as configured in the application configuration
+	 * 
+	 * @return ICredential
+	 * @throws InvalidCredentialException
+	 * @throws MissingCredentialException
+	 */
 	private ICredential getCredentials() throws InvalidCredentialException,
 			MissingCredentialException {
 		ICredential credential = null;
 		CredentialManager credentialManager = CredentialManager.getInstance();
 		credential = credentialManager.getCredentialObject(apiUserName);
 		if (accessToken != null && !accessToken.isEmpty()) {
+
+			// Set third party authorization to token
+			// if token is sent as part of request call
 			ThirdPartyAuthorization tokenAuth = new TokenAuthorization(
 					accessToken, tokenSecret);
 			if (credential instanceof SignatureCredential) {
@@ -165,6 +178,10 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 		return credential;
 	}
 
+	/**
+	 * Returns default HTTP headers used in SOAP call
+	 * @return Map of HTTP headers
+	 */
 	private Map<String, String> getDefaultHttpHeadersSOAP() {
 		Map<String, String> returnMap = new HashMap<String, String>();
 		returnMap.put(Constants.PAYPAL_REQUEST_DATA_FORMAT_HEADER, "SOAP");
@@ -182,6 +199,31 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 		if (credential == null) {
 			credential = getCredentials();
 		}
+	}
+
+	private String getSoapEnvelopeStart() {
+		return "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:ebay:api:PayPalAPI\" xmlns:ebl=\"urn:ebay:apis:eBLBaseComponents\" xmlns:cc=\"urn:ebay:apis:CoreComponentTypes\" xmlns:ed=\"urn:ebay:apis:EnhancedDataTypes\">";
+	}
+
+	private String getSoapEnvelopeEnd() {
+		return "</soapenv:Envelope>";
+	}
+
+	private String getSoapBody() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("<soapenv:Body>");
+		stringBuilder.append(rawPayLoad);
+		stringBuilder.append("</soapenv:Body>");
+		return stringBuilder.toString();
+	}
+	
+	private String getPayLoadUsingSOAPHeader(String headerPart) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(getSoapEnvelopeStart());
+		stringBuilder.append(headerPart);
+		stringBuilder.append(getSoapBody());
+		stringBuilder.append(getSoapEnvelopeEnd());
+		return stringBuilder.toString();
 	}
 
 }
