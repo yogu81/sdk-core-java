@@ -1,17 +1,15 @@
 package com.paypal.core.soap;
 
 import com.paypal.core.AuthenticationStrategy;
-import com.paypal.core.credential.CertificateCredential;
 import com.paypal.core.credential.SignatureCredential;
 import com.paypal.core.credential.SubjectAuthorization;
 import com.paypal.core.credential.ThirdPartyAuthorization;
 import com.paypal.core.credential.TokenAuthorization;
-import com.paypal.exception.InvalidCredentialException;
 
 /**
  * <code>SignatureSOAPHeaderAuthStrategy</code> is an implementation of
- * {@link AuthenticationStrategy} which acts on {@link SignatureCredential}
- * and retrieves them as SOAP headers
+ * {@link AuthenticationStrategy} which acts on {@link SignatureCredential} and
+ * retrieves them as SOAP headers
  * 
  */
 public class SignatureSOAPHeaderAuthStrategy implements

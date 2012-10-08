@@ -5,7 +5,6 @@ import com.paypal.core.credential.CertificateCredential;
 import com.paypal.core.credential.SubjectAuthorization;
 import com.paypal.core.credential.ThirdPartyAuthorization;
 import com.paypal.core.credential.TokenAuthorization;
-import com.paypal.exception.InvalidCredentialException;
 
 /**
  * <code>CertificateSOAPHeaderAuthStrategy</code> is an implementation of
@@ -23,7 +22,7 @@ public class CertificateSOAPHeaderAuthStrategy implements
 
 	public CertificateSOAPHeaderAuthStrategy() {
 	}
-	
+
 	/**
 	 * @return the thirdPartyAuthorization
 	 */
@@ -40,7 +39,6 @@ public class CertificateSOAPHeaderAuthStrategy implements
 		this.thirdPartyAuthorization = thirdPartyAuthorization;
 	}
 
-
 	public String realize(CertificateCredential credential) {
 		String payLoad = null;
 		if (thirdPartyAuthorization instanceof TokenAuthorization) {
@@ -55,8 +53,9 @@ public class CertificateSOAPHeaderAuthStrategy implements
 	}
 
 	/**
-	 * Returns a empty soap header String, token authorization does
-	 * not bear a credential part
+	 * Returns a empty soap header String, token authorization does not bear a
+	 * credential part
+	 * 
 	 * @return
 	 */
 	private String tokenAuthPayLoad() {
@@ -79,8 +78,8 @@ public class CertificateSOAPHeaderAuthStrategy implements
 				+ "</ebl:Username>");
 		soapMsg.append("<ebl:Password>" + credential.getPassword()
 				+ "</ebl:Password>");
-		
-		// Append subject credential  if available
+
+		// Append subject credential if available
 		if (subjectAuth != null) {
 			soapMsg.append("<ebl:Subject>" + subjectAuth.getSubject()
 					+ "</ebl:Subject>");
