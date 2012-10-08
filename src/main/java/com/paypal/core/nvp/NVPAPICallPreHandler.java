@@ -24,19 +24,9 @@ import com.paypal.sdk.exceptions.OAuthException;
 public class NVPAPICallPreHandler implements APICallPreHandler {
 
 	/**
-	 * Service Name
-	 */
-	private final String serviceName;
-
-	/**
 	 * Raw payload from stubs
 	 */
 	private final String rawPayLoad;
-
-	/**
-	 * API method
-	 */
-	private final String method;
 
 	/**
 	 * API Username for authentication
@@ -62,9 +52,7 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	private NVPAPICallPreHandler(String serviceName, String rawPayLoad,
 			String method) {
 		super();
-		this.serviceName = serviceName;
 		this.rawPayLoad = rawPayLoad;
-		this.method = method;
 	}
 
 	/**
@@ -175,11 +163,13 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	private Map<String, String> getDefaultHttpHeadersNVP() {
 		Map<String, String> returnMap = new HashMap<String, String>();
 		returnMap.put(Constants.PAYPAL_APPLICATION_ID, getApplicationId());
-		returnMap.put(Constants.PAYPAL_REQUEST_DATA_FORMAT_HEADER, Constants.NVP);
-		returnMap.put(Constants.PAYPAL_RESPONSE_DATA_FORMAT_HEADER, Constants.NVP);
+		returnMap.put(Constants.PAYPAL_REQUEST_DATA_FORMAT_HEADER,
+				Constants.NVP);
+		returnMap.put(Constants.PAYPAL_RESPONSE_DATA_FORMAT_HEADER,
+				Constants.NVP);
 		// returnMap.put("X-PAYPAL-DEVICE-IPADDRESS",
 		// httpConfiguration.getIpAddress());
-		//TODO revisit
+		// TODO revisit
 		returnMap.put("X-PAYPAL-REQUEST-SOURCE", Constants.SDK_NAME + "-"
 				+ Constants.SDK_VERSION);
 		return returnMap;
