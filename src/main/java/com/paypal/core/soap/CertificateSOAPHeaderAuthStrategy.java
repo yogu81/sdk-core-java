@@ -7,6 +7,12 @@ import com.paypal.core.credential.ThirdPartyAuthorization;
 import com.paypal.core.credential.TokenAuthorization;
 import com.paypal.exception.InvalidCredentialException;
 
+/**
+ * <code>CertificateSOAPHeaderAuthStrategy</code> is an implementation of
+ * {@link AuthenticationStrategy} which acts on {@link CertificateCredential}
+ * and retrieves them as SOAP headers
+ * 
+ */
 public class CertificateSOAPHeaderAuthStrategy implements
 		AuthenticationStrategy<String, CertificateCredential> {
 

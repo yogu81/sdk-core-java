@@ -18,7 +18,6 @@ import com.paypal.exception.SSLConfigurationException;
 /**
  * Wrapper class used for HttpsURLConnection
  * 
- * 
  */
 public class DefaultHttpConnection extends HttpConnection {
 

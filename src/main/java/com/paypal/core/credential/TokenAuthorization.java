@@ -2,7 +2,6 @@ package com.paypal.core.credential;
 
 /**
  * TokenAuthorization encapsulates third party token authorization.
- * @author kjayakumar
  *
  */
 public class TokenAuthorization implements ThirdPartyAuthorization {

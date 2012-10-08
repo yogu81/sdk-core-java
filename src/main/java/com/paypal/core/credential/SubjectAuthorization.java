@@ -4,7 +4,6 @@ package com.paypal.core.credential;
 /**
  * SubjectAuthorization encapsulates third party subject authorization.
  * Subject Authorization caters to SOAP APIs only
- * @author kjayakumar
  *
  */
 public class SubjectAuthorization implements ThirdPartyAuthorization {

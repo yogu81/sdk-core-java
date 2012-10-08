@@ -1,6 +1,15 @@
 package com.paypal.exception;
 
-public class ClientActionRequiredException extends BaseException{
+/**
+ * ClientActionRequiredException, encapsulates instances where client has to
+ * take actions based or errors in API call.
+ * 
+ */
+public class ClientActionRequiredException extends BaseException {
+
+	/**
+	 * Serial version UID
+	 */
 	private static final long serialVersionUID = -15345584654755445L;
 
 	public ClientActionRequiredException(String message) {

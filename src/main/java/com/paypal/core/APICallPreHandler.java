@@ -11,8 +11,6 @@ import com.paypal.core.credential.ICredential;
  * <code>APICallPreHandler</code> defines a high level abstraction for call
  * specific operations. The calls may be divided as per formats as SOAP or NVP.
  * 
- * @author kjayakumar
- * 
  */
 public interface APICallPreHandler {
 

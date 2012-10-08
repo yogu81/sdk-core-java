@@ -4,8 +4,6 @@ package com.paypal.core;
  * ConnectionManager acts as a interface to retrieve {@link HttpConnection}
  * objects used by API service
  * 
- * @author kjayakumar
- * 
  */
 public final class ConnectionManager {
 

@@ -5,8 +5,6 @@ import java.util.regex.Pattern;
 /**
  * SDKUtil class holds utility methods for processing data transformation
  * 
- * @author kjayakumar
- * 
  */
 public class SDKUtil {
 

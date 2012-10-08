@@ -4,7 +4,6 @@ package com.paypal.core.credential;
  * <code>ICredential</code> acts a base class for any credential required
  * by the service for authentication. Credential implementations are
  * essentially information passed on to any API service for authentication.
- * @author kjayakumar
  *
  */
 public interface ICredential {

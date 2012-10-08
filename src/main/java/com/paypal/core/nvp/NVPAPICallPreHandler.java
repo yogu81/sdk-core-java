@@ -20,8 +20,6 @@ import com.paypal.sdk.exceptions.OAuthException;
  * <code>NVPAPICallPreHandler</code> is an implementation of
  * {@link APICallPreHandler} for NVP based API service
  * 
- * @author kjayakumar
- * 
  */
 public class NVPAPICallPreHandler implements APICallPreHandler {
 

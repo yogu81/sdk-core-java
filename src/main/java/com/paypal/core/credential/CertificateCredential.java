@@ -3,7 +3,6 @@ package com.paypal.core.credential;
 /**
  * <code>CertificateCredential</code> encapsulates certificate credential information
  * used by service authentication systems.
- * @author kjayakumar
  *
  */
 public class CertificateCredential implements ICredential {

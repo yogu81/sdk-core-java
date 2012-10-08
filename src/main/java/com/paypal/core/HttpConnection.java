@@ -18,8 +18,6 @@ import com.paypal.exception.SSLConfigurationException;
 /**
  * Base HttpConnection class
  * 
- * @author kjayakumar
- * 
  */
 public abstract class HttpConnection {
 

@@ -15,8 +15,6 @@ import com.paypal.sdk.util.OAuthSignature;
  * {@link AuthenticationStrategy} which acts on {@link CertificateCredential}
  * and retrieves them as HTTP headers
  * 
- * @author kjayakumar
- * 
  */
 public class CertificateHttpHeaderAuthStrategy implements
 		AuthenticationStrategy<Map<String, String>, CertificateCredential> {

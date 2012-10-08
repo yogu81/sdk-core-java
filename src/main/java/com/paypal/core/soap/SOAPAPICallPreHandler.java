@@ -20,8 +20,6 @@ import com.paypal.sdk.exceptions.OAuthException;
  * <code>SOAPAPICallPreHandler</code> is an implementation of
  * {@link APICallPreHandler} for SOAP based API service
  * 
- * @author kjayakumar
- * 
  */
 public class SOAPAPICallPreHandler implements APICallPreHandler {
 

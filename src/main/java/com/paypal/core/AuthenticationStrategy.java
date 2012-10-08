@@ -6,8 +6,6 @@ import com.paypal.core.credential.ICredential;
  * A Strategy pattern to retrieve {@link ICredential} as any conceivable
  * datatype as required by the application
  * 
- * @author kjayakumar
- * 
  * @param <T>
  *            Return data type
  * @param <E>

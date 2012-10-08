@@ -13,7 +13,6 @@ import com.paypal.exception.SSLConfigurationException;
  * In order to activate this feature, set 'http.GoogleAppEngine = true' in the
  * SDK config file.
  * 
- * @author Benjamin Possolo
  */
 public class GoogleAppEngineHttpConnection extends HttpConnection {
 

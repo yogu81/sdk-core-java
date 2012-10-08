@@ -16,8 +16,6 @@ import com.paypal.exception.MissingCredentialException;
  * <code>CredentialManager</code> acts as a factory for loading
  * {@link ICredential} credential configured in application properties
  * 
- * @author kjayakumar
- * 
  */
 public final class CredentialManager {
 

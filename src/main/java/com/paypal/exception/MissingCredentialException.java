@@ -1,7 +1,15 @@
 package com.paypal.exception;
 
+/**
+ * MissingCredentialException is throw when the credential used are wrongly
+ * configured or not found in the application properties
+ * 
+ */
 public class MissingCredentialException extends BaseException {
 
+	/**
+	 * Serial versio UID
+	 */
 	private static final long serialVersionUID = -2345825926387658303L;
 
 	public MissingCredentialException(String message) {
