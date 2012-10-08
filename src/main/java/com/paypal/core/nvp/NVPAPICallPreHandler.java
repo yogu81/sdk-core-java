@@ -68,8 +68,7 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	 * @throws MissingCredentialException
 	 * @throws InvalidCredentialException
 	 */
-	public NVPAPICallPreHandler(String serviceName, String rawPayLoad,
-			String method, String apiUserName)
+	public NVPAPICallPreHandler(String rawPayLoad, String apiUserName)
 			throws InvalidCredentialException, MissingCredentialException {
 		this(rawPayLoad);
 		this.apiUserName = apiUserName;
@@ -88,8 +87,7 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	 * @param credential
 	 *            {@link ICredential} instance
 	 */
-	public NVPAPICallPreHandler(String serviceName, String rawPayLoad,
-			String method, ICredential credential) {
+	public NVPAPICallPreHandler(String rawPayLoad, ICredential credential) {
 		this(rawPayLoad);
 		if (credential == null) {
 			throw new IllegalArgumentException(
