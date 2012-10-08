@@ -91,12 +91,12 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 		Map<String, String> headerMap = new HashMap<String, String>();
 		if (credential instanceof SignatureCredential) {
 			SignatureHttpHeaderAuthStrategy signatureHttpHeaderAuthStrategy = new SignatureHttpHeaderAuthStrategy(
-					getEndpoint());
+					getEndPoint());
 			headerMap = signatureHttpHeaderAuthStrategy
 					.realize((SignatureCredential) credential);
 		} else if (credential instanceof CertificateCredential) {
 			CertificateHttpHeaderAuthStrategy certificateHttpHeaderAuthStrategy = new CertificateHttpHeaderAuthStrategy(
-					getEndpoint());
+					getEndPoint());
 			headerMap = certificateHttpHeaderAuthStrategy
 					.realize((CertificateCredential) credential);
 		}
@@ -130,7 +130,7 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 		return payLoad;
 	}
 
-	public String getEndpoint() {
+	public String getEndPoint() {
 		return ConfigManager.getInstance().getValue("service.EndPoint")
 				+ serviceName + '/' + method;
 	}
@@ -156,26 +156,26 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 	 */
 	private ICredential getCredentials() throws InvalidCredentialException,
 			MissingCredentialException {
-		ICredential credential = null;
+		ICredential returnCredential = null;
 		CredentialManager credentialManager = CredentialManager.getInstance();
-		credential = credentialManager.getCredentialObject(apiUserName);
+		returnCredential = credentialManager.getCredentialObject(apiUserName);
 		if (accessToken != null && !accessToken.isEmpty()) {
 
 			// Set third party authorization to token
 			// if token is sent as part of request call
 			ThirdPartyAuthorization tokenAuth = new TokenAuthorization(
 					accessToken, tokenSecret);
-			if (credential instanceof SignatureCredential) {
-				SignatureCredential sigCred = (SignatureCredential) credential;
+			if (returnCredential instanceof SignatureCredential) {
+				SignatureCredential sigCred = (SignatureCredential) returnCredential;
 				sigCred.setThirdPartyAuthorization(tokenAuth);
-			} else if (credential instanceof CertificateCredential) {
-				CertificateCredential certCred = (CertificateCredential) credential;
+			} else if (returnCredential instanceof CertificateCredential) {
+				CertificateCredential certCred = (CertificateCredential) returnCredential;
 				certCred.setThirdPartyAuthorization(tokenAuth);
 			}
 		} else {
 			// TODO subject authorization set in credential
 		}
-		return credential;
+		return returnCredential;
 	}
 
 	/**

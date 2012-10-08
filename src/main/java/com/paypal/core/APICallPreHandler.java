@@ -40,7 +40,7 @@ public interface APICallPreHandler {
 	 * 
 	 * @return Endpoint
 	 */
-	public String getEndpoint();
+	public String getEndPoint();
 
 	/**
 	 * Returns {@link ICredential} configured for the api call

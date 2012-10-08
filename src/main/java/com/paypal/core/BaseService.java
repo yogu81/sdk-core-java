@@ -39,22 +39,22 @@ public abstract class BaseService {
 	/**
 	 * Access Token used in third party authorization
 	 */
-	protected String accessToken = null;
+	private String accessToken = null;
 
 	/**
 	 * Token secret used in third party authorization
 	 */
-	protected String tokenSecret = null;
+	private String tokenSecret = null;
 
 	/**
 	 * Last request processed
 	 */
-	protected String lastRequest = null;
+	private String lastRequest = null;
 
 	/**
 	 * Last response received
 	 */
-	protected String lastResponse = null;
+	private String lastResponse = null;
 
 	/**
 	 * @return the accessToken

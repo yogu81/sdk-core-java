@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
 
 import com.paypal.exception.ClientActionRequiredException;
 import com.paypal.exception.HttpErrorException;
@@ -16,14 +17,15 @@ import com.paypal.exception.SSLConfigurationException;
 
 /**
  * Base HttpConnection class
+ * 
  * @author kjayakumar
- *
+ * 
  */
 public abstract class HttpConnection {
 
 	/**
-	 * Subclasses must override the default value of true
-	 * to use strict hostname verification
+	 * Subclasses must override the default value of true to use strict hostname
+	 * verification
 	 */
 	protected boolean defaultSSL;
 
@@ -38,7 +40,7 @@ public abstract class HttpConnection {
 	 * createAndconfigureHttpConnection() method.
 	 */
 	protected HttpURLConnection connection;
-	
+
 	public HttpConnection() {
 		defaultSSL = true;
 	}
@@ -74,15 +76,12 @@ public abstract class HttpConnection {
 				if (retry > 0) {
 					LoggingManager.debug(HttpConnection.class, " Retry  No : "
 							+ retry + "...");
-					try {
-						Thread.sleep(this.config.getRetryDelay());
-					} catch (InterruptedException ie) {
-						throw ie;
-					}
+					Thread.sleep(this.config.getRetryDelay());
 				}
 				try {
 					writer = new OutputStreamWriter(
-							this.connection.getOutputStream());
+							this.connection.getOutputStream(),
+							Charset.forName(Constants.ENCODING_FORMAT));
 					writer.write(payload);
 					writer.flush();
 					int responsecode = connection.getResponseCode();
@@ -105,25 +104,20 @@ public abstract class HttpConnection {
 										+ " with response : " + successResponse);
 					}
 				} catch (IOException e) {
-					try {
-						int responsecode = connection.getResponseCode();
-						if (connection.getErrorStream() != null) {
-							reader = new BufferedReader(new InputStreamReader(
-									connection.getErrorStream(),
-									Constants.ENCODING_FORMAT));
-							errorResponse = read(reader);
-							LoggingManager.severe(HttpConnection.class,
-									"Error code : " + responsecode
-											+ " with response : "
-											+ errorResponse);
-						}
-						if (responsecode < 500) {
-							throw new HttpErrorException("Error code : "
-									+ responsecode + " with response : "
-									+ errorResponse);
-						}
-					} catch (IOException io) {
-						throw io;
+					int responsecode = connection.getResponseCode();
+					if (connection.getErrorStream() != null) {
+						reader = new BufferedReader(new InputStreamReader(
+								connection.getErrorStream(),
+								Constants.ENCODING_FORMAT));
+						errorResponse = read(reader);
+						LoggingManager.severe(HttpConnection.class,
+								"Error code : " + responsecode
+										+ " with response : " + errorResponse);
+					}
+					if (responsecode < 500) {
+						throw new HttpErrorException("Error code : "
+								+ responsecode + " with response : "
+								+ errorResponse);
 					}
 				}
 			}
@@ -186,6 +180,7 @@ public abstract class HttpConnection {
 
 	/**
 	 * Set headers for HttpsURLConnection object
+	 * 
 	 * @param headers
 	 */
 	protected void setHttpHeaders(Map<String, String> headers) {

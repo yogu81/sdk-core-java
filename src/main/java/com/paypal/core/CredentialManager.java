@@ -6,9 +6,9 @@ import java.util.Set;
 
 import com.paypal.core.credential.CertificateCredential;
 import com.paypal.core.credential.ICredential;
+import com.paypal.core.credential.SubjectAuthorization;
 import com.paypal.core.credential.ThirdPartyAuthorization;
 import com.paypal.core.credential.SignatureCredential;
-import com.paypal.core.soap.SubjectAuthorization;
 import com.paypal.exception.InvalidCredentialException;
 import com.paypal.exception.MissingCredentialException;
 

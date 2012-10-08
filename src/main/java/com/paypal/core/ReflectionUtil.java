@@ -117,18 +117,13 @@ public class ReflectionUtil {
 									m.invoke(klazz.newInstance(), null));
 						}
 					} catch (IllegalAccessException e) {
-						e.printStackTrace();
 					} catch (IllegalArgumentException e) {
-						e.printStackTrace();
 					} catch (InvocationTargetException e) {
-						e.printStackTrace();
 					} catch (InstantiationException e) {
-						e.printStackTrace();
 					}
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			return null;
 		}
 		return responseMap;

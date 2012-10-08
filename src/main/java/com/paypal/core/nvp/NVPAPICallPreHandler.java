@@ -121,12 +121,12 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 		}
 		if (credential instanceof SignatureCredential) {
 			SignatureHttpHeaderAuthStrategy signatureHttpHeaderAuthStrategy = new SignatureHttpHeaderAuthStrategy(
-					getEndpoint());
+					getEndPoint());
 			headerMap = signatureHttpHeaderAuthStrategy
 					.realize((SignatureCredential) credential);
 		} else if (credential instanceof CertificateCredential) {
 			CertificateHttpHeaderAuthStrategy certificateHttpHeaderAuthStrategy = new CertificateHttpHeaderAuthStrategy(
-					getEndpoint());
+					getEndPoint());
 			headerMap = certificateHttpHeaderAuthStrategy
 					.realize((CertificateCredential) credential);
 		}
@@ -139,7 +139,7 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 		return rawPayLoad;
 	}
 
-	public String getEndpoint() {
+	public String getEndPoint() {
 		return ConfigManager.getInstance().getValue(Constants.END_POINT);
 	}
 
@@ -157,21 +157,21 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 
 	private ICredential getCredentials() throws InvalidCredentialException,
 			MissingCredentialException {
-		ICredential credential = null;
+		ICredential returnCredential = null;
 		CredentialManager credentialManager = CredentialManager.getInstance();
-		credential = credentialManager.getCredentialObject(apiUserName);
+		returnCredential = credentialManager.getCredentialObject(apiUserName);
 		if (accessToken != null && !accessToken.isEmpty()) {
 			ThirdPartyAuthorization tokenAuth = new TokenAuthorization(
 					accessToken, tokenSecret);
-			if (credential instanceof SignatureCredential) {
-				SignatureCredential sigCred = (SignatureCredential) credential;
+			if (returnCredential instanceof SignatureCredential) {
+				SignatureCredential sigCred = (SignatureCredential) returnCredential;
 				sigCred.setThirdPartyAuthorization(tokenAuth);
-			} else if (credential instanceof CertificateCredential) {
-				CertificateCredential certCred = (CertificateCredential) credential;
+			} else if (returnCredential instanceof CertificateCredential) {
+				CertificateCredential certCred = (CertificateCredential) returnCredential;
 				certCred.setThirdPartyAuthorization(tokenAuth);
 			}
 		}
-		return credential;
+		return returnCredential;
 	}
 
 	private Map<String, String> getDefaultHttpHeadersNVP() {

@@ -104,7 +104,7 @@ public class APIService {
 		ConnectionManager connectionMgr = ConnectionManager.getInstance();
 		HttpConnection connection = connectionMgr
 				.getConnection(httpConfiguration);
-		String url = apiCallPreHandler.getEndpoint();
+		String url = apiCallPreHandler.getEndPoint();
 		httpConfiguration.setEndPointUrl(url);
 		headers = apiCallPreHandler.getHeader();
 		String payLoad = apiCallPreHandler.getPayLoad();

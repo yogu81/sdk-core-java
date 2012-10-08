@@ -3,6 +3,7 @@ package com.paypal.core.soap;
 import com.paypal.core.AuthenticationStrategy;
 import com.paypal.core.credential.CertificateCredential;
 import com.paypal.core.credential.SignatureCredential;
+import com.paypal.core.credential.SubjectAuthorization;
 import com.paypal.core.credential.ThirdPartyAuthorization;
 import com.paypal.core.credential.TokenAuthorization;
 import com.paypal.exception.InvalidCredentialException;
@@ -33,11 +34,9 @@ public class SignatureSOAPHeaderAuthStrategy implements
 
 	public String realize(SignatureCredential credential) {
 		String payLoad = null;
-		if (thirdPartyAuthorization != null
-				&& thirdPartyAuthorization instanceof TokenAuthorization) {
+		if (thirdPartyAuthorization instanceof TokenAuthorization) {
 			payLoad = tokenAuthPayLoad();
-		} else if (thirdPartyAuthorization != null
-				&& thirdPartyAuthorization instanceof SubjectAuthorization) {
+		} else if (thirdPartyAuthorization instanceof SubjectAuthorization) {
 			authPayLoad(credential,
 					(SubjectAuthorization) thirdPartyAuthorization);
 		} else {
