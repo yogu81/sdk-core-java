@@ -49,8 +49,7 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	private String tokenSecret;
 
 	// Private Constructor
-	private NVPAPICallPreHandler(String serviceName, String rawPayLoad,
-			String method) {
+	private NVPAPICallPreHandler(String rawPayLoad) {
 		super();
 		this.rawPayLoad = rawPayLoad;
 	}
@@ -72,7 +71,7 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	public NVPAPICallPreHandler(String serviceName, String rawPayLoad,
 			String method, String apiUserName)
 			throws InvalidCredentialException, MissingCredentialException {
-		this(serviceName, rawPayLoad, method);
+		this(rawPayLoad);
 		this.apiUserName = apiUserName;
 		initCredential();
 	}
@@ -91,7 +90,7 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	 */
 	public NVPAPICallPreHandler(String serviceName, String rawPayLoad,
 			String method, ICredential credential) {
-		this(serviceName, rawPayLoad, method);
+		this(rawPayLoad);
 		if (credential == null) {
 			throw new IllegalArgumentException(
 					"Credential is null in NVPAPICallPreHandler");
