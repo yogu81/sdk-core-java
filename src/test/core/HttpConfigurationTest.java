@@ -65,11 +65,6 @@ public class HttpConfigurationTest {
 		Assert.assertEquals(false, httpConf.isProxySet());
 	}
 
-	@Test(priority = 10)
-	public void isTrustAllTest() {
-		Assert.assertEquals(true, httpConf.isTrustAll());
-	}
-
 	@Test(priority = 11)
 	public void setAndGetConnectionTimeoutTest() {
 		httpConf.setConnectionTimeout(5000);
@@ -124,11 +119,5 @@ public class HttpConfigurationTest {
 	public void setAndGetRetryDelayTest() {
 		httpConf.setRetryDelay(30);
 		Assert.assertEquals(30, httpConf.getRetryDelay());
-	}
-
-	@Test(priority = 21)
-	public void setAndIsTrustAllTest() {
-		httpConf.setTrustAll(true);
-		Assert.assertEquals(true, httpConf.isTrustAll());
 	}
 }
