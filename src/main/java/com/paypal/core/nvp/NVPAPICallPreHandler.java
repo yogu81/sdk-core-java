@@ -22,12 +22,12 @@ import com.paypal.sdk.exceptions.OAuthException;
  * 
  */
 public class NVPAPICallPreHandler implements APICallPreHandler {
-	
+
 	/**
 	 * Service Name
 	 */
 	private final String serviceName;
-	
+
 	/**
 	 * API method
 	 */
@@ -59,7 +59,8 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	private String tokenSecret;
 
 	// Private Constructor
-	private NVPAPICallPreHandler(String rawPayLoad, String serviceName, String method) {
+	private NVPAPICallPreHandler(String rawPayLoad, String serviceName,
+			String method) {
 		super();
 		this.rawPayLoad = rawPayLoad;
 		this.serviceName = serviceName;
@@ -77,13 +78,21 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	 *            API method
 	 * @param apiUserName
 	 *            API Username
+	 * @param accessToken
+	 *            Access Token
+	 * @param tokenSecret
+	 *            Token Secret
 	 * @throws MissingCredentialException
 	 * @throws InvalidCredentialException
 	 */
-	public NVPAPICallPreHandler(String rawPayLoad, String serviceName, String method, String apiUserName)
-			throws InvalidCredentialException, MissingCredentialException {
+	public NVPAPICallPreHandler(String rawPayLoad, String serviceName,
+			String method, String apiUserName, String accessToken,
+			String tokenSecret) throws InvalidCredentialException,
+			MissingCredentialException {
 		this(rawPayLoad, serviceName, method);
 		this.apiUserName = apiUserName;
+		this.accessToken = accessToken;
+		this.tokenSecret = tokenSecret;
 		initCredential();
 	}
 
@@ -99,7 +108,8 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	 * @param credential
 	 *            {@link ICredential} instance
 	 */
-	public NVPAPICallPreHandler(String rawPayLoad, String serviceName, String method, ICredential credential) {
+	public NVPAPICallPreHandler(String rawPayLoad, String serviceName,
+			String method, ICredential credential) {
 		this(rawPayLoad, serviceName, method);
 		if (credential == null) {
 			throw new IllegalArgumentException(
@@ -131,7 +141,8 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	}
 
 	public String getEndPoint() {
-		return ConfigManager.getInstance().getValue(Constants.END_POINT) + "/" + serviceName + "/" + method;
+		return ConfigManager.getInstance().getValue(Constants.END_POINT) + "/"
+				+ serviceName + "/" + method;
 	}
 
 	public ICredential getCredential() {
