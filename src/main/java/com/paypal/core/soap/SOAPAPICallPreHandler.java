@@ -1,16 +1,19 @@
 package com.paypal.core.soap;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.paypal.core.APICallPreHandler;
-import com.paypal.core.ConfigManager;
 import com.paypal.core.Constants;
 import com.paypal.core.CredentialManager;
+import com.paypal.core.DefaultSOAPAPICallHandler;
 import com.paypal.core.credential.CertificateCredential;
 import com.paypal.core.credential.ICredential;
-import com.paypal.core.credential.ThirdPartyAuthorization;
 import com.paypal.core.credential.SignatureCredential;
+import com.paypal.core.credential.ThirdPartyAuthorization;
 import com.paypal.core.credential.TokenAuthorization;
 import com.paypal.exception.InvalidCredentialException;
 import com.paypal.exception.MissingCredentialException;
@@ -18,10 +21,16 @@ import com.paypal.sdk.exceptions.OAuthException;
 
 /**
  * <code>SOAPAPICallPreHandler</code> is an implementation of
- * {@link APICallPreHandler} for SOAP based API service
+ * {@link APICallPreHandler} for SOAP based API service. This serves as a
+ * decorator over a basic {@link APICallPreHandler}
  * 
  */
 public class SOAPAPICallPreHandler implements APICallPreHandler {
+
+	/**
+	 * Pattern for Message Formatting
+	 */
+	private static final Pattern pattern = Pattern.compile("(['])");
 
 	/**
 	 * Service Name
@@ -58,26 +67,54 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 	 */
 	private String tokenSecret;
 
-	// Private Constructor
-	private SOAPAPICallPreHandler(String serviceName, String rawPayLoad,
-			String method) {
+	/**
+	 * {@link APICallPreHandler} instance
+	 */
+	private APICallPreHandler apiCallHandler;
+
+	/*
+	 * Private Constructor
+	 */
+	private SOAPAPICallPreHandler(APICallPreHandler apiCallHandler) {
 		super();
-		this.serviceName = serviceName;
-		this.rawPayLoad = rawPayLoad;
-		this.method = method;
+		this.apiCallHandler = apiCallHandler;
+		DefaultSOAPAPICallHandler defaultHandler = (DefaultSOAPAPICallHandler) apiCallHandler;
+		this.serviceName = defaultHandler.getServiceName();
+		this.rawPayLoad = defaultHandler.getPayLoad();
+		this.method = defaultHandler.getMethod();
 	}
 
-	public SOAPAPICallPreHandler(String serviceName, String rawPayLoad,
-			String method, String apiUserName)
-			throws InvalidCredentialException, MissingCredentialException {
-		this(serviceName, rawPayLoad, method);
+	/**
+	 * SOAPAPICallPreHandler decorating basic {@link APICallPreHandler} using
+	 * API Username
+	 * 
+	 * @param apiCallHandler
+	 *            Instance of {@link APICallPreHandler}
+	 * @param apiUserName
+	 *            API Username
+	 * @throws InvalidCredentialException
+	 * @throws MissingCredentialException
+	 */
+	public SOAPAPICallPreHandler(APICallPreHandler apiCallHandler,
+			String apiUserName) throws InvalidCredentialException,
+			MissingCredentialException {
+		this(apiCallHandler);
 		this.apiUserName = apiUserName;
 		initCredential();
 	}
 
-	public SOAPAPICallPreHandler(String serviceName, String rawPayLoad,
-			String method, ICredential credential) {
-		this(serviceName, rawPayLoad, method);
+	/**
+	 * SOAPAPICallPreHandler decorating basic {@link APICallPreHandler} using
+	 * {@link ICredential}
+	 * 
+	 * @param apiCallHandler
+	 *            Instance of {@link APICallPreHandler}
+	 * @param credential
+	 *            Instance of {@link ICredential}
+	 */
+	public SOAPAPICallPreHandler(APICallPreHandler apiCallHandler,
+			ICredential credential) {
+		this(apiCallHandler);
 		if (credential == null) {
 			throw new IllegalArgumentException(
 					"Credential is null in SOAPAPICallPreHandler");
@@ -86,7 +123,7 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 	}
 
 	public Map<String, String> getHeader() throws OAuthException {
-		Map<String, String> headerMap = new HashMap<String, String>();
+		Map<String, String> headerMap = apiCallHandler.getHeader();
 		if (credential instanceof SignatureCredential) {
 			SignatureHttpHeaderAuthStrategy signatureHttpHeaderAuthStrategy = new SignatureHttpHeaderAuthStrategy(
 					getEndPoint());
@@ -103,54 +140,61 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 	}
 
 	public String getPayLoad() {
-		
+
 		// This method appends SOAP Headers to payload
 		// if the credentials mandate soap headers
-		String payLoad = null;
-		String headerPart = null;
+		String payLoad = apiCallHandler.getPayLoad();
+		String header = null;
 		if (credential instanceof SignatureCredential) {
 			SignatureCredential sigCredential = (SignatureCredential) credential;
 			SignatureSOAPHeaderAuthStrategy signatureSoapHeaderAuthStrategy = new SignatureSOAPHeaderAuthStrategy();
 			signatureSoapHeaderAuthStrategy
 					.setThirdPartyAuthorization(sigCredential
 							.getThirdPartyAuthorization());
-			headerPart = signatureSoapHeaderAuthStrategy.realize(sigCredential);
+			header = signatureSoapHeaderAuthStrategy.realize(sigCredential);
 		} else if (credential instanceof CertificateCredential) {
 			CertificateCredential certCredential = (CertificateCredential) credential;
 			CertificateSOAPHeaderAuthStrategy certificateSoapHeaderAuthStrategy = new CertificateSOAPHeaderAuthStrategy();
 			certificateSoapHeaderAuthStrategy
 					.setThirdPartyAuthorization(certCredential
 							.getThirdPartyAuthorization());
-			headerPart = certificateSoapHeaderAuthStrategy.realize(certCredential);
+			header = certificateSoapHeaderAuthStrategy.realize(certCredential);
 
 		}
-		payLoad = getPayLoadUsingSOAPHeader(headerPart);
+		payLoad = getPayLoadUsingSOAPHeader(payLoad, getNamespaces(), header);
 		return payLoad;
 	}
 
 	public String getEndPoint() {
-		return ConfigManager.getInstance().getValue("service.EndPoint")
-				+ serviceName + '/' + method;
+		return apiCallHandler.getEndPoint() + serviceName + "/" + method;
 	}
 
 	public ICredential getCredential() {
 		return credential;
 	}
 
+	/**
+	 * Set Access Token used for Token Authorization
+	 * 
+	 * @param accessToken
+	 *            Access Token
+	 */
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}
 
+	/**
+	 * Set Token Secret used for Token Authorization
+	 * 
+	 * @param tokenSecret
+	 *            Token Secret
+	 */
 	public void setTokenSecret(String tokenSecret) {
 		this.tokenSecret = tokenSecret;
 	}
 
-	/**
+	/*
 	 * Returns a credential as configured in the application configuration
-	 * 
-	 * @return ICredential
-	 * @throws InvalidCredentialException
-	 * @throws MissingCredentialException
 	 */
 	private ICredential getCredentials() throws InvalidCredentialException,
 			MissingCredentialException {
@@ -170,13 +214,12 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 				CertificateCredential certCred = (CertificateCredential) returnCredential;
 				certCred.setThirdPartyAuthorization(tokenAuth);
 			}
-		} 
+		}
 		return returnCredential;
 	}
 
-	/**
+	/*
 	 * Returns default HTTP headers used in SOAP call
-	 * @return Map of HTTP headers
 	 */
 	private Map<String, String> getDefaultHttpHeadersSOAP() {
 		Map<String, String> returnMap = new HashMap<String, String>();
@@ -190,6 +233,9 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 		return returnMap;
 	}
 
+	/*
+	 * Initialize {@link ICredential}
+	 */
 	private void initCredential() throws InvalidCredentialException,
 			MissingCredentialException {
 		if (credential == null) {
@@ -197,29 +243,37 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 		}
 	}
 
-	private String getSoapEnvelopeStart() {
-		return "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:ebay:api:PayPalAPI\" xmlns:ebl=\"urn:ebay:apis:eBLBaseComponents\" xmlns:cc=\"urn:ebay:apis:CoreComponentTypes\" xmlns:ed=\"urn:ebay:apis:EnhancedDataTypes\">";
+	/*
+	 * Gets Namespace specific to PayPal APIs
+	 */
+	private String getNamespaces() {
+		String namespace = "xmlns:ns=\"urn:ebay:api:PayPalAPI\" xmlns:ebl=\"urn:ebay:apis:eBLBaseComponents\" xmlns:cc=\"urn:ebay:apis:CoreComponentTypes\" xmlns:ed=\"urn:ebay:apis:EnhancedDataTypes\"";
+		return namespace;
 	}
 
-	private String getSoapEnvelopeEnd() {
-		return "</soapenv:Envelope>";
+	/*
+	 * Returns Payload after decoration
+	 */
+	private String getPayLoadUsingSOAPHeader(String payLoad, String namespace,
+			String header) {
+		String returnPayLoad = null;
+		String formattedPayLoad = processPayLoadForFormatting(payLoad);
+		returnPayLoad = MessageFormat.format(formattedPayLoad, new Object[] {
+				namespace, header });
+		return returnPayLoad;
 	}
 
-	private String getSoapBody() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("<soapenv:Body>");
-		stringBuilder.append(rawPayLoad);
-		stringBuilder.append("</soapenv:Body>");
-		return stringBuilder.toString();
-	}
-	
-	private String getPayLoadUsingSOAPHeader(String headerPart) {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(getSoapEnvelopeStart());
-		stringBuilder.append(headerPart);
-		stringBuilder.append(getSoapBody());
-		stringBuilder.append(getSoapEnvelopeEnd());
-		return stringBuilder.toString();
+	/*
+	 * Process the payload before using message formatting
+	 */
+	private String processPayLoadForFormatting(String payLoad) {
+		Matcher match = pattern.matcher(payLoad);
+		StringBuffer sb = new StringBuffer();
+		while (match.find()) {
+			match.appendReplacement(sb, "'" + match.group());
+		}
+		match.appendTail(sb);
+		return sb.toString();
 	}
 
 }

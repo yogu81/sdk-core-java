@@ -2,10 +2,8 @@ package com.paypal.core;
 
 import java.util.Map;
 
-import com.paypal.exception.InvalidCredentialException;
-import com.paypal.exception.MissingCredentialException;
-import com.paypal.sdk.exceptions.OAuthException;
 import com.paypal.core.credential.ICredential;
+import com.paypal.sdk.exceptions.OAuthException;
 
 /**
  * <code>APICallPreHandler</code> defines a high level abstraction for call
@@ -18,12 +16,9 @@ public interface APICallPreHandler {
 	 * Returns headers for HTTP call
 	 * 
 	 * @return Map of headers with name and value
-	 * @throws InvalidCredentialException
-	 * @throws MissingCredentialException
 	 * @throws OAuthException
 	 */
-	Map<String, String> getHeader() throws InvalidCredentialException,
-			MissingCredentialException, OAuthException;
+	Map<String, String> getHeader() throws OAuthException;
 
 	/**
 	 * Returns the payload for the API call. The implementation should take care

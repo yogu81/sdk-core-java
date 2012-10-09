@@ -96,12 +96,8 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 		this.credential = credential;
 	}
 
-	public Map<String, String> getHeader() throws InvalidCredentialException,
-			MissingCredentialException, OAuthException {
+	public Map<String, String> getHeader() throws OAuthException {
 		Map<String, String> headerMap = new HashMap<String, String>();
-		if (credential == null) {
-			credential = getCredentials();
-		}
 		if (credential instanceof SignatureCredential) {
 			SignatureHttpHeaderAuthStrategy signatureHttpHeaderAuthStrategy = new SignatureHttpHeaderAuthStrategy(
 					getEndPoint());
