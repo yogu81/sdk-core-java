@@ -108,6 +108,7 @@ public class APIService {
 		httpConfiguration.setEndPointUrl(url);
 		headers = apiCallPreHandler.getHeader();
 		String payLoad = apiCallPreHandler.getPayLoad();
+		LoggingManager.info(APIService.class, payLoad);
 		if (apiCallPreHandler.getCredential() instanceof CertificateCredential) {
 			CertificateCredential credential = (CertificateCredential) apiCallPreHandler
 					.getCredential();

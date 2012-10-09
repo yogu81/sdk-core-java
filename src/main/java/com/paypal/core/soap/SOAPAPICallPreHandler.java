@@ -33,14 +33,9 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 	private static final Pattern REGEX_PATTERN = Pattern.compile("(['])");
 
 	/**
-	 * Service Name
+	 * Raw payload from stubs
 	 */
-	private final String serviceName;
-
-	/**
-	 * API method
-	 */
-	private final String method;
+	private final String rawPayLoad;
 
 	/**
 	 * API Username for authentication
@@ -74,8 +69,7 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 		super();
 		this.apiCallHandler = apiCallHandler;
 		DefaultSOAPAPICallHandler defaultHandler = (DefaultSOAPAPICallHandler) apiCallHandler;
-		this.serviceName = defaultHandler.getServiceName();
-		this.method = defaultHandler.getMethod();
+		this.rawPayLoad = defaultHandler.getPayLoad();
 	}
 
 	/**
@@ -86,14 +80,20 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 	 *            Instance of {@link APICallPreHandler}
 	 * @param apiUserName
 	 *            API Username
+	 * @param accessToken
+	 *            Access Token
+	 * @param tokenSecret
+	 *            Token Secret
 	 * @throws InvalidCredentialException
 	 * @throws MissingCredentialException
 	 */
 	public SOAPAPICallPreHandler(APICallPreHandler apiCallHandler,
-			String apiUserName) throws InvalidCredentialException,
+			String apiUserName, String accessToken, String tokenSecret) throws InvalidCredentialException,
 			MissingCredentialException {
 		this(apiCallHandler);
 		this.apiUserName = apiUserName;
+		this.accessToken = accessToken;
+		this.tokenSecret = tokenSecret;
 		initCredential();
 	}
 
@@ -160,31 +160,11 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 	}
 
 	public String getEndPoint() {
-		return apiCallHandler.getEndPoint() + serviceName + "/" + method;
+		return apiCallHandler.getEndPoint();
 	}
 
 	public ICredential getCredential() {
 		return credential;
-	}
-
-	/**
-	 * Set Access Token used for Token Authorization
-	 * 
-	 * @param accessToken
-	 *            Access Token
-	 */
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
-	}
-
-	/**
-	 * Set Token Secret used for Token Authorization
-	 * 
-	 * @param tokenSecret
-	 *            Token Secret
-	 */
-	public void setTokenSecret(String tokenSecret) {
-		this.tokenSecret = tokenSecret;
 	}
 
 	/*
@@ -195,7 +175,7 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 		ICredential returnCredential = null;
 		CredentialManager credentialManager = CredentialManager.getInstance();
 		returnCredential = credentialManager.getCredentialObject(apiUserName);
-		if (accessToken != null && !accessToken.isEmpty()) {
+		if (accessToken != null && accessToken.length() > 0) {
 
 			// Set third party authorization to token
 			// if token is sent as part of request call
@@ -227,7 +207,7 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 		return returnMap;
 	}
 
-	/**
+	/*
 	 * Initialize {@link ICredential}
 	 */
 	private void initCredential() throws InvalidCredentialException,

@@ -44,10 +44,10 @@ public class CertificateSOAPHeaderAuthStrategy implements
 		if (thirdPartyAuthorization instanceof TokenAuthorization) {
 			payLoad = tokenAuthPayLoad();
 		} else if (thirdPartyAuthorization instanceof SubjectAuthorization) {
-			authPayLoad(credential,
+			payLoad = authPayLoad(credential,
 					(SubjectAuthorization) thirdPartyAuthorization);
 		} else {
-			authPayLoad(credential, null);
+			payLoad = authPayLoad(credential, null);
 		}
 		return payLoad;
 	}
@@ -59,20 +59,15 @@ public class CertificateSOAPHeaderAuthStrategy implements
 	 * @return
 	 */
 	private String tokenAuthPayLoad() {
-		String payLoad = null;
 		StringBuilder soapMsg = new StringBuilder();
-		soapMsg.append("<soapenv:Header>");
-		soapMsg.append("<urn:RequesterCredentials/>");
-		soapMsg.append("</soapenv:Header>");
-		return payLoad;
+		soapMsg.append("<ns:RequesterCredentials/>");
+		return soapMsg.toString();
 	}
 
 	private String authPayLoad(CertificateCredential credential,
 			SubjectAuthorization subjectAuth) {
-		String payLoad = null;
 		StringBuilder soapMsg = new StringBuilder();
-		soapMsg.append("<soapenv:Header>");
-		soapMsg.append("<urn:RequesterCredentials>");
+		soapMsg.append("<ns:RequesterCredentials>");
 		soapMsg.append("<ebl:Credentials>");
 		soapMsg.append("<ebl:Username>" + credential.getUserName()
 				+ "</ebl:Username>");
@@ -85,9 +80,8 @@ public class CertificateSOAPHeaderAuthStrategy implements
 					+ "</ebl:Subject>");
 		}
 		soapMsg.append("</ebl:Credentials>");
-		soapMsg.append("</urn:RequesterCredentials>");
-		soapMsg.append("</soapenv:Header>");
-		return payLoad;
+		soapMsg.append("</ns:RequesterCredentials>");
+		return soapMsg.toString();
 	}
 
 }

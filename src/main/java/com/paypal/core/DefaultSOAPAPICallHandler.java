@@ -47,19 +47,9 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	private static final String SOAP_BODY_END = "</soapenv:Body>";
 
 	/**
-	 * Service Name
-	 */
-	private String serviceName;
-
-	/**
 	 * Raw payload from stubs
 	 */
 	private String rawPayLoad;
-
-	/**
-	 * API method
-	 */
-	private String method;
 
 	/**
 	 * Header element as String
@@ -102,28 +92,10 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	}
 
 	/**
-	 * @return the serviceName
-	 */
-	public String getServiceName() {
-		return serviceName;
-	}
-
-	/**
-	 * @return the method
-	 */
-	public String getMethod() {
-		return method;
-	}
-
-	/**
 	 * DefaultSOAPAPICallHandler acts as the base SOAPAPICallHandler.
 	 * 
-	 * @param serviceName
-	 *            Service Name
 	 * @param rawPayLoad
 	 *            Raw SOAP payload that goes into SOAP:BODY
-	 * @param method
-	 *            Method Name
 	 * @param namespaces
 	 *            Namespace attributes that should be appended to SOAP:ENVELOPE,
 	 *            this argument can take any valid String value, empty String or
@@ -135,12 +107,10 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	 *            NULL. If the value is NULL {1} value is sandwiched between
 	 *            SOAP:HEADER element that can be used for decorating purpose
 	 */
-	public DefaultSOAPAPICallHandler(String serviceName, String rawPayLoad,
-			String method, String namespaces, String headerString) {
+	public DefaultSOAPAPICallHandler(String rawPayLoad, String namespaces,
+			String headerString) {
 		super();
-		this.serviceName = serviceName;
 		this.rawPayLoad = rawPayLoad;
-		this.method = method;
 		this.namespaces = namespaces;
 		this.headerString = headerString;
 	}
@@ -216,7 +186,7 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	// TODO remove
 	public static void main(String[] args) {
 		DefaultSOAPAPICallHandler handler = new DefaultSOAPAPICallHandler(
-				"serviceName", "Payload", "method",
+				"Payload", 
 				"xmlns:urn=\"urn:ebay:api:PayPalAPI\"", "<my>test</my>");
 		System.out.println(handler.getPayLoad());
 	}

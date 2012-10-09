@@ -22,6 +22,16 @@ import com.paypal.sdk.exceptions.OAuthException;
  * 
  */
 public class NVPAPICallPreHandler implements APICallPreHandler {
+	
+	/**
+	 * Service Name
+	 */
+	private final String serviceName;
+	
+	/**
+	 * API method
+	 */
+	private final String method;
 
 	/**
 	 * Raw payload from stubs
@@ -49,9 +59,11 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	private String tokenSecret;
 
 	// Private Constructor
-	private NVPAPICallPreHandler(String rawPayLoad) {
+	private NVPAPICallPreHandler(String rawPayLoad, String serviceName, String method) {
 		super();
 		this.rawPayLoad = rawPayLoad;
+		this.serviceName = serviceName;
+		this.method = method;
 	}
 
 	/**
@@ -68,9 +80,9 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	 * @throws MissingCredentialException
 	 * @throws InvalidCredentialException
 	 */
-	public NVPAPICallPreHandler(String rawPayLoad, String apiUserName)
+	public NVPAPICallPreHandler(String rawPayLoad, String serviceName, String method, String apiUserName)
 			throws InvalidCredentialException, MissingCredentialException {
-		this(rawPayLoad);
+		this(rawPayLoad, serviceName, method);
 		this.apiUserName = apiUserName;
 		initCredential();
 	}
@@ -87,8 +99,8 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	 * @param credential
 	 *            {@link ICredential} instance
 	 */
-	public NVPAPICallPreHandler(String rawPayLoad, ICredential credential) {
-		this(rawPayLoad);
+	public NVPAPICallPreHandler(String rawPayLoad, String serviceName, String method, ICredential credential) {
+		this(rawPayLoad, serviceName, method);
 		if (credential == null) {
 			throw new IllegalArgumentException(
 					"Credential is null in NVPAPICallPreHandler");
@@ -119,7 +131,7 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	}
 
 	public String getEndPoint() {
-		return ConfigManager.getInstance().getValue(Constants.END_POINT);
+		return ConfigManager.getInstance().getValue(Constants.END_POINT) + "/" + serviceName + "/" + method;
 	}
 
 	public ICredential getCredential() {
