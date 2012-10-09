@@ -141,7 +141,7 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	}
 
 	public String getEndPoint() {
-		return ConfigManager.getInstance().getValue(Constants.END_POINT) + "/"
+		return ConfigManager.getInstance().getValue(Constants.END_POINT) 
 				+ serviceName + "/" + method;
 	}
 
