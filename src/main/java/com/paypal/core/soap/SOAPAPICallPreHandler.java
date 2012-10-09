@@ -30,17 +30,12 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 	/**
 	 * Pattern for Message Formatting
 	 */
-	private static final Pattern pattern = Pattern.compile("(['])");
+	private static final Pattern REGEX_PATTERN = Pattern.compile("(['])");
 
 	/**
 	 * Service Name
 	 */
 	private final String serviceName;
-
-	/**
-	 * Raw payload from stubs
-	 */
-	private final String rawPayLoad;
 
 	/**
 	 * API method
@@ -80,7 +75,6 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 		this.apiCallHandler = apiCallHandler;
 		DefaultSOAPAPICallHandler defaultHandler = (DefaultSOAPAPICallHandler) apiCallHandler;
 		this.serviceName = defaultHandler.getServiceName();
-		this.rawPayLoad = defaultHandler.getPayLoad();
 		this.method = defaultHandler.getMethod();
 	}
 
@@ -233,7 +227,7 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 		return returnMap;
 	}
 
-	/*
+	/**
 	 * Initialize {@link ICredential}
 	 */
 	private void initCredential() throws InvalidCredentialException,
@@ -267,7 +261,7 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 	 * Process the payload before using message formatting
 	 */
 	private String processPayLoadForFormatting(String payLoad) {
-		Matcher match = pattern.matcher(payLoad);
+		Matcher match = REGEX_PATTERN.matcher(payLoad);
 		StringBuffer sb = new StringBuffer();
 		while (match.find()) {
 			match.appendReplacement(sb, "'" + match.group());

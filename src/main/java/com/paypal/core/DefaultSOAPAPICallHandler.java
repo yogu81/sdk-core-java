@@ -146,8 +146,7 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	}
 
 	public Map<String, String> getHeader() {
-		Map<String, String> headers = new HashMap<String, String>();
-		return headers;
+		return new HashMap<String, String>();
 	}
 
 	public String getPayLoad() {
@@ -214,7 +213,7 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 		return SOAP_BODY_END;
 	}
 
-	//TODO remove
+	// TODO remove
 	public static void main(String[] args) {
 		DefaultSOAPAPICallHandler handler = new DefaultSOAPAPICallHandler(
 				"serviceName", "Payload", "method",
