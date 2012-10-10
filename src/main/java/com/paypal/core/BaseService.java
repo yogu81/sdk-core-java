@@ -21,22 +21,6 @@ import com.paypal.sdk.exceptions.OAuthException;
 public abstract class BaseService {
 
 	/**
-	 * Service Name
-	 */
-	private final String serviceName;
-
-	/**
-	 * Service version
-	 */
-	private final String version;
-
-	/**
-	 * Service Type, internal code to differentiate PayPal API service as
-	 * MERCHANT(soap based) or PLATFORM(nvp)
-	 */
-	private final String serviceType;
-
-	/**
 	 * Access Token used in third party authorization
 	 */
 	private String accessToken = null;
@@ -116,42 +100,7 @@ public abstract class BaseService {
 		this.lastResponse = lastResponse;
 	}
 
-	/**
-	 * @return the serviceName
-	 */
-	public String getServiceName() {
-		return serviceName;
-	}
-
-	/**
-	 * @return the version
-	 */
-	public String getVersion() {
-		return version;
-	}
 	
-	/**
-	 * @return the serviceType
-	 */
-	public String getServiceType() {
-		return serviceType;
-	}
-
-	/**
-	 * BaseService
-	 * 
-	 * @param serviceName
-	 *            Service Name
-	 * @param version
-	 *            Service version
-	 * @param serviceType
-	 *            ServiceType (MERCHANT/PLATFORM)
-	 */
-	public BaseService(String serviceName, String version, String serviceType) {
-		this.serviceName = serviceName;
-		this.version = version;
-		this.serviceType = serviceType;
-	}
 
 	/**
 	 * overloaded static method used to load the configuration file.
@@ -225,7 +174,7 @@ public abstract class BaseService {
 		if (!ConfigManager.getInstance().isPropertyLoaded()) {
 			throw new FileNotFoundException("Property file not loaded");
 		}
-		APIService apiService = new APIService(serviceName);
+		APIService apiService = new APIService();
 		lastRequest = apiCallPrehandler.getPayLoad();
 		String response = apiService.makeRequestUsing(apiCallPrehandler);
 		lastResponse = response;

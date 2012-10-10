@@ -19,11 +19,6 @@ import com.paypal.sdk.exceptions.OAuthException;
 public class APIService {
 
 	/**
-	 * Service Name
-	 */
-	private String serviceName;
-
-	/**
 	 * Service Endpoint
 	 */
 	private String endPoint;
@@ -46,8 +41,7 @@ public class APIService {
 	 * @throws SSLConfigurationException
 	 * @throws NumberFormatException
 	 */
-	public APIService(String serviceName) {
-		this.serviceName = serviceName;
+	public APIService() {
 		config = ConfigManager.getInstance();
 		endPoint = config.getValue(Constants.END_POINT);
 		httpConfiguration.setGoogleAppEngine(Boolean.parseBoolean(config
@@ -123,10 +117,7 @@ public class APIService {
 		return response;
 	}
 
-	public String getServiceName() {
-		return serviceName;
-	}
-
+	
 	public String getEndPoint() {
 		return endPoint;
 	}
