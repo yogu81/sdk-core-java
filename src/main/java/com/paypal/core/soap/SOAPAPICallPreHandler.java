@@ -33,11 +33,6 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 	private static final Pattern REGEX_PATTERN = Pattern.compile("(['])");
 
 	/**
-	 * Raw payload from stubs
-	 */
-	private final String rawPayLoad;
-
-	/**
 	 * API Username for authentication
 	 */
 	private String apiUserName;
@@ -61,6 +56,26 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 	 * {@link APICallPreHandler} instance
 	 */
 	private APICallPreHandler apiCallHandler;
+	
+	/**
+	 * SDK Name used in tracking
+	 */
+	private String sdkName;
+
+	/**
+	 * SDK Version
+	 */
+	private String sdkVersion;
+
+	/**
+	 * Internal variable to hold headers
+	 */
+	private Map<String, String> headers;
+
+	/**
+	 * Internal variable to hold payload
+	 */
+	private String payLoad;
 
 	/*
 	 * Private Constructor
@@ -68,8 +83,6 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 	private SOAPAPICallPreHandler(APICallPreHandler apiCallHandler) {
 		super();
 		this.apiCallHandler = apiCallHandler;
-		DefaultSOAPAPICallHandler defaultHandler = (DefaultSOAPAPICallHandler) apiCallHandler;
-		this.rawPayLoad = defaultHandler.getPayLoad();
 	}
 
 	/**
@@ -88,8 +101,8 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 	 * @throws MissingCredentialException
 	 */
 	public SOAPAPICallPreHandler(APICallPreHandler apiCallHandler,
-			String apiUserName, String accessToken, String tokenSecret) throws InvalidCredentialException,
-			MissingCredentialException {
+			String apiUserName, String accessToken, String tokenSecret)
+			throws InvalidCredentialException, MissingCredentialException {
 		this(apiCallHandler);
 		this.apiUserName = apiUserName;
 		this.accessToken = accessToken;
@@ -115,47 +128,83 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 		}
 		this.credential = credential;
 	}
+	
+	/**
+	 * @return the sdkName
+	 */
+	public String getSdkName() {
+		return sdkName;
+	}
 
-	public Map<String, String> getHeader() throws OAuthException {
-		Map<String, String> headerMap = apiCallHandler.getHeader();
-		if (credential instanceof SignatureCredential) {
-			SignatureHttpHeaderAuthStrategy signatureHttpHeaderAuthStrategy = new SignatureHttpHeaderAuthStrategy(
-					getEndPoint());
-			headerMap = signatureHttpHeaderAuthStrategy
-					.realize((SignatureCredential) credential);
-		} else if (credential instanceof CertificateCredential) {
-			CertificateHttpHeaderAuthStrategy certificateHttpHeaderAuthStrategy = new CertificateHttpHeaderAuthStrategy(
-					getEndPoint());
-			headerMap = certificateHttpHeaderAuthStrategy
-					.realize((CertificateCredential) credential);
+	/**
+	 * @param sdkName
+	 *            the sdkName to set
+	 */
+	public void setSdkName(String sdkName) {
+		this.sdkName = sdkName;
+	}
+
+	/**
+	 * @return the sdkVersion
+	 */
+	public String getSdkVersion() {
+		return sdkVersion;
+	}
+
+	/**
+	 * @param sdkVersion
+	 *            the sdkVersion to set
+	 */
+	public void setSdkVersion(String sdkVersion) {
+		this.sdkVersion = sdkVersion;
+	}
+
+	public Map<String, String> getHeaderMap() throws OAuthException {
+		if (headers == null) {
+			headers = apiCallHandler.getHeaderMap();
+			if (credential instanceof SignatureCredential) {
+				SignatureHttpHeaderAuthStrategy signatureHttpHeaderAuthStrategy = new SignatureHttpHeaderAuthStrategy(
+						getEndPoint());
+				headers = signatureHttpHeaderAuthStrategy
+						.generateHeaderStrategy((SignatureCredential) credential);
+			} else if (credential instanceof CertificateCredential) {
+				CertificateHttpHeaderAuthStrategy certificateHttpHeaderAuthStrategy = new CertificateHttpHeaderAuthStrategy(
+						getEndPoint());
+				headers = certificateHttpHeaderAuthStrategy
+						.generateHeaderStrategy((CertificateCredential) credential);
+			}
+			headers.putAll(getDefaultHttpHeadersSOAP());
 		}
-		headerMap.putAll(getDefaultHttpHeadersSOAP());
-		return headerMap;
+		return headers;
 	}
 
 	public String getPayLoad() {
 
 		// This method appends SOAP Headers to payload
 		// if the credentials mandate soap headers
-		String payLoad = apiCallHandler.getPayLoad();
-		String header = null;
-		if (credential instanceof SignatureCredential) {
-			SignatureCredential sigCredential = (SignatureCredential) credential;
-			SignatureSOAPHeaderAuthStrategy signatureSoapHeaderAuthStrategy = new SignatureSOAPHeaderAuthStrategy();
-			signatureSoapHeaderAuthStrategy
-					.setThirdPartyAuthorization(sigCredential
-							.getThirdPartyAuthorization());
-			header = signatureSoapHeaderAuthStrategy.realize(sigCredential);
-		} else if (credential instanceof CertificateCredential) {
-			CertificateCredential certCredential = (CertificateCredential) credential;
-			CertificateSOAPHeaderAuthStrategy certificateSoapHeaderAuthStrategy = new CertificateSOAPHeaderAuthStrategy();
-			certificateSoapHeaderAuthStrategy
-					.setThirdPartyAuthorization(certCredential
-							.getThirdPartyAuthorization());
-			header = certificateSoapHeaderAuthStrategy.realize(certCredential);
+		if (payLoad == null) {
+			payLoad = apiCallHandler.getPayLoad();
+			String header = null;
+			if (credential instanceof SignatureCredential) {
+				SignatureCredential sigCredential = (SignatureCredential) credential;
+				SignatureSOAPHeaderAuthStrategy signatureSoapHeaderAuthStrategy = new SignatureSOAPHeaderAuthStrategy();
+				signatureSoapHeaderAuthStrategy
+						.setThirdPartyAuthorization(sigCredential
+								.getThirdPartyAuthorization());
+				header = signatureSoapHeaderAuthStrategy.generateHeaderStrategy(sigCredential);
+			} else if (credential instanceof CertificateCredential) {
+				CertificateCredential certCredential = (CertificateCredential) credential;
+				CertificateSOAPHeaderAuthStrategy certificateSoapHeaderAuthStrategy = new CertificateSOAPHeaderAuthStrategy();
+				certificateSoapHeaderAuthStrategy
+						.setThirdPartyAuthorization(certCredential
+								.getThirdPartyAuthorization());
+				header = certificateSoapHeaderAuthStrategy
+						.generateHeaderStrategy(certCredential);
 
+			}
+			payLoad = getPayLoadUsingSOAPHeader(payLoad, getNamespaces(),
+					header);
 		}
-		payLoad = getPayLoadUsingSOAPHeader(payLoad, getNamespaces(), header);
 		return payLoad;
 	}
 
@@ -199,11 +248,8 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 		Map<String, String> returnMap = new HashMap<String, String>();
 		returnMap.put(Constants.PAYPAL_REQUEST_DATA_FORMAT_HEADER, "SOAP");
 		returnMap.put(Constants.PAYPAL_RESPONSE_DATA_FORMAT_HEADER, "SOAP");
-		// returnMap.put("X-PAYPAL-DEVICE-IPADDRESS",
-		// httpConfiguration.getIpAddress());
-		// TODO revisit
-		returnMap.put("X-PAYPAL-REQUEST-SOURCE", Constants.SDK_NAME + "-"
-				+ Constants.SDK_VERSION);
+		returnMap.put("X-PAYPAL-REQUEST-SOURCE", sdkName + "-"
+				+ sdkVersion);
 		return returnMap;
 	}
 

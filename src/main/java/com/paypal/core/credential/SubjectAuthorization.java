@@ -1,10 +1,9 @@
 package com.paypal.core.credential;
 
-
 /**
- * SubjectAuthorization encapsulates third party subject authorization.
- * Subject Authorization caters to SOAP APIs only
- *
+ * SubjectAuthorization encapsulates third party subject authorization. Subject
+ * Authorization caters to MERCHANT APIs only
+ * 
  */
 public class SubjectAuthorization implements ThirdPartyAuthorization {
 
@@ -14,12 +13,16 @@ public class SubjectAuthorization implements ThirdPartyAuthorization {
 	private String subject;
 
 	/**
+	 * Subject based third party authorization used for MERCHANT APIs
+	 * 
 	 * @param subject
+	 *            Subject string
 	 */
 	public SubjectAuthorization(String subject) {
 		super();
 		if (subject == null || subject.length() == 0) {
-			throw new IllegalArgumentException("Subject is null or empty in SubjectAuthorization");
+			throw new IllegalArgumentException(
+					"Subject is null or empty in SubjectAuthorization");
 		}
 		this.subject = subject;
 	}
@@ -29,14 +32,6 @@ public class SubjectAuthorization implements ThirdPartyAuthorization {
 	 */
 	public String getSubject() {
 		return subject;
-	}
-
-	/**
-	 * @param subject
-	 *            the subject to set
-	 */
-	public void setSubject(String subject) {
-		this.subject = subject;
 	}
 
 }

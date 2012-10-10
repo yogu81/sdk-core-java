@@ -115,7 +115,7 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 		this.headerString = headerString;
 	}
 
-	public Map<String, String> getHeader() {
+	public Map<String, String> getHeaderMap() {
 		return new HashMap<String, String>();
 	}
 

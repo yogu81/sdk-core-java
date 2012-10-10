@@ -1,9 +1,9 @@
 package com.paypal.core.credential;
 
 /**
- * <code>SignatureCredential</code> encapsulates signature credential information 
- * used by service authentication systems
- *
+ * <code>SignatureCredential</code> encapsulates signature credential
+ * information used by service authentication systems
+ * 
  */
 public class SignatureCredential implements ICredential {
 
@@ -32,9 +32,28 @@ public class SignatureCredential implements ICredential {
 	 */
 	private ThirdPartyAuthorization thirdPartyAuthorization;
 
+	/**
+	 * Signature Credential
+	 * 
+	 * @param userName
+	 *            UserName
+	 * @param password
+	 *            Password
+	 * @param applicationId
+	 *            Application ID used for PLATFORM APIs, it will be ignored in
+	 *            case of MERCHANT APIs
+	 * @param signature
+	 *            Signature
+	 */
 	public SignatureCredential(String userName, String password,
 			String applicationId, String signature) {
 		super();
+		if (userName == null || userName.length() == 0 || password == null
+				|| password.length() == 0 || signature == null
+				|| signature.length() == 0) {
+			throw new IllegalArgumentException(
+					"SignatureCredential arguments cannot be empty or null");
+		}
 		this.userName = userName;
 		this.password = password;
 		this.applicationId = applicationId;
@@ -42,11 +61,18 @@ public class SignatureCredential implements ICredential {
 	}
 
 	/**
+	 * Signature Credential
+	 * 
 	 * @param userName
+	 *            UserName
 	 * @param password
+	 *            Password
 	 * @param applicationId
+	 *            Application ID used for PLATFORM APIs
 	 * @param signature
+	 *            Signature
 	 * @param thirdPartyAuthorization
+	 *            {@link ThirdPartyAuthorization} instance
 	 */
 	public SignatureCredential(String userName, String password,
 			String applicationId, String signature,
@@ -63,7 +89,8 @@ public class SignatureCredential implements ICredential {
 	}
 
 	/**
-	 * @param applicationId the applicationId to set
+	 * @param applicationId
+	 *            the applicationId to set, ignored for MERCHANT APIs
 	 */
 	public void setApplicationId(String applicationId) {
 		this.applicationId = applicationId;
@@ -77,8 +104,12 @@ public class SignatureCredential implements ICredential {
 	}
 
 	/**
-	 * Sets any instance of {@link ThirdPartyAuthorization}.
-	 * @param thirdPartyAuthorization the thirdPartyAuthorization to set
+	 * Sets any instance of {@link ThirdPartyAuthorization}. Can be an Instance
+	 * of {@link TokenAuthorization} or {@link SubjectAuthorization}.
+	 * {@link SubjectAuthorization} is used in MERCHANT APIs
+	 * 
+	 * @param thirdPartyAuthorization
+	 *            the thirdPartyAuthorization to set
 	 */
 	public void setThirdPartyAuthorization(
 			ThirdPartyAuthorization thirdPartyAuthorization) {

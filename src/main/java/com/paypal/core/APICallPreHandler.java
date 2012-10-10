@@ -18,7 +18,7 @@ public interface APICallPreHandler {
 	 * @return Map of headers with name and value
 	 * @throws OAuthException
 	 */
-	Map<String, String> getHeader() throws OAuthException;
+	Map<String, String> getHeaderMap() throws OAuthException;
 
 	/**
 	 * Returns the payload for the API call. The implementation should take care

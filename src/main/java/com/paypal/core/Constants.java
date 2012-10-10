@@ -38,6 +38,9 @@ public class Constants {
 	// PayPal Request Source Header
 	public static final String PAYPAL_REQUEST_SOURCE_HEADER = "X-PAYPAL-REQUEST-SOURCE";
 	
+	// PayPal Device IP Address Header
+	public static final String PAYPAL_DEVICE_IPADDRESS = "X-PAYPAL-DEVICE-IPADDRESS";
+	
 	// Constants key defined for configuration options in application properties
 	// End point
 	public static final String END_POINT = "service.EndPoint";

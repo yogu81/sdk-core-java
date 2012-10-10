@@ -36,7 +36,7 @@ public class SignatureSOAPHeaderAuthStrategy implements
 		this.thirdPartyAuthorization = thirdPartyAuthorization;
 	}
 
-	public String realize(SignatureCredential credential) {
+	public String generateHeaderStrategy(SignatureCredential credential) {
 		String payLoad = null;
 		if (thirdPartyAuthorization instanceof TokenAuthorization) {
 			payLoad = tokenAuthPayLoad();

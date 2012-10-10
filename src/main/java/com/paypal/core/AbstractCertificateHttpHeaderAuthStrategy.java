@@ -33,7 +33,7 @@ public abstract class AbstractCertificateHttpHeaderAuthStrategy implements
 	/**
 	 * Returns {@link CertificateCredential} as HTTP headers
 	 */
-	public Map<String, String> realize(CertificateCredential credential)
+	public Map<String, String> generateHeaderStrategy(CertificateCredential credential)
 			throws OAuthException {
 		Map<String, String> headers = null;
 		if (credential.getThirdPartyAuthorization() instanceof TokenAuthorization) {

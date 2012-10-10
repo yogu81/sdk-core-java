@@ -100,7 +100,7 @@ public class APIService {
 				.getConnection(httpConfiguration);
 		String url = apiCallPreHandler.getEndPoint();
 		httpConfiguration.setEndPointUrl(url);
-		headers = apiCallPreHandler.getHeader();
+		headers = apiCallPreHandler.getHeaderMap();
 		String payLoad = apiCallPreHandler.getPayLoad();
 		LoggingManager.info(APIService.class, payLoad);
 		if (apiCallPreHandler.getCredential() instanceof CertificateCredential) {
@@ -112,6 +112,7 @@ public class APIService {
 			connection.setupClientSSL(certPath, certKey);
 		}
 		connection.createAndconfigureHttpConnection(httpConfiguration);
+		headers.put(Constants.PAYPAL_DEVICE_IPADDRESS, httpConfiguration.getIpAddress());
 		response = connection.execute(url, payLoad, headers);
 		LoggingManager.info(APIService.class, response);
 		return response;

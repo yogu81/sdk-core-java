@@ -58,6 +58,21 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 	 */
 	private String tokenSecret;
 
+	/**
+	 * SDK Name used in tracking
+	 */
+	private String sdkName;
+
+	/**
+	 * SDK Version
+	 */
+	private String sdkVersion;
+
+	/**
+	 * Internal variable to hold headers
+	 */
+	private Map<String, String> headers;
+
 	// Private Constructor
 	private NVPAPICallPreHandler(String rawPayLoad, String serviceName,
 			String method) {
@@ -118,43 +133,67 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 		this.credential = credential;
 	}
 
-	public Map<String, String> getHeader() throws OAuthException {
-		Map<String, String> headerMap = new HashMap<String, String>();
-		if (credential instanceof SignatureCredential) {
-			SignatureHttpHeaderAuthStrategy signatureHttpHeaderAuthStrategy = new SignatureHttpHeaderAuthStrategy(
-					getEndPoint());
-			headerMap = signatureHttpHeaderAuthStrategy
-					.realize((SignatureCredential) credential);
-		} else if (credential instanceof CertificateCredential) {
-			CertificateHttpHeaderAuthStrategy certificateHttpHeaderAuthStrategy = new CertificateHttpHeaderAuthStrategy(
-					getEndPoint());
-			headerMap = certificateHttpHeaderAuthStrategy
-					.realize((CertificateCredential) credential);
+	/**
+	 * @return the sdkName
+	 */
+	public String getSdkName() {
+		return sdkName;
+	}
+
+	/**
+	 * @param sdkName
+	 *            the sdkName to set
+	 */
+	public void setSdkName(String sdkName) {
+		this.sdkName = sdkName;
+	}
+
+	/**
+	 * @return the sdkVersion
+	 */
+	public String getSdkVersion() {
+		return sdkVersion;
+	}
+
+	/**
+	 * @param sdkVersion
+	 *            the sdkVersion to set
+	 */
+	public void setSdkVersion(String sdkVersion) {
+		this.sdkVersion = sdkVersion;
+	}
+
+	public Map<String, String> getHeaderMap() throws OAuthException {
+		if (headers == null) {
+			headers = new HashMap<String, String>();
+			if (credential instanceof SignatureCredential) {
+				SignatureHttpHeaderAuthStrategy signatureHttpHeaderAuthStrategy = new SignatureHttpHeaderAuthStrategy(
+						getEndPoint());
+				headers = signatureHttpHeaderAuthStrategy
+						.generateHeaderStrategy((SignatureCredential) credential);
+			} else if (credential instanceof CertificateCredential) {
+				CertificateHttpHeaderAuthStrategy certificateHttpHeaderAuthStrategy = new CertificateHttpHeaderAuthStrategy(
+						getEndPoint());
+				headers = certificateHttpHeaderAuthStrategy
+						.generateHeaderStrategy((CertificateCredential) credential);
+			}
+			headers.putAll(getDefaultHttpHeadersNVP());
 		}
-		headerMap.putAll(getDefaultHttpHeadersNVP());
-		return headerMap;
+		return headers;
 	}
 
 	public String getPayLoad() {
-		// No formating necessary for NVP return the raw payload
+		// No processing necessary for NVP return the raw payload
 		return rawPayLoad;
 	}
 
 	public String getEndPoint() {
-		return ConfigManager.getInstance().getValue(Constants.END_POINT) 
+		return ConfigManager.getInstance().getValue(Constants.END_POINT)
 				+ serviceName + "/" + method;
 	}
 
 	public ICredential getCredential() {
 		return credential;
-	}
-
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
-	}
-
-	public void setTokenSecret(String tokenSecret) {
-		this.tokenSecret = tokenSecret;
 	}
 
 	private ICredential getCredentials() throws InvalidCredentialException,
@@ -183,11 +222,8 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 				Constants.NVP);
 		returnMap.put(Constants.PAYPAL_RESPONSE_DATA_FORMAT_HEADER,
 				Constants.NVP);
-		// returnMap.put("X-PAYPAL-DEVICE-IPADDRESS",
-		// httpConfiguration.getIpAddress());
-		// TODO revisit
-		returnMap.put("X-PAYPAL-REQUEST-SOURCE", Constants.SDK_NAME + "-"
-				+ Constants.SDK_VERSION);
+		returnMap.put("X-PAYPAL-REQUEST-SOURCE", sdkName + "-"
+				+ sdkVersion);
 		return returnMap;
 	}
 

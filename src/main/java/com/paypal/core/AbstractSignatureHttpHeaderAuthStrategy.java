@@ -34,7 +34,7 @@ public abstract class AbstractSignatureHttpHeaderAuthStrategy implements
 	/**
 	 * Returns {@link CertificateCredential} as HTTP headers
 	 */
-	public Map<String, String> realize(SignatureCredential credential)
+	public Map<String, String> generateHeaderStrategy(SignatureCredential credential)
 			throws OAuthException {
 		Map<String, String> headers = null;
 		if (credential.getThirdPartyAuthorization() instanceof TokenAuthorization) {
