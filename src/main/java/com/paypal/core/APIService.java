@@ -110,8 +110,13 @@ public class APIService {
 			connection.setupClientSSL(certPath, certKey);
 		}
 		connection.createAndconfigureHttpConnection(httpConfiguration);
-		headers.put(Constants.PAYPAL_DEVICE_IPADDRESS,
-				httpConfiguration.getIpAddress());
+
+		// null values are not permitted for headers. But empty values are
+		// accepted
+		if (httpConfiguration.getIpAddress() != null) {
+			headers.put(Constants.PAYPAL_DEVICE_IPADDRESS,
+					httpConfiguration.getIpAddress());
+		}
 		response = connection.execute(url, payLoad, headers);
 		LoggingManager.info(APIService.class, response);
 		return response;
