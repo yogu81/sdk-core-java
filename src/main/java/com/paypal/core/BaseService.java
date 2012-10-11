@@ -41,6 +41,7 @@ public abstract class BaseService {
 	private String lastResponse = null;
 
 	/**
+	 * Gets the Access Token
 	 * @return the accessToken
 	 */
 	public String getAccessToken() {
@@ -48,6 +49,8 @@ public abstract class BaseService {
 	}
 
 	/**
+	 * Sets the Access Token 
+	 * @deprecated
 	 * @param accessToken
 	 *            the accessToken to set
 	 */
@@ -56,6 +59,7 @@ public abstract class BaseService {
 	}
 
 	/**
+	 * Gets the Token Secret
 	 * @return the tokenSecret
 	 */
 	public String getTokenSecret() {
@@ -63,6 +67,8 @@ public abstract class BaseService {
 	}
 
 	/**
+	 * Sets the Token Secret
+	 * @deprecated
 	 * @param tokenSecret
 	 *            the tokenSecret to set
 	 */

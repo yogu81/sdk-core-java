@@ -222,8 +222,14 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 				Constants.NVP);
 		returnMap.put(Constants.PAYPAL_RESPONSE_DATA_FORMAT_HEADER,
 				Constants.NVP);
-		returnMap.put("X-PAYPAL-REQUEST-SOURCE", sdkName + "-"
+		returnMap.put(Constants.PAYPAL_REQUEST_SOURCE_HEADER, sdkName + "-"
 				+ sdkVersion);
+		String sandboxEmailAddress = ConfigManager.getInstance().getValue(
+				Constants.SANDBOX_EMAIL_ADDRESS) != null ? ConfigManager
+				.getInstance().getValue(Constants.SANDBOX_EMAIL_ADDRESS)
+				: Constants.SANDBOX_EMAIL_ADDRESS_DEFAULT;
+		returnMap.put(Constants.PAYPAL_SANDBOX_EMAIL_ADDRESS,
+				sandboxEmailAddress);
 		return returnMap;
 	}
 

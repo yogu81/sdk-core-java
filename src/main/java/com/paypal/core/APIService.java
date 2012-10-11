@@ -31,17 +31,13 @@ public class APIService {
 	/**
 	 * HttpConfiguration
 	 */
-	private HttpConfiguration httpConfiguration = new HttpConfiguration();
+	private HttpConfiguration httpConfiguration = null;
 
 	/**
-	 * Set all the HTTP related parameters from the configutation file
-	 * 
-	 * @param serviceName
-	 *            Service name
-	 * @throws SSLConfigurationException
-	 * @throws NumberFormatException
+	 * APISerice
 	 */
 	public APIService() {
+		httpConfiguration = new HttpConfiguration();
 		config = ConfigManager.getInstance();
 		endPoint = config.getValue(Constants.END_POINT);
 		httpConfiguration.setGoogleAppEngine(Boolean.parseBoolean(config
@@ -64,6 +60,8 @@ public class APIService {
 				.getValue(Constants.HTTP_CONNECTION_READ_TIMEOUT)));
 		httpConfiguration.setMaxHttpConnection(Integer.parseInt(config
 				.getValue(Constants.HTTP_CONNECTION_MAX_CONNECTION)));
+		httpConfiguration.setIpAddress(config
+				.getValue(Constants.DEVICE_IP_ADDRESS));
 	}
 
 	/**
@@ -112,13 +110,13 @@ public class APIService {
 			connection.setupClientSSL(certPath, certKey);
 		}
 		connection.createAndconfigureHttpConnection(httpConfiguration);
-		headers.put(Constants.PAYPAL_DEVICE_IPADDRESS, httpConfiguration.getIpAddress());
+		headers.put(Constants.PAYPAL_DEVICE_IPADDRESS,
+				httpConfiguration.getIpAddress());
 		response = connection.execute(url, payLoad, headers);
 		LoggingManager.info(APIService.class, response);
 		return response;
 	}
 
-	
 	public String getEndPoint() {
 		return endPoint;
 	}

@@ -4,43 +4,46 @@ public class Constants {
 	public static final String ENCODING_FORMAT = "UTF8";
 	public static final String EMPTY_STRING = "";
 	public static final String ACCCOUT_PREFIX = "acct";
-	public static final String SANDBOX_EMAIL_ADDRESS = "Platform.sdk.seller@gmail.com";
+
 	public static final String SOAP = "SOAP";
 	public static final String NVP = "NV";
 	public static final String SDK_NAME = "";
 	public static final String SDK_VERSION = "";
-	
+
 	// HTTP Header Constants
 	// PayPal Security UserId Header
 	public static final String PAYPAL_SECURITY_USERID_HEADER = "X-PAYPAL-SECURITY-USERID";
-	
+
 	// PayPal Security Password Header
 	public static final String PAYPAL_SECURITY_PASSWORD_HEADER = "X-PAYPAL-SECURITY-PASSWORD";
-	
+
 	// PayPal Security Signature Header
 	public static final String PAYPAL_SECURITY_SIGNATURE_HEADER = "X-PAYPAL-SECURITY-SIGNATURE";
-	
+
 	// PayPal Platform Authorization Header
 	public static final String PAYPAL_AUTHORIZATION_PLATFORM = "X-PAYPAL-AUTHORIZATION";
-	
+
 	// PayPal Merchant Authorization Header
 	public static final String PAYPAL_AUTHORIZATION_MERCHANT = "X-PP-AUTHORIZATION";
-	
+
 	// PayPal Application ID Header
 	public static final String PAYPAL_APPLICATION_ID = "X-PAYPAL-APPLICATION-ID";
-	
+
 	// PayPal Request Data Header
 	public static final String PAYPAL_REQUEST_DATA_FORMAT_HEADER = "X-PAYPAL-REQUEST-DATA-FORMAT";
-	
+
 	// PayPal Request Data Header
 	public static final String PAYPAL_RESPONSE_DATA_FORMAT_HEADER = "X-PAYPAL-RESPONSE-DATA-FORMAT";
-	
+
 	// PayPal Request Source Header
 	public static final String PAYPAL_REQUEST_SOURCE_HEADER = "X-PAYPAL-REQUEST-SOURCE";
-	
+
 	// PayPal Device IP Address Header
 	public static final String PAYPAL_DEVICE_IPADDRESS = "X-PAYPAL-DEVICE-IPADDRESS";
-	
+
+	// PayPal Sandbox Email Address for AA Header
+	public static final String PAYPAL_SANDBOX_EMAIL_ADDRESS = "X-PAYPAL-SANDBOX-EMAIL-ADDRESS";
+
 	// Constants key defined for configuration options in application properties
 	// End point
 	public static final String END_POINT = "service.EndPoint";
@@ -62,37 +65,46 @@ public class Constants {
 
 	// HTTP Proxy password
 	public static final String HTTP_PROXY_PASSWORD = "http.ProxyPassword";
-	
+
 	// HTTP Connection Timeout
 	public static final String HTTP_CONNECTION_TIMEOUT = "http.ConnectionTimeOut";
-	
+
 	// HTTP Connection Retry
 	public static final String HTTP_CONNECTION_RETRY = "http.Retry";
-	
+
 	// HTTP Read timeout
 	public static final String HTTP_CONNECTION_READ_TIMEOUT = "http.ReadTimeOut";
-	
+
 	// HTTP Max Connections
 	public static final String HTTP_CONNECTION_MAX_CONNECTION = "http.MaxConnection";
-	
+
+	// HTTP Device IP Address Key
+	public static final String DEVICE_IP_ADDRESS = "http.IPAddress";
+
 	// Credential Username suffix
 	public static final String CREDENTIAL_USERNAME_SUFFIX = ".UserName";
-	
+
 	// Credential Password suffix
 	public static final String CREDENTIAL_PASSWORD_SUFFIX = ".Password";
-	
+
 	// Credential Application ID
 	public static final String CREDENTIAL_APPLICACTIONID_SUFFIX = ".AppId";
-	
+
 	// Credential Subject
 	public static final String CREDENTIAL_SUBJECT_SUFFIX = ".Subject";
-	
+
 	// Credential Signature
 	public static final String CREDENTIAL_SIGNATURE_SUFFIX = ".Signature";
-	
+
 	// Credential Certificate Path
 	public static final String CREDENTIAL_CERTPATH_SUFFIX = ".CertPath";
-	
+
 	// Credential Certificate Key
 	public static final String CREDENTIAL_CERTKEY_SUFFIX = ".CertKey";
+
+	// Sandbox Email Address Key
+	public static final String SANDBOX_EMAIL_ADDRESS = "sandbox.EmailAddress";
+
+	// Sandbox Email Address Default Value
+	public static final String SANDBOX_EMAIL_ADDRESS_DEFAULT = "Platform.sdk.seller@gmail.com";
 }
