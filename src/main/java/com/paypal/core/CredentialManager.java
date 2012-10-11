@@ -2,13 +2,14 @@ package com.paypal.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.paypal.core.credential.CertificateCredential;
 import com.paypal.core.credential.ICredential;
+import com.paypal.core.credential.SignatureCredential;
 import com.paypal.core.credential.SubjectAuthorization;
 import com.paypal.core.credential.ThirdPartyAuthorization;
-import com.paypal.core.credential.SignatureCredential;
 import com.paypal.exception.InvalidCredentialException;
 import com.paypal.exception.MissingCredentialException;
 
@@ -24,20 +25,9 @@ public final class CredentialManager {
 	 */
 	private static CredentialManager instance;
 
-	/**
-	 * Credential map
-	 */
-	private Map<String, ICredential> credentialMap;
-
-	/**
-	 * Default account name
-	 */
-	private String defaultAcctName = null;
-
 	// Private Constructor
 	private CredentialManager() throws MissingCredentialException {
-		credentialMap = new HashMap<String, ICredential>();
-		this.initCredential();
+
 	}
 
 	/**
@@ -56,93 +46,86 @@ public final class CredentialManager {
 		return instance;
 	}
 
-	/**
-	 * Loads credentials of multiple accounts from property file.
-	 * 
-	 * @throws MissingCredentialException
-	 */
-	private void initCredential() throws MissingCredentialException {
+	public ICredential getCredentialObject(String userId)
+			throws MissingCredentialException, InvalidCredentialException {
+		ICredential credential = null;
 		ConfigManager conf = ConfigManager.getInstance();
-		int suffix = 1;
+		if (conf.getNumOfAcct().size() == 0) {
+			throw new MissingCredentialException(
+					"No API accounts have been configured in application properties");
+		}
 		String prefix = Constants.ACCCOUT_PREFIX;
 		Map<String, String> credMap = conf.getValuesByCategory(prefix);
-		Set<String> acctSet = conf.getNumOfAcct();
-		if (acctSet.size() == 0) {
-			throw new MissingCredentialException(
-					"No valid API accounts have been configured");
-		}
-		while (suffix <= acctSet.size()) {
-			String userName = (String) credMap.get(prefix + suffix
+		if (userId != null && userId.length() != 0) {
+			int index = 1;
+			for (Entry<String, String> entry : credMap.entrySet()) {
+				if (entry.getValue().equalsIgnoreCase(userId)
+						&& entry.getKey().endsWith(
+								Constants.CREDENTIAL_USERNAME_SUFFIX)) {
+					credential = returnCredential(credMap, index);
+				}
+				index++;
+			}
+			if (credential == null) {
+				throw new MissingCredentialException(
+						"Account for the username does not exists in the properties file");
+			}
+		} else {
+			int index = 1;
+			String userName = (String) credMap.get(prefix + index
 					+ Constants.CREDENTIAL_USERNAME_SUFFIX);
-			String password = (String) credMap.get(prefix + suffix
-					+ Constants.CREDENTIAL_PASSWORD_SUFFIX);
-			String appId = (String) credMap.get(prefix + suffix
-					+ Constants.CREDENTIAL_APPLICACTIONID_SUFFIX);
-			String subject = (String) credMap.get(prefix + suffix
-					+ Constants.CREDENTIAL_SUBJECT_SUFFIX);
-			if (credMap.get(prefix + suffix
-					+ Constants.CREDENTIAL_SIGNATURE_SUFFIX) != null) {
-				String signature = (String) credMap.get(prefix + suffix
-						+ Constants.CREDENTIAL_SIGNATURE_SUFFIX);
-				SignatureCredential credential = new SignatureCredential(
-						userName, password, appId, signature);
-				if (subject != null && subject.length() > 0) {
-					ThirdPartyAuthorization thirdPartyAuthorization = new SubjectAuthorization(
-							subject);
-					credential
-							.setThirdPartyAuthorization(thirdPartyAuthorization);
-				}
-				credentialMap.put(userName, credential);
-			} else if (credMap.get(prefix + suffix
-					+ Constants.CREDENTIAL_CERTPATH_SUFFIX) != null) {
-				String certPath = (String) credMap.get(prefix + suffix
-						+ Constants.CREDENTIAL_CERTPATH_SUFFIX);
-				String certKey = (String) credMap.get(prefix + suffix
-						+ Constants.CREDENTIAL_CERTKEY_SUFFIX);
-				CertificateCredential credential = new CertificateCredential(
-						userName, password, appId, certPath, certKey);
-				if (subject != null && subject.length() > 0) {
-					ThirdPartyAuthorization thirdPartyAuthorization = new SubjectAuthorization(
-							subject);
-					credential
-							.setThirdPartyAuthorization(thirdPartyAuthorization);
-				}
-				credentialMap.put(userName, credential);
+			if (userName != null && userName.length() != 0) {
+				credential = returnCredential(credMap, index);
+			} else {
+				throw new MissingCredentialException(
+						"Associate valid account for index 1");
 			}
-			if (defaultAcctName == null) {
-				defaultAcctName = (String) credMap.get(prefix + suffix
-						+ Constants.CREDENTIAL_USERNAME_SUFFIX);
-			}
-			suffix++;
 		}
-
+		return credential;
 	}
 
-	/**
-	 * Obtains credential object based on userId
-	 * 
-	 * @param userId
-	 *            Username string
-	 * @return {@link ICredential} object
-	 * @throws InvalidCredentialException
-	 */
-	public ICredential getCredentialObject(String userId)
+	private ICredential returnCredential(Map<String, String> credMap, int index)
 			throws InvalidCredentialException {
-		ICredential credObj = null;
-		if (userId == null) {
-			credObj = (ICredential) credentialMap.get(defaultAcctName);
-		} else if (credentialMap.containsKey(userId)) {
-			credObj = (ICredential) credentialMap.get(userId);
+		ICredential credential = null;
+		String prefix = Constants.ACCCOUT_PREFIX;
+		String userName = (String) credMap.get(prefix + index
+				+ Constants.CREDENTIAL_USERNAME_SUFFIX);
+		String password = (String) credMap.get(prefix + index
+				+ Constants.CREDENTIAL_PASSWORD_SUFFIX);
+		String appId = (String) credMap.get(prefix + index
+				+ Constants.CREDENTIAL_APPLICATIONID_SUFFIX);
+		String subject = (String) credMap.get(prefix + index
+				+ Constants.CREDENTIAL_SUBJECT_SUFFIX);
+		if (credMap.get(prefix + index + Constants.CREDENTIAL_SIGNATURE_SUFFIX) != null) {
+			String signature = (String) credMap.get(prefix + index
+					+ Constants.CREDENTIAL_SIGNATURE_SUFFIX);
+			credential = new SignatureCredential(userName, password, appId,
+					signature);
+			if (subject != null && subject.length() > 0) {
+				ThirdPartyAuthorization thirdPartyAuthorization = new SubjectAuthorization(
+						subject);
+				((SignatureCredential) credential)
+						.setThirdPartyAuthorization(thirdPartyAuthorization);
+			}
+		} else if (credMap.get(prefix + index
+				+ Constants.CREDENTIAL_CERTPATH_SUFFIX) != null) {
+			String certPath = (String) credMap.get(prefix + index
+					+ Constants.CREDENTIAL_CERTPATH_SUFFIX);
+			String certKey = (String) credMap.get(prefix + index
+					+ Constants.CREDENTIAL_CERTKEY_SUFFIX);
+			credential = new CertificateCredential(userName, password, appId,
+					certPath, certKey);
+			if (subject != null && subject.length() > 0) {
+				ThirdPartyAuthorization thirdPartyAuthorization = new SubjectAuthorization(
+						subject);
+				((CertificateCredential) credential)
+						.setThirdPartyAuthorization(thirdPartyAuthorization);
+			}
+		} else {
+			throw new InvalidCredentialException(
+					"The account does not have a valid credential type(signature/certificate)");
 		}
-		if (credObj == null) {
-			throw new InvalidCredentialException("Invalid userId" + userId);
-		}
-		return credObj;
+		return credential;
 
 	}
-
-	public Object clone() throws CloneNotSupportedException {
-		throw new CloneNotSupportedException();
-	}
-
 }

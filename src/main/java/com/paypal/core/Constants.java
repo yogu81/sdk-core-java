@@ -88,7 +88,7 @@ public class Constants {
 	public static final String CREDENTIAL_PASSWORD_SUFFIX = ".Password";
 
 	// Credential Application ID
-	public static final String CREDENTIAL_APPLICACTIONID_SUFFIX = ".AppId";
+	public static final String CREDENTIAL_APPLICATIONID_SUFFIX = ".AppId";
 
 	// Credential Subject
 	public static final String CREDENTIAL_SUBJECT_SUFFIX = ".Subject";
