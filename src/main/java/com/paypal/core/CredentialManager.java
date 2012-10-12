@@ -1,9 +1,7 @@
 package com.paypal.core;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import com.paypal.core.credential.CertificateCredential;
 import com.paypal.core.credential.ICredential;
@@ -26,7 +24,7 @@ public final class CredentialManager {
 	private static CredentialManager instance;
 
 	// Private Constructor
-	private CredentialManager() throws MissingCredentialException {
+	private CredentialManager() {
 
 	}
 
@@ -34,10 +32,8 @@ public final class CredentialManager {
 	 * Singleton accessor method
 	 * 
 	 * @return
-	 * @throws MissingCredentialException
 	 */
-	public static CredentialManager getInstance()
-			throws MissingCredentialException {
+	public static CredentialManager getInstance() {
 		synchronized (CredentialManager.class) {
 			if (instance == null) {
 				instance = new CredentialManager();
