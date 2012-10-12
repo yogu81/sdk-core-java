@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 import com.paypal.core.APICallPreHandler;
 import com.paypal.core.Constants;
 import com.paypal.core.CredentialManager;
-import com.paypal.core.DefaultSOAPAPICallHandler;
 import com.paypal.core.credential.CertificateCredential;
 import com.paypal.core.credential.ICredential;
 import com.paypal.core.credential.SignatureCredential;
