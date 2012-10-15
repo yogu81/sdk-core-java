@@ -48,9 +48,9 @@ public class SignatureCredential implements ICredential {
 	public SignatureCredential(String userName, String password,
 			String applicationId, String signature) {
 		super();
-		if (userName == null || userName.length() == 0 || password == null
-				|| password.length() == 0 || signature == null
-				|| signature.length() == 0) {
+		if (userName == null || userName.trim().length() == 0
+				|| password == null || password.trim().length() == 0
+				|| signature == null || signature.trim().length() == 0) {
 			throw new IllegalArgumentException(
 					"SignatureCredential arguments cannot be empty or null");
 		}
