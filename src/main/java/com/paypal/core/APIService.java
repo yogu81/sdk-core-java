@@ -104,10 +104,7 @@ public class APIService {
 		if (apiCallPreHandler.getCredential() instanceof CertificateCredential) {
 			CertificateCredential credential = (CertificateCredential) apiCallPreHandler
 					.getCredential();
-			String certPath = credential.getCertificatePath();
-			String certKey = credential.getCertificateKey();
-			connection.setDefaultSSL(false);
-			connection.setupClientSSL(certPath, certKey);
+			connection.setupClientSSL(credential.getCertificatePath(), credential.getCertificateKey());
 		}
 		connection.createAndconfigureHttpConnection(httpConfiguration);
 

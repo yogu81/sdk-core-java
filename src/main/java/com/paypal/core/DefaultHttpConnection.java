@@ -38,9 +38,7 @@ public class DefaultHttpConnection extends HttpConnection {
 	public void setupClientSSL(String certPath, String certKey)
 			throws SSLConfigurationException {
 		try {
-			if (!isDefaultSSL()) {
-				this.sslContext = SSLUtil.setupClientSSL(certPath, certKey);
-			}
+			this.sslContext = SSLUtil.setupClientSSL(certPath, certKey);
 		} catch (Exception e) {
 			throw new SSLConfigurationException(e.getMessage(), e);
 		}
@@ -67,9 +65,6 @@ public class DefaultHttpConnection extends HttpConnection {
 		if (this.connection instanceof HttpsURLConnection) {
 			((HttpsURLConnection) this.connection)
 					.setSSLSocketFactory(this.sslContext.getSocketFactory());
-			if (isDefaultSSL()) {
-				((HttpsURLConnection) this.connection).setHostnameVerifier(hv);
-			}
 		}
 		if (this.config.getProxyUserName() != null
 				&& this.config.getProxyPassword() != null) {
@@ -92,22 +87,6 @@ public class DefaultHttpConnection extends HttpConnection {
 		this.connection.setReadTimeout(this.config.getReadTimeout());
 	}
 
-	/**
-	 * Class used to relax host name verification.
-	 */
-	private HostnameVerifier hv = new DefaultHostNameVerifier();
-
-	/**
-	 * Private class used for relaxing all host name verification
-	 * 
-	 * @author kjayakumar
-	 * 
-	 */
-	private static class DefaultHostNameVerifier implements HostnameVerifier {
-		public boolean verify(String urlHostname, SSLSession session) {
-			return true;
-		}
-	}
 
 	/**
 	 * Private class for password based authentication

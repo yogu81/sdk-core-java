@@ -159,14 +159,6 @@ public abstract class HttpConnection {
 	public abstract void createAndconfigureHttpConnection(
 			HttpConfiguration clientConfiguration) throws IOException;
 
-	public boolean isDefaultSSL() {
-		return defaultSSL;
-	}
-
-	public void setDefaultSSL(boolean defaultSSL) {
-		this.defaultSSL = defaultSSL;
-	}
-
 	protected String read(BufferedReader reader) throws IOException {
 		String inputLine = Constants.EMPTY_STRING;
 		StringBuilder response = new StringBuilder();

@@ -217,18 +217,20 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 
 	private Map<String, String> getDefaultHttpHeadersNVP() {
 		Map<String, String> returnMap = new HashMap<String, String>();
-		returnMap.put(Constants.PAYPAL_APPLICATION_ID_HEADER,
-				getApplicationId());
+		returnMap.put(Constants.PAYPAL_APPLICATION_ID_HEADER, getApplicationId());
 		returnMap.put(Constants.PAYPAL_REQUEST_DATA_FORMAT_HEADER,
 				Constants.NVP);
 		returnMap.put(Constants.PAYPAL_RESPONSE_DATA_FORMAT_HEADER,
 				Constants.NVP);
 		returnMap.put(Constants.PAYPAL_REQUEST_SOURCE_HEADER, sdkName + "-"
 				+ sdkVersion);
+		
 		String sandboxEmailAddress = ConfigManager.getInstance().getValue(
 				Constants.SANDBOX_EMAIL_ADDRESS);
-		returnMap.put(Constants.PAYPAL_SANDBOX_EMAIL_ADDRESS_HEADER,
-				sandboxEmailAddress);
+		if(sandboxEmailAddress != null) {
+			returnMap.put(Constants.PAYPAL_SANDBOX_EMAIL_ADDRESS_HEADER,
+					sandboxEmailAddress);			
+		}
 		return returnMap;
 	}
 
