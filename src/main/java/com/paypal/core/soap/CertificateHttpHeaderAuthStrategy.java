@@ -48,7 +48,7 @@ public class CertificateHttpHeaderAuthStrategy extends
 				credential.getUserName(), credential.getPassword(),
 				tokenAuth.getAccessToken(), tokenAuth.getTokenSecret(),
 				OAuthSignature.HTTPMethod.POST, endPointUrl, null);
-		headers.put(Constants.PAYPAL_AUTHORIZATION_MERCHANT, authString);
+		headers.put(Constants.PAYPAL_AUTHORIZATION_MERCHANT_HEADER, authString);
 		return headers;
 	}
 
