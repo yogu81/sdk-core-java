@@ -21,13 +21,13 @@ public class Constants {
 	public static final String PAYPAL_SECURITY_SIGNATURE_HEADER = "X-PAYPAL-SECURITY-SIGNATURE";
 
 	// PayPal Platform Authorization Header
-	public static final String PAYPAL_AUTHORIZATION_PLATFORM = "X-PAYPAL-AUTHORIZATION";
+	public static final String PAYPAL_AUTHORIZATION_PLATFORM_HEADER = "X-PAYPAL-AUTHORIZATION";
 
 	// PayPal Merchant Authorization Header
-	public static final String PAYPAL_AUTHORIZATION_MERCHANT = "X-PP-AUTHORIZATION";
+	public static final String PAYPAL_AUTHORIZATION_MERCHANT_HEADER = "X-PP-AUTHORIZATION";
 
 	// PayPal Application ID Header
-	public static final String PAYPAL_APPLICATION_ID = "X-PAYPAL-APPLICATION-ID";
+	public static final String PAYPAL_APPLICATION_ID_HEADER = "X-PAYPAL-APPLICATION-ID";
 
 	// PayPal Request Data Header
 	public static final String PAYPAL_REQUEST_DATA_FORMAT_HEADER = "X-PAYPAL-REQUEST-DATA-FORMAT";
@@ -39,10 +39,10 @@ public class Constants {
 	public static final String PAYPAL_REQUEST_SOURCE_HEADER = "X-PAYPAL-REQUEST-SOURCE";
 
 	// PayPal Device IP Address Header
-	public static final String PAYPAL_DEVICE_IPADDRESS = "X-PAYPAL-DEVICE-IPADDRESS";
+	public static final String PAYPAL_DEVICE_IPADDRESS_HEADER = "X-PAYPAL-DEVICE-IPADDRESS";
 
 	// PayPal Sandbox Email Address for AA Header
-	public static final String PAYPAL_SANDBOX_EMAIL_ADDRESS = "X-PAYPAL-SANDBOX-EMAIL-ADDRESS";
+	public static final String PAYPAL_SANDBOX_EMAIL_ADDRESS_HEADER = "X-PAYPAL-SANDBOX-EMAIL-ADDRESS";
 
 	// Constants key defined for configuration options in application properties
 	// End point
@@ -105,6 +105,4 @@ public class Constants {
 	// Sandbox Email Address Key
 	public static final String SANDBOX_EMAIL_ADDRESS = "sandbox.EmailAddress";
 
-	// Sandbox Email Address Default Value
-	public static final String SANDBOX_EMAIL_ADDRESS_DEFAULT = "Platform.sdk.seller@gmail.com";
 }

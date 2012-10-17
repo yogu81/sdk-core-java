@@ -95,8 +95,8 @@ public final class CredentialManager {
 		if (credMap.get(prefix + index + Constants.CREDENTIAL_SIGNATURE_SUFFIX) != null) {
 			String signature = (String) credMap.get(prefix + index
 					+ Constants.CREDENTIAL_SIGNATURE_SUFFIX);
-			credential = new SignatureCredential(userName, password, appId,
-					signature);
+			credential = new SignatureCredential(userName, password, signature);
+			((SignatureCredential) credential).setApplicationId(appId);
 			if (subject != null && subject.length() > 0) {
 				ThirdPartyAuthorization thirdPartyAuthorization = new SubjectAuthorization(
 						subject);
@@ -109,8 +109,9 @@ public final class CredentialManager {
 					+ Constants.CREDENTIAL_CERTPATH_SUFFIX);
 			String certKey = (String) credMap.get(prefix + index
 					+ Constants.CREDENTIAL_CERTKEY_SUFFIX);
-			credential = new CertificateCredential(userName, password, appId,
+			credential = new CertificateCredential(userName, password,
 					certPath, certKey);
+			((CertificateCredential) credential).setApplicationId(appId);
 			if (subject != null && subject.length() > 0) {
 				ThirdPartyAuthorization thirdPartyAuthorization = new SubjectAuthorization(
 						subject);

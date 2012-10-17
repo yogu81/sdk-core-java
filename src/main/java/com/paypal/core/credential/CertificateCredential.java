@@ -44,16 +44,13 @@ public class CertificateCredential implements ICredential {
 	 *            UserName
 	 * @param password
 	 *            Password
-	 * @param applicationId
-	 *            Application ID used for PLATFORM APIs, it will be ignored in
-	 *            case of MERCHANT APIs
 	 * @param certificatePath
 	 *            Certificate file path
 	 * @param certificateKey
 	 *            Certificate private key
 	 */
 	public CertificateCredential(String userName, String password,
-			String applicationId, String certificatePath, String certificateKey) {
+			String certificatePath, String certificateKey) {
 		super();
 		if (userName == null || userName.trim().length() == 0
 				|| password == null || password.trim().length() == 0
@@ -66,33 +63,8 @@ public class CertificateCredential implements ICredential {
 		}
 		this.userName = userName;
 		this.password = password;
-		this.applicationId = applicationId;
 		this.certificatePath = certificatePath;
 		this.certificateKey = certificateKey;
-	}
-
-	/**
-	 * Certificate Credential
-	 * 
-	 * @param userName
-	 *            UserName
-	 * @param password
-	 *            Password
-	 * @param applicationId
-	 *            Application ID used for PLATFORM APIs
-	 * @param certificatePath
-	 *            Certificate file path
-	 * @param certificateKey
-	 *            Certificate private key
-	 * @param thirdPartyAuthorization
-	 *            {@link ThirdPartyAuthorization} instance
-	 */
-	public CertificateCredential(String userName, String password,
-			String applicationId, String certificatePath,
-			String certificateKey,
-			ThirdPartyAuthorization thirdPartyAuthorization) {
-		this(userName, password, applicationId, certificatePath, certificateKey);
-		this.thirdPartyAuthorization = thirdPartyAuthorization;
 	}
 
 	/**

@@ -48,7 +48,7 @@ public class SignatureHttpHeaderAuthStrategy extends
 				sigCred.getUserName(), sigCred.getPassword(),
 				tokenAuth.getAccessToken(), tokenAuth.getTokenSecret(),
 				OAuthSignature.HTTPMethod.POST, endPointUrl, null);
-		headers.put(Constants.PAYPAL_AUTHORIZATION_PLATFORM, authString);
+		headers.put(Constants.PAYPAL_AUTHORIZATION_PLATFORM_HEADER, authString);
 		return headers;
 	}
 

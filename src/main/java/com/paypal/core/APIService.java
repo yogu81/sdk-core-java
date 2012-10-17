@@ -114,7 +114,7 @@ public class APIService {
 		// null values are not permitted for headers. But empty values are
 		// accepted
 		if (httpConfiguration.getIpAddress() != null) {
-			headers.put(Constants.PAYPAL_DEVICE_IPADDRESS,
+			headers.put(Constants.PAYPAL_DEVICE_IPADDRESS_HEADER,
 					httpConfiguration.getIpAddress());
 		}
 		response = connection.execute(url, payLoad, headers);

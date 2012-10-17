@@ -39,14 +39,11 @@ public class SignatureCredential implements ICredential {
 	 *            UserName
 	 * @param password
 	 *            Password
-	 * @param applicationId
-	 *            Application ID used for PLATFORM APIs, it will be ignored in
-	 *            case of MERCHANT APIs
 	 * @param signature
 	 *            Signature
 	 */
 	public SignatureCredential(String userName, String password,
-			String applicationId, String signature) {
+			String signature) {
 		super();
 		if (userName == null || userName.trim().length() == 0
 				|| password == null || password.trim().length() == 0
@@ -56,31 +53,10 @@ public class SignatureCredential implements ICredential {
 		}
 		this.userName = userName;
 		this.password = password;
-		this.applicationId = applicationId;
 		this.signature = signature;
 	}
 
-	/**
-	 * Signature Credential
-	 * 
-	 * @param userName
-	 *            UserName
-	 * @param password
-	 *            Password
-	 * @param applicationId
-	 *            Application ID used for PLATFORM APIs
-	 * @param signature
-	 *            Signature
-	 * @param thirdPartyAuthorization
-	 *            {@link ThirdPartyAuthorization} instance
-	 */
-	public SignatureCredential(String userName, String password,
-			String applicationId, String signature,
-			ThirdPartyAuthorization thirdPartyAuthorization) {
-		this(userName, password, applicationId, signature);
-		this.thirdPartyAuthorization = thirdPartyAuthorization;
-	}
-
+	
 	/**
 	 * @return the applicationId
 	 */
