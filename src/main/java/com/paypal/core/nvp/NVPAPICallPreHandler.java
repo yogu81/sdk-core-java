@@ -219,9 +219,9 @@ public class NVPAPICallPreHandler implements APICallPreHandler {
 		Map<String, String> returnMap = new HashMap<String, String>();
 		returnMap.put(Constants.PAYPAL_APPLICATION_ID_HEADER, getApplicationId());
 		returnMap.put(Constants.PAYPAL_REQUEST_DATA_FORMAT_HEADER,
-				Constants.NVP);
+				Constants.PAYLOAD_FORMAT_NVP);
 		returnMap.put(Constants.PAYPAL_RESPONSE_DATA_FORMAT_HEADER,
-				Constants.NVP);
+				Constants.PAYLOAD_FORMAT_NVP);
 		returnMap.put(Constants.PAYPAL_REQUEST_SOURCE_HEADER, sdkName + "-"
 				+ sdkVersion);
 		

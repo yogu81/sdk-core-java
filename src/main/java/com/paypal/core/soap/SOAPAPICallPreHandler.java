@@ -245,9 +245,9 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 	 */
 	private Map<String, String> getDefaultHttpHeadersSOAP() {
 		Map<String, String> returnMap = new HashMap<String, String>();
-		returnMap.put(Constants.PAYPAL_REQUEST_DATA_FORMAT_HEADER, "SOAP");
-		returnMap.put(Constants.PAYPAL_RESPONSE_DATA_FORMAT_HEADER, "SOAP");
-		returnMap.put("X-PAYPAL-REQUEST-SOURCE", sdkName + "-"
+		returnMap.put(Constants.PAYPAL_REQUEST_DATA_FORMAT_HEADER, Constants.PAYLOAD_FORMAT_SOAP);
+		returnMap.put(Constants.PAYPAL_RESPONSE_DATA_FORMAT_HEADER, Constants.PAYLOAD_FORMAT_SOAP);
+		returnMap.put(Constants.PAYPAL_REQUEST_SOURCE_HEADER, sdkName + "-"
 				+ sdkVersion);
 		return returnMap;
 	}
