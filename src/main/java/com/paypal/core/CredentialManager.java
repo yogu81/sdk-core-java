@@ -53,14 +53,16 @@ public final class CredentialManager {
 		String prefix = Constants.ACCCOUT_PREFIX;
 		Map<String, String> credMap = conf.getValuesByCategory(prefix);
 		if (userId != null && userId.length() != 0) {
-			int index = 1;
 			for (Entry<String, String> entry : credMap.entrySet()) {
-				if (entry.getValue().equalsIgnoreCase(userId)
-						&& entry.getKey().endsWith(
-								Constants.CREDENTIAL_USERNAME_SUFFIX)) {
-					credential = returnCredential(credMap, index);
+				if (entry.getKey().endsWith(
+						Constants.CREDENTIAL_USERNAME_SUFFIX)) {
+					if (entry.getValue().equalsIgnoreCase(userId)) {
+						String acctKey = entry.getKey().substring(0,
+								entry.getKey().indexOf("."));
+						credential = returnCredential(credMap, acctKey);
+					}
+
 				}
-				index++;
 			}
 			if (credential == null) {
 				throw new MissingCredentialException(
@@ -71,7 +73,7 @@ public final class CredentialManager {
 			String userName = (String) credMap.get(prefix + index
 					+ Constants.CREDENTIAL_USERNAME_SUFFIX);
 			if (userName != null && userName.length() != 0) {
-				credential = returnCredential(credMap, index);
+				credential = returnCredential(credMap, prefix + index);
 			} else {
 				throw new MissingCredentialException(
 						"Associate valid account for index 1");
@@ -80,20 +82,20 @@ public final class CredentialManager {
 		return credential;
 	}
 
-	private ICredential returnCredential(Map<String, String> credMap, int index)
-			throws InvalidCredentialException {
+	private ICredential returnCredential(Map<String, String> credMap,
+			String acctKey) throws InvalidCredentialException {
+		System.out.println("Index" + acctKey);
 		ICredential credential = null;
-		String prefix = Constants.ACCCOUT_PREFIX;
-		String userName = (String) credMap.get(prefix + index
+		String userName = (String) credMap.get(acctKey
 				+ Constants.CREDENTIAL_USERNAME_SUFFIX);
-		String password = (String) credMap.get(prefix + index
+		String password = (String) credMap.get(acctKey
 				+ Constants.CREDENTIAL_PASSWORD_SUFFIX);
-		String appId = (String) credMap.get(prefix + index
+		String appId = (String) credMap.get(acctKey
 				+ Constants.CREDENTIAL_APPLICATIONID_SUFFIX);
-		String subject = (String) credMap.get(prefix + index
+		String subject = (String) credMap.get(acctKey
 				+ Constants.CREDENTIAL_SUBJECT_SUFFIX);
-		if (credMap.get(prefix + index + Constants.CREDENTIAL_SIGNATURE_SUFFIX) != null) {
-			String signature = (String) credMap.get(prefix + index
+		if (credMap.get(acctKey + Constants.CREDENTIAL_SIGNATURE_SUFFIX) != null) {
+			String signature = (String) credMap.get(acctKey
 					+ Constants.CREDENTIAL_SIGNATURE_SUFFIX);
 			credential = new SignatureCredential(userName, password, signature);
 			((SignatureCredential) credential).setApplicationId(appId);
@@ -103,11 +105,10 @@ public final class CredentialManager {
 				((SignatureCredential) credential)
 						.setThirdPartyAuthorization(thirdPartyAuthorization);
 			}
-		} else if (credMap.get(prefix + index
-				+ Constants.CREDENTIAL_CERTPATH_SUFFIX) != null) {
-			String certPath = (String) credMap.get(prefix + index
+		} else if (credMap.get(acctKey + Constants.CREDENTIAL_CERTPATH_SUFFIX) != null) {
+			String certPath = (String) credMap.get(acctKey
 					+ Constants.CREDENTIAL_CERTPATH_SUFFIX);
-			String certKey = (String) credMap.get(prefix + index
+			String certKey = (String) credMap.get(acctKey
 					+ Constants.CREDENTIAL_CERTKEY_SUFFIX);
 			credential = new CertificateCredential(userName, password,
 					certPath, certKey);
