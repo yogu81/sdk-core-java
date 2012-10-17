@@ -55,7 +55,7 @@ public abstract class SSLUtil {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static KeyStore p12ToKeyStore(String p12Path, String password)
+	private static KeyStore p12ToKeyStore(String p12Path, String password)
 			throws NoSuchProviderException, KeyStoreException,
 			CertificateException, NoSuchAlgorithmException, IOException {
 		KeyStore ks = null;
@@ -73,7 +73,7 @@ public abstract class SSLUtil {
 	}
 
 	/**
-	 * Create a SSLContext with certificate provided
+	 * Create a SSLContext with provided client certificate
 	 * 
 	 * @param certPath
 	 * @param certPassword
