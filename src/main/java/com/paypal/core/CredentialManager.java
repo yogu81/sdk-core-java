@@ -58,7 +58,7 @@ public final class CredentialManager {
 						Constants.CREDENTIAL_USERNAME_SUFFIX)) {
 					if (entry.getValue().equalsIgnoreCase(userId)) {
 						String acctKey = entry.getKey().substring(0,
-								entry.getKey().indexOf("."));
+								entry.getKey().indexOf('.'));
 						credential = returnCredential(credMap, acctKey);
 					}
 
