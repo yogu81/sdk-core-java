@@ -8,10 +8,8 @@ import java.net.Proxy;
 import java.net.SocketAddress;
 import java.net.URL;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 
 import com.paypal.exception.SSLConfigurationException;
 

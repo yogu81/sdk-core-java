@@ -20,7 +20,7 @@ public class SubjectAuthorization implements ThirdPartyAuthorization {
 	 */
 	public SubjectAuthorization(String subject) {
 		super();
-		if (subject == null || subject.length() == 0) {
+		if (subject == null || subject.trim().length() == 0) {
 			throw new IllegalArgumentException(
 					"Subject is null or empty in SubjectAuthorization");
 		}

@@ -52,7 +52,7 @@ public final class CredentialManager {
 		}
 		String prefix = Constants.ACCCOUT_PREFIX;
 		Map<String, String> credMap = conf.getValuesByCategory(prefix);
-		if (userId != null && userId.length() != 0) {
+		if (userId != null && userId.trim().length() != 0) {
 			for (Entry<String, String> entry : credMap.entrySet()) {
 				if (entry.getKey().endsWith(
 						Constants.CREDENTIAL_USERNAME_SUFFIX)) {
@@ -72,7 +72,7 @@ public final class CredentialManager {
 			int index = 1;
 			String userName = (String) credMap.get(prefix + index
 					+ Constants.CREDENTIAL_USERNAME_SUFFIX);
-			if (userName != null && userName.length() != 0) {
+			if (userName != null && userName.trim().length() != 0) {
 				credential = returnCredential(credMap, prefix + index);
 			} else {
 				throw new MissingCredentialException(
@@ -84,7 +84,6 @@ public final class CredentialManager {
 
 	private ICredential returnCredential(Map<String, String> credMap,
 			String acctKey) throws InvalidCredentialException {
-		System.out.println("Index" + acctKey);
 		ICredential credential = null;
 		String userName = (String) credMap.get(acctKey
 				+ Constants.CREDENTIAL_USERNAME_SUFFIX);
@@ -99,7 +98,7 @@ public final class CredentialManager {
 					+ Constants.CREDENTIAL_SIGNATURE_SUFFIX);
 			credential = new SignatureCredential(userName, password, signature);
 			((SignatureCredential) credential).setApplicationId(appId);
-			if (subject != null && subject.length() > 0) {
+			if (subject != null && subject.trim().length() > 0) {
 				ThirdPartyAuthorization thirdPartyAuthorization = new SubjectAuthorization(
 						subject);
 				((SignatureCredential) credential)
@@ -113,7 +112,7 @@ public final class CredentialManager {
 			credential = new CertificateCredential(userName, password,
 					certPath, certKey);
 			((CertificateCredential) credential).setApplicationId(appId);
-			if (subject != null && subject.length() > 0) {
+			if (subject != null && subject.trim().length() > 0) {
 				ThirdPartyAuthorization thirdPartyAuthorization = new SubjectAuthorization(
 						subject);
 				((CertificateCredential) credential)

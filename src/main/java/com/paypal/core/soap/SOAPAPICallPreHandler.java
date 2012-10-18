@@ -223,7 +223,7 @@ public class SOAPAPICallPreHandler implements APICallPreHandler {
 		ICredential returnCredential = null;
 		CredentialManager credentialManager = CredentialManager.getInstance();
 		returnCredential = credentialManager.getCredentialObject(apiUserName);
-		if (accessToken != null && accessToken.length() > 0) {
+		if (accessToken != null && accessToken.trim().length() > 0) {
 
 			// Set third party authorization to token
 			// if token is sent as part of request call

@@ -1,8 +1,8 @@
 package com.paypal.core.credential;
 
 /**
- * TokenAuthorization encapsulates third party token authorization.
- * Used for MERCHANT or PLATFORM APIs
+ * TokenAuthorization encapsulates third party token authorization. Used for
+ * MERCHANT or PLATFORM APIs
  */
 public class TokenAuthorization implements ThirdPartyAuthorization {
 
@@ -26,8 +26,8 @@ public class TokenAuthorization implements ThirdPartyAuthorization {
 	 */
 	public TokenAuthorization(String accessToken, String tokenSecret) {
 		super();
-		if (accessToken == null || accessToken.length() == 0
-				|| tokenSecret == null || tokenSecret.length() == 0) {
+		if (accessToken == null || accessToken.trim().length() == 0
+				|| tokenSecret == null || tokenSecret.trim().length() == 0) {
 			throw new IllegalArgumentException(
 					"TokenAuthorization arguments cannot be empty or null");
 		}

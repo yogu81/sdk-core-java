@@ -65,7 +65,8 @@ public abstract class HttpConnection {
 		String errorResponse = Constants.EMPTY_STRING;
 		BufferedReader reader = null;
 		OutputStreamWriter writer = null;
-		connection.setRequestProperty("Content-Length", "" + payload.length());
+		connection.setRequestProperty("Content-Length", ""
+				+ payload.trim().length());
 		if (headers != null) {
 			setHttpHeaders(headers);
 		}
@@ -90,7 +91,7 @@ public abstract class HttpConnection {
 						successResponse = read(reader);
 						LoggingManager.debug(HttpConnection.class,
 								"Response : " + successResponse);
-						if (successResponse.length() <= 0) {
+						if (successResponse.trim().length() <= 0) {
 							throw new InvalidResponseDataException(
 									successResponse);
 						}
@@ -119,7 +120,7 @@ public abstract class HttpConnection {
 					}
 				}
 			}
-			if (successResponse.length() <= 0) {
+			if (successResponse.trim().length() <= 0) {
 				throw new HttpErrorException(
 						"retry fails..  check log for more information");
 			}
