@@ -25,7 +25,7 @@ public class UnitTestConstants {
 	 * 
 	 */
 	public static final String FILE_PATH = "/sdk_config.properties";
-	public static final String CERT_PATH = "resource/sdk-cert.p12";
+	public static final String CERT_PATH = "/sdk-cert.p12";
 	public static final String CERT_PASSWORD = "password";
 
 }
