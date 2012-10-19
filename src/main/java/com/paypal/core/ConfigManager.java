@@ -83,8 +83,8 @@ public final class ConfigManager {
 	public Map<String, String> getValuesByCategory(String category) {
 		String key = Constants.EMPTY_STRING;
 		HashMap<String, String> map = new HashMap<String, String>();
-		while (properties.keys().hasMoreElements()) {
-			key = (String) properties.keys().nextElement();
+		for (Object obj : properties.keySet()) {
+			key = (String) obj;
 			if (key.contains(category)) {
 				map.put(key, properties.getProperty(key));
 			}
@@ -101,8 +101,8 @@ public final class ConfigManager {
 	public Set<String> getNumOfAcct() {
 		String key = Constants.EMPTY_STRING;
 		Set<String> set = new HashSet<String>();
-		while (properties.keys().hasMoreElements()) {
-			key = (String) properties.keys().nextElement();
+		for (Object obj : properties.keySet()) {
+			key = (String) obj;
 			if (key.contains("acct")) {
 				int pos = key.indexOf('.');
 				String acct = key.substring(0, pos);
