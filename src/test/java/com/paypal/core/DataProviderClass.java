@@ -1,24 +1,10 @@
 package com.paypal.core;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 
 import org.testng.annotations.DataProvider;
-
-import com.paypal.core.UnitTestConstants;
-
-import com.paypal.core.ConfigManager;
-import com.paypal.core.ConnectionManager;
-import com.paypal.core.HttpConfiguration;
-import com.paypal.core.HttpConnection;
-import com.paypal.exception.InvalidCredentialException;
-import com.paypal.exception.MissingCredentialException;
-import com.paypal.exception.SSLConfigurationException;
-import com.paypal.sdk.exceptions.OAuthException;
 
 public class DataProviderClass {
 	static ConfigManager conf;
@@ -35,7 +21,7 @@ public class DataProviderClass {
 		return new Object[][] { new Object[] { conf } };
 
 	}
-
+	
 	// @DataProvider(name = "headers")
 	// public static Object[][] getPayPalHeaders()
 	// throws InvalidCredentialException, IOException,
