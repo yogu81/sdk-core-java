@@ -11,6 +11,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.core.nvp.NVPAPICallPreHandler;
+import com.paypal.core.soap.SOAPAPICallPreHandler;
 import com.paypal.exception.ClientActionRequiredException;
 import com.paypal.exception.HttpErrorException;
 import com.paypal.exception.InvalidCredentialException;
@@ -42,7 +43,7 @@ public class APIServiceTest {
 	}
 
 	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
-	public void makeRequestUsingForSignatureCredentialTest(ConfigManager conf)
+	public void makeRequestUsingForNVPSignatureCredentialTest(ConfigManager conf)
 			throws InvalidCredentialException, MissingCredentialException,
 			InvalidResponseDataException, HttpErrorException,
 			ClientActionRequiredException, OAuthException,
@@ -55,6 +56,21 @@ public class APIServiceTest {
 		Assert.assertNotNull(response);
 		Assert.assertTrue(response.contains("responseEnvelope.ack=Success"));
 	}
+
+//	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
+//	public void makeRequestUsingForSOAPSignatureCredentialTest(
+//			ConfigManager conf) throws InvalidCredentialException,
+//			MissingCredentialException, InvalidResponseDataException,
+//			HttpErrorException, ClientActionRequiredException, OAuthException,
+//			SSLConfigurationException, IOException, InterruptedException {
+//		DefaultSOAPAPICallHandler apiCallHandler = new DefaultSOAPAPICallHandler(
+//				"", null, null);
+//		APICallPreHandler handler = new SOAPAPICallPreHandler(apiCallHandler,
+//				UnitTestConstants.API_USER_NAME, null, null);
+//		String response = service.makeRequestUsing(handler);
+//		Assert.assertNotNull(response);
+//		Assert.assertTrue(response.contains("responseEnvelope.ack=Success"));
+//	}
 
 	@AfterClass
 	public void afterClass() {

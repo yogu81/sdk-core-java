@@ -23,6 +23,14 @@ public class ConnectionManagerTest {
 		Assert.assertNotNull(http);
 	}
 
+	@Test
+	public void getConnectionWithHttpConfigurationTest() {
+		HttpConfiguration httpConfig = new HttpConfiguration();
+		httpConfig.setGoogleAppEngine(true);
+		Assert.assertEquals(conn.getConnection(httpConfig).getClass(),
+				GoogleAppEngineHttpConnection.class);
+	}
+
 	@AfterClass
 	public void afterClass() {
 		conn = null;
