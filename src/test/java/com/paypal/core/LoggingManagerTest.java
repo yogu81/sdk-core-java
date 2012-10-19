@@ -3,8 +3,6 @@ package com.paypal.core;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import junit.framework.Assert;
-
 import org.testng.annotations.Test;
 
 import com.paypal.core.APIService;
