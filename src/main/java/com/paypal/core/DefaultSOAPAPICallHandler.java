@@ -183,12 +183,4 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 		return SOAP_BODY_END;
 	}
 
-	// TODO remove
-	public static void main(String[] args) {
-		DefaultSOAPAPICallHandler handler = new DefaultSOAPAPICallHandler(
-				"Payload", 
-				"xmlns:urn=\"urn:ebay:api:PayPalAPI\"", "<my>test</my>");
-		System.out.println(handler.getPayLoad());
-	}
-
 }

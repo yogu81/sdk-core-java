@@ -7,8 +7,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.core.UnitTestConstants;
-import com.paypal.core.credential.ICredential;
-import com.paypal.core.credential.SignatureCredential;
 import com.paypal.exception.MissingCredentialException;
 
 public class SignatureCredentialTest {

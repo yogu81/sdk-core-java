@@ -11,10 +11,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.core.nvp.PlatformAPICallPreHandler;
-<<<<<<< HEAD
-=======
 import com.paypal.core.soap.MerchantAPICallPreHandler;
->>>>>>> ff11a068d035add5f4325906555240fb33b0613d
 import com.paypal.exception.ClientActionRequiredException;
 import com.paypal.exception.HttpErrorException;
 import com.paypal.exception.InvalidCredentialException;
