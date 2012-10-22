@@ -3,7 +3,7 @@ package com.paypal.core;
 public class Constants {
 	public static final String ENCODING_FORMAT = "UTF8";
 	public static final String EMPTY_STRING = "";
-	public static final String ACCCOUT_PREFIX = "acct";
+	public static final String ACCOUNT_PREFIX = "acct";
 
 	public static final String PAYLOAD_FORMAT_SOAP = "SOAP";
 	public static final String PAYLOAD_FORMAT_NVP = "NV";

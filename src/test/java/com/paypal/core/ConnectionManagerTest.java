@@ -24,11 +24,19 @@ public class ConnectionManagerTest {
 	}
 
 	@Test
-	public void getConnectionWithHttpConfigurationTest() {
+	public void getConnectionWithHttpConfigurationForGoogleAppEngineTest() {
 		HttpConfiguration httpConfig = new HttpConfiguration();
 		httpConfig.setGoogleAppEngine(true);
 		Assert.assertEquals(conn.getConnection(httpConfig).getClass(),
 				GoogleAppEngineHttpConnection.class);
+	}
+
+	@Test
+	public void getConnectionWithHttpConfigurationForDefauktTest() {
+		HttpConfiguration httpConfig = new HttpConfiguration();
+
+		Assert.assertEquals(conn.getConnection(httpConfig).getClass(),
+				DefaultHttpConnection.class);
 	}
 
 	@AfterClass

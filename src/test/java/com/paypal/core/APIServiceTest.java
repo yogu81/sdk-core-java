@@ -11,6 +11,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.paypal.core.nvp.PlatformAPICallPreHandler;
+<<<<<<< HEAD
+=======
+import com.paypal.core.soap.MerchantAPICallPreHandler;
+>>>>>>> ff11a068d035add5f4325906555240fb33b0613d
 import com.paypal.exception.ClientActionRequiredException;
 import com.paypal.exception.HttpErrorException;
 import com.paypal.exception.InvalidCredentialException;
@@ -35,13 +39,14 @@ public class APIServiceTest {
 		connection = connectionMgr.getConnection();
 	}
 
-	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
+	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class, priority = 0)
 	public void getEndPointTest(ConfigManager conf) {
 		Assert.assertEquals(UnitTestConstants.API_ENDPOINT,
 				service.getEndPoint());
+
 	}
 
-	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
+	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class, priority = 1)
 	public void makeRequestUsingForNVPSignatureCredentialTest(ConfigManager conf)
 			throws InvalidCredentialException, MissingCredentialException,
 			InvalidResponseDataException, HttpErrorException,
@@ -56,20 +61,42 @@ public class APIServiceTest {
 		Assert.assertTrue(response.contains("responseEnvelope.ack=Success"));
 	}
 
-//	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
-//	public void makeRequestUsingForSOAPSignatureCredentialTest(
-//			ConfigManager conf) throws InvalidCredentialException,
-//			MissingCredentialException, InvalidResponseDataException,
-//			HttpErrorException, ClientActionRequiredException, OAuthException,
-//			SSLConfigurationException, IOException, InterruptedException {
-//		DefaultSOAPAPICallHandler apiCallHandler = new DefaultSOAPAPICallHandler(
-//				"", null, null);
-//		APICallPreHandler handler = new SOAPAPICallPreHandler(apiCallHandler,
-//				UnitTestConstants.API_USER_NAME, null, null);
-//		String response = service.makeRequestUsing(handler);
-//		Assert.assertNotNull(response);
-//		Assert.assertTrue(response.contains("responseEnvelope.ack=Success"));
-//	}
+	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class, priority = 2)
+	public void makeRequestUsingForSOAPSignatureCredentialTest(
+			ConfigManager conf) throws InvalidCredentialException,
+			MissingCredentialException, InvalidResponseDataException,
+			HttpErrorException, ClientActionRequiredException, OAuthException,
+			SSLConfigurationException, IOException, InterruptedException {
+
+		ConfigManager.getInstance().load(
+				this.getClass().getResourceAsStream(
+						"/sdk_config_soap.properties"));
+		service = new APIService();
+		String payload = "<ns:GetBalanceReq><ns:GetBalanceRequest><ebl:Version>94.0</ebl:Version></ns:GetBalanceRequest></ns:GetBalanceReq>";
+		DefaultSOAPAPICallHandler apiCallHandler = new DefaultSOAPAPICallHandler(
+				payload, null, null);
+		APICallPreHandler handler = new MerchantAPICallPreHandler(
+				apiCallHandler, UnitTestConstants.API_USER_NAME, null, null);
+		String response = service.makeRequestUsing(handler);
+		Assert.assertNotNull(response);
+		Assert.assertTrue(response
+				.contains("<Ack xmlns=\"urn:ebay:apis:eBLBaseComponents\">Success</Ack>"));
+	}
+
+	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class, priority = 1)
+	public void makeRequestUsingForNVPCertificateCredentialTest(
+			ConfigManager conf) throws InvalidCredentialException,
+			MissingCredentialException, InvalidResponseDataException,
+			HttpErrorException, ClientActionRequiredException, OAuthException,
+			SSLConfigurationException, IOException, InterruptedException {
+		String payload = "requestEnvelope.errorLanguage=en_US&baseAmountList.currency(0).code=USD&baseAmountList.currency(0).amount=2.0&convertToCurrencyList.currencyCode(0)=GBP";
+		APICallPreHandler handler = new PlatformAPICallPreHandler(payload,
+				"AdaptivePayments", "ConvertCurrency",
+				"certuser_biz_api1.paypal.com", null, null);
+		String response = service.makeRequestUsing(handler);
+		Assert.assertNotNull(response);
+		Assert.assertTrue(response.contains("responseEnvelope.ack=Success"));
+	}
 
 	@AfterClass
 	public void afterClass() {
