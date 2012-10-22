@@ -21,7 +21,19 @@ public class DataProviderClass {
 		return new Object[][] { new Object[] { conf } };
 
 	}
-	
+
+	@DataProvider(name = "configParamsForSoap")
+	public static Object[][] configParamsForSoap()
+			throws FileNotFoundException, IOException {
+		if (conf == null) {
+			conf = ConfigManager.getInstance();
+			InputStream in = DataProviderClass.class
+					.getResourceAsStream("/sdk_config_soap.properties");
+			conf.load(in);
+		}
+		return new Object[][] { new Object[] { conf } };
+
+	}
 	// @DataProvider(name = "headers")
 	// public static Object[][] getPayPalHeaders()
 	// throws InvalidCredentialException, IOException,

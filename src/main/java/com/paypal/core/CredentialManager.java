@@ -50,7 +50,7 @@ public final class CredentialManager {
 			throw new MissingCredentialException(
 					"No API accounts have been configured in application properties");
 		}
-		String prefix = Constants.ACCCOUT_PREFIX;
+		String prefix = Constants.ACCOUNT_PREFIX;
 		Map<String, String> credMap = conf.getValuesByCategory(prefix);
 		if (userId != null && userId.trim().length() != 0) {
 			for (Entry<String, String> entry : credMap.entrySet()) {
