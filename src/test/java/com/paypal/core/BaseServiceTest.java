@@ -4,19 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
-import junit.framework.Assert;
-
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import com.paypal.core.BaseService;
-import com.paypal.core.nvp.NVPAPICallPreHandler;
-import com.paypal.exception.InvalidCredentialException;
-import com.paypal.exception.MissingCredentialException;
 
 public class BaseServiceTest {
 	BaseService service;

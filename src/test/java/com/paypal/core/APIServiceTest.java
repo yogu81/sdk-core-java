@@ -8,11 +8,10 @@ import java.util.Map;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-import com.paypal.core.nvp.NVPAPICallPreHandler;
-import com.paypal.core.soap.SOAPAPICallPreHandler;
+import com.paypal.core.nvp.PlatformAPICallPreHandler;
+import com.paypal.core.soap.MerchantAPICallPreHandler;
 import com.paypal.exception.ClientActionRequiredException;
 import com.paypal.exception.HttpErrorException;
 import com.paypal.exception.InvalidCredentialException;
@@ -51,7 +50,7 @@ public class APIServiceTest {
 			ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
 		String payload = "requestEnvelope.errorLanguage=en_US&baseAmountList.currency(0).code=USD&baseAmountList.currency(0).amount=2.0&convertToCurrencyList.currencyCode(0)=GBP";
-		APICallPreHandler handler = new NVPAPICallPreHandler(payload,
+		APICallPreHandler handler = new PlatformAPICallPreHandler(payload,
 				"AdaptivePayments", "ConvertCurrency",
 				UnitTestConstants.API_USER_NAME, null, null);
 		String response = service.makeRequestUsing(handler);
@@ -73,8 +72,8 @@ public class APIServiceTest {
 		String payload = "<ns:GetBalanceReq><ns:GetBalanceRequest><ebl:Version>94.0</ebl:Version></ns:GetBalanceRequest></ns:GetBalanceReq>";
 		DefaultSOAPAPICallHandler apiCallHandler = new DefaultSOAPAPICallHandler(
 				payload, null, null);
-		APICallPreHandler handler = new SOAPAPICallPreHandler(apiCallHandler,
-				UnitTestConstants.API_USER_NAME, null, null);
+		APICallPreHandler handler = new MerchantAPICallPreHandler(
+				apiCallHandler, UnitTestConstants.API_USER_NAME, null, null);
 		String response = service.makeRequestUsing(handler);
 		Assert.assertNotNull(response);
 		Assert.assertTrue(response
@@ -88,7 +87,7 @@ public class APIServiceTest {
 			HttpErrorException, ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
 		String payload = "requestEnvelope.errorLanguage=en_US&baseAmountList.currency(0).code=USD&baseAmountList.currency(0).amount=2.0&convertToCurrencyList.currencyCode(0)=GBP";
-		APICallPreHandler handler = new NVPAPICallPreHandler(payload,
+		APICallPreHandler handler = new PlatformAPICallPreHandler(payload,
 				"AdaptivePayments", "ConvertCurrency",
 				"certuser_biz_api1.paypal.com", null, null);
 		String response = service.makeRequestUsing(handler);
