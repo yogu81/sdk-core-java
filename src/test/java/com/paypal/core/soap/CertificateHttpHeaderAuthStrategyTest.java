@@ -13,7 +13,7 @@ public class CertificateHttpHeaderAuthStrategyTest {
 
 	@Test
 	public void generateHeaderStrategyForTokenTest() throws Exception{
-		CertificateHttpHeaderAuthStrategy certificateHttpHeaderAuthStrategy= new CertificateHttpHeaderAuthStrategy("https://svcs.sandbox.paypal.com/");
+		CertificateHttpHeaderAuthStrategy certificateHttpHeaderAuthStrategy= new CertificateHttpHeaderAuthStrategy("https://api-3t.sandbox.paypal.com/2.0");
 		CertificateCredential certCredential = new CertificateCredential("testusername","testpassword","certkey","certpath");
 		TokenAuthorization tokenAuthorization = new TokenAuthorization("accessToken","tokenSecret");
 		certCredential.setThirdPartyAuthorization(tokenAuthorization);
