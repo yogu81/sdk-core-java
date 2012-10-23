@@ -52,8 +52,8 @@ public class MerchantAPICallPreHandlerTest {
 	@Test(dataProvider = "configParams", dataProviderClass = com.paypal.core.DataProviderClass.class)
 	public void getHeaderMapCertificateTest(ConfigManager conf) throws Exception{
 		
-		ICredential signatureCredential = credentialmgr.getCredentialObject("certuser_biz_api1.paypal.com"); 
-		MerchantAPICallPreHandler soapHandler = new MerchantAPICallPreHandler(defaultSoaphandler, signatureCredential);
+		ICredential certificateCredential = credentialmgr.getCredentialObject("certuser_biz_api1.paypal.com"); 
+		MerchantAPICallPreHandler soapHandler = new MerchantAPICallPreHandler(defaultSoaphandler, certificateCredential);
 		Map<String, String> headers = soapHandler.getHeaderMap();
 		Assert.assertNotNull(headers);
 		assert(headers.size()>0);
@@ -96,8 +96,8 @@ public class MerchantAPICallPreHandlerTest {
 	
 	@Test(dataProvider = "configParams", dataProviderClass = com.paypal.core.DataProviderClass.class)
 	public void getPayLoadForCertificate(ConfigManager conf) throws Exception{
-		ICredential signatureCredential = credentialmgr.getCredentialObject("certuser_biz_api1.paypal.com"); 
-		MerchantAPICallPreHandler soapHandler = new MerchantAPICallPreHandler(defaultSoaphandler, signatureCredential);
+		ICredential certificateCredential = credentialmgr.getCredentialObject("certuser_biz_api1.paypal.com"); 
+		MerchantAPICallPreHandler soapHandler = new MerchantAPICallPreHandler(defaultSoaphandler, certificateCredential);
 		String payload = soapHandler.getPayLoad();
 		
 		Document dom = loadXMLFromString(payload);
