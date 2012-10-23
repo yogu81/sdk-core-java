@@ -11,6 +11,7 @@ import com.paypal.core.CredentialManager;
 import com.paypal.core.credential.ICredential;
 import com.paypal.core.credential.SignatureCredential;
 import com.paypal.core.credential.TokenAuthorization;
+import com.paypal.core.soap.MerchantAPICallPreHandler;
 
 public class PlatformAPICallPreHandlerTest {
 
@@ -74,5 +75,14 @@ public class PlatformAPICallPreHandlerTest {
 		TokenAuthorization thirdAuth = (TokenAuthorization)signatureCredential.getThirdPartyAuthorization();
 		Assert.assertEquals("accessToken",thirdAuth.getAccessToken());
 		Assert.assertEquals("tokenSecret",thirdAuth.getTokenSecret());
+	}
+	
+	@Test(dataProvider = "configParams", dataProviderClass = com.paypal.core.DataProviderClass.class)
+	public void setGetSDKVersionAndNameTest(ConfigManager conf) throws Exception{
+		PlatformAPICallPreHandler platformApiCaller = new PlatformAPICallPreHandler("payload","servicename","method","jb-us-seller_api1.paypal.com","accessToken","tokenSecret");
+		platformApiCaller.setSdkVersion("1.0.0");
+		Assert.assertEquals("1.0.0",platformApiCaller.getSdkVersion() );
+		platformApiCaller.setSdkName("testSDK");
+		Assert.assertEquals("testSDK",platformApiCaller.getSdkName());
 	}
 }
