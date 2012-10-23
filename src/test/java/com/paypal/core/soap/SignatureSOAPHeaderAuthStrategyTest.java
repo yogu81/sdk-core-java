@@ -7,14 +7,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import junit.framework.Assert;
 
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import com.paypal.core.CredentialManager;
 import com.paypal.core.credential.SignatureCredential;
 import com.paypal.core.credential.SubjectAuthorization;
 import com.paypal.core.credential.TokenAuthorization;

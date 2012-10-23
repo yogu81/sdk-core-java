@@ -6,7 +6,6 @@ import junit.framework.Assert;
 
 import org.testng.annotations.Test;
 
-import com.paypal.core.credential.CertificateCredential;
 import com.paypal.core.credential.SignatureCredential;
 import com.paypal.core.credential.TokenAuthorization;
 

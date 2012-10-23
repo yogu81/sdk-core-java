@@ -10,7 +10,6 @@ import com.paypal.core.ConfigManager;
 import com.paypal.core.CredentialManager;
 import com.paypal.core.credential.ICredential;
 import com.paypal.core.credential.SignatureCredential;
-import com.paypal.core.credential.ThirdPartyAuthorization;
 import com.paypal.core.credential.TokenAuthorization;
 
 public class PlatformAPICallPreHandlerTest {

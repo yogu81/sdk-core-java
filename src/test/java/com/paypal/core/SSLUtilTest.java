@@ -23,4 +23,10 @@ public class SSLUtilTest {
 		Assert.assertNotNull(SSLUtil.setupClientSSL("src/sdk_cert.p12",
 				UnitTestConstants.CERT_PASSWORD));
 	}
+
+	@Test(expectedExceptions = SSLConfigurationException.class)
+	public void setupClientSSLNoSuchKeyExceptionTest() throws Exception {
+		Assert.assertNotNull(SSLUtil.setupClientSSL("src/sdk_cert.p12",
+				null));
+	}
 }
