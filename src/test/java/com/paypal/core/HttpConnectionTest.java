@@ -10,12 +10,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.paypal.core.ConfigManager;
-import com.paypal.core.ConnectionManager;
-import com.paypal.core.HttpConfiguration;
-import com.paypal.core.HttpConnection;
-import com.paypal.exception.SSLConfigurationException;
-
 public class HttpConnectionTest {
 	HttpConnection connection;
 	HttpConfiguration httpConfiguration;
@@ -27,21 +21,6 @@ public class HttpConnectionTest {
 		httpConfiguration = new HttpConfiguration();
 
 	}
-
-//	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
-//	public void setupClientSSLTest(ConfigManager conf)
-//			throws SSLConfigurationException {
-//		connection.setupClientSSL(null, null);
-//		if (Boolean.parseBoolean(conf.getValue("http.UseProxy"))) {
-//			httpConfiguration.setProxyHost(conf.getValue("http.ProxyHost"));
-//			httpConfiguration.setProxyPassword(conf
-//					.getValue("http.ProxyPassword"));
-//			httpConfiguration.setProxyPort(Integer.parseInt(conf
-//					.getValue("http.ProxyPort")));
-//			httpConfiguration.setProxyUserName(conf
-//					.getValue("http.ProxyUserName"));
-//		}
-//	}
 
 	@Test(expectedExceptions = MalformedURLException.class)
 	public void checkMalformedURLExceptionTest() throws Exception {

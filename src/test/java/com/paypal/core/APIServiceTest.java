@@ -58,16 +58,13 @@ public class APIServiceTest {
 		Assert.assertTrue(response.contains("responseEnvelope.ack=Success"));
 	}
 
-	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class, priority = 2)
+	@Test(dataProvider = "configParamsForSoap", dataProviderClass = DataProviderClass.class, priority = 3)
 	public void makeRequestUsingForSOAPSignatureCredentialTest(
 			ConfigManager conf) throws InvalidCredentialException,
 			MissingCredentialException, InvalidResponseDataException,
 			HttpErrorException, ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
 
-		ConfigManager.getInstance().load(
-				this.getClass().getResourceAsStream(
-						"/sdk_config_soap.properties"));
 		service = new APIService();
 		String payload = "<ns:GetBalanceReq><ns:GetBalanceRequest><ebl:Version>94.0</ebl:Version></ns:GetBalanceRequest></ns:GetBalanceReq>";
 		DefaultSOAPAPICallHandler apiCallHandler = new DefaultSOAPAPICallHandler(
@@ -80,7 +77,7 @@ public class APIServiceTest {
 				.contains("<Ack xmlns=\"urn:ebay:apis:eBLBaseComponents\">Success</Ack>"));
 	}
 
-	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class, priority = 1)
+	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class, priority = 2)
 	public void makeRequestUsingForNVPCertificateCredentialTest(
 			ConfigManager conf) throws InvalidCredentialException,
 			MissingCredentialException, InvalidResponseDataException,

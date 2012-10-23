@@ -22,20 +22,22 @@ public class DefaultSOAPAPICallHandlerTest {
 
 	@AfterClass
 	public void afterClass() {
+		defaultHandler = null;
 	}
+	
+	@Test(dataProvider = "configParamsForSoap", dataProviderClass = DataProviderClass.class)
+	public void getEndPointTest(ConfigManager conf) {
+		Assert.assertEquals("https://api-3t.sandbox.paypal.com/2.0",
+				defaultHandler.getEndPoint());
+	}
+
 
 	@Test
 	public void getCredential() {
 		Assert.assertEquals(defaultHandler.getCredential(), null);
 	}
 
-	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
-	public void getEndPoint(ConfigManager conf) {
-		Assert.assertEquals(defaultHandler.getEndPoint(),
-				"https://svcs.sandbox.paypal.com/");
-
-	}
-
+	
 	@Test
 	public void getHeaderMap() {
 		Assert.assertEquals(defaultHandler.getHeaderMap().getClass(),
@@ -57,36 +59,6 @@ public class DefaultSOAPAPICallHandlerTest {
 		Assert.assertEquals(
 				defaultHandler.getPayLoad(),
 				"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ><soapenv:Header></soapenv:Header><soapenv:Body>requestEnvelope.errorLanguage=en_US&baseAmountList.currency(0).code=USD&baseAmountList.currency(0).amount=2.0&convertToCurrencyList.currencyCode(0)=GBP</soapenv:Body></soapenv:Envelope>");
-	}
-
-	@Test
-	public void getSoapBodyEnd() {
-
-	}
-
-	@Test
-	public void getSoapBodyStart() {
-
-	}
-
-	@Test
-	public void getSoapEnvelopeEnd() {
-
-	}
-
-	@Test
-	public void getSoapEnvelopeStart() {
-
-	}
-
-	@Test
-	public void getSoapHeaderEnd() {
-
-	}
-
-	@Test
-	public void getSoapHeaderStart() {
-
 	}
 
 	@Test

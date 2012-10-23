@@ -12,12 +12,10 @@ public class DataProviderClass {
 	@DataProvider(name = "configParams")
 	public static Object[][] configParams() throws FileNotFoundException,
 			IOException {
-		if (conf == null) {
-			conf = ConfigManager.getInstance();
-			InputStream in = DataProviderClass.class
-					.getResourceAsStream("/sdk_config.properties");
-			conf.load(in);
-		}
+		conf = ConfigManager.getInstance();
+		InputStream in = DataProviderClass.class
+				.getResourceAsStream("/sdk_config.properties");
+		conf.load(in);
 		return new Object[][] { new Object[] { conf } };
 
 	}
@@ -25,29 +23,12 @@ public class DataProviderClass {
 	@DataProvider(name = "configParamsForSoap")
 	public static Object[][] configParamsForSoap()
 			throws FileNotFoundException, IOException {
-		if (conf == null) {
-			conf = ConfigManager.getInstance();
-			InputStream in = DataProviderClass.class
-					.getResourceAsStream("/sdk_config_soap.properties");
-			conf.load(in);
-		}
+		conf = ConfigManager.getInstance();
+		InputStream in = DataProviderClass.class
+				.getResourceAsStream("/sdk_config_soap.properties");
+		conf.load(in);
 		return new Object[][] { new Object[] { conf } };
 
 	}
-	// @DataProvider(name = "headers")
-	// public static Object[][] getPayPalHeaders()
-	// throws InvalidCredentialException, IOException,
-	// MissingCredentialException, SSLConfigurationException,
-	// OAuthException {
-	// AuthenticationService auth = new AuthenticationService();
-	// ConnectionManager connectionMgr = ConnectionManager.getInstance();
-	// HttpConnection connection = connectionMgr.getConnection();
-	// HttpConfiguration httpConfiguration = new HttpConfiguration();
-	// httpConfiguration.setEndPointUrl(UnitTestConstants.API_ENDPOINT);
-	// Map<String, String> map = auth.getPayPalHeaders(
-	// UnitTestConstants.API_USER_NAME, connection, null, null,
-	// httpConfiguration);
-	// return new Object[][] { new Object[] { map } };
-	//
-	// }
+
 }
