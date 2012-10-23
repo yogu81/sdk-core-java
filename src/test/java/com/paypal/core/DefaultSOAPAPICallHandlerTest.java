@@ -24,52 +24,56 @@ public class DefaultSOAPAPICallHandlerTest {
 	public void afterClass() {
 		defaultHandler = null;
 	}
-	
+
 	@Test(dataProvider = "configParamsForSoap", dataProviderClass = DataProviderClass.class)
 	public void getEndPointTest(ConfigManager conf) {
 		Assert.assertEquals("https://api-3t.sandbox.paypal.com/2.0",
 				defaultHandler.getEndPoint());
 	}
 
-
 	@Test
-	public void getCredential() {
+	public void getCredentialTest() {
 		Assert.assertEquals(defaultHandler.getCredential(), null);
 	}
 
-	
 	@Test
-	public void getHeaderMap() {
+	public void getHeaderMapTest() {
 		Assert.assertEquals(defaultHandler.getHeaderMap().getClass(),
 				HashMap.class);
 	}
 
 	@Test
-	public void getHeaderString() {
+	public void getHeaderStringTest() {
 		Assert.assertEquals(defaultHandler.getHeaderString(), "");
 	}
 
 	@Test
-	public void getNamespaces() {
+	public void getNamespacesTest() {
 		Assert.assertEquals(defaultHandler.getNamespaces(), "");
 	}
 
 	@Test
-	public void getPayLoad() {
+	public void getPayLoadTest() {
 		Assert.assertEquals(
 				defaultHandler.getPayLoad(),
 				"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ><soapenv:Header></soapenv:Header><soapenv:Body>requestEnvelope.errorLanguage=en_US&baseAmountList.currency(0).code=USD&baseAmountList.currency(0).amount=2.0&convertToCurrencyList.currencyCode(0)=GBP</soapenv:Body></soapenv:Envelope>");
 	}
 
 	@Test
-	public void setHeaderString() {
+	public void setHeaderStringTest() {
 		defaultHandler.setHeaderString("headerString");
 		Assert.assertEquals(defaultHandler.getHeaderString(), "headerString");
 	}
 
 	@Test
-	public void setNamespaces() {
+	public void setNamespacesTest() {
 		defaultHandler.setNamespaces("namespaces");
 		Assert.assertEquals(defaultHandler.getNamespaces(), "namespaces");
+	}
+
+	@Test
+	public void getPayloadForEmptyRawPayloadTest() {
+		defaultHandler = new DefaultSOAPAPICallHandler("", "", "");
+		Assert.assertEquals("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ><soapenv:Header></soapenv:Header><soapenv:Body></soapenv:Body></soapenv:Envelope>", defaultHandler.getPayLoad());
 	}
 }

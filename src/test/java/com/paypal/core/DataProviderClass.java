@@ -14,7 +14,7 @@ public class DataProviderClass {
 			IOException {
 		conf = ConfigManager.getInstance();
 		InputStream in = DataProviderClass.class
-					.getResourceAsStream("/sdk_config.properties");
+				.getResourceAsStream("/sdk_config.properties");
 		conf.load(in);
 		return new Object[][] { new Object[] { conf } };
 	}
@@ -24,7 +24,17 @@ public class DataProviderClass {
 			throws FileNotFoundException, IOException {
 		conf = ConfigManager.getInstance();
 		InputStream in = DataProviderClass.class
-					.getResourceAsStream("/sdk_config_soap.properties");
+				.getResourceAsStream("/sdk_config_soap.properties");
+		conf.load(in);
+		return new Object[][] { new Object[] { conf } };
+	}
+
+	@DataProvider(name = "configParamsForProxy")
+	public static Object[][] configParamsForProxy()
+			throws FileNotFoundException, IOException {
+		conf = ConfigManager.getInstance();
+		InputStream in = DataProviderClass.class
+				.getResourceAsStream("/sdk_config_proxy.properties");
 		conf.load(in);
 		return new Object[][] { new Object[] { conf } };
 	}

@@ -92,6 +92,13 @@ public class APIServiceTest {
 		Assert.assertTrue(response.contains("responseEnvelope.ack=Success"));
 	}
 
+	@Test(dataProvider = "configParamsForProxy", dataProviderClass = DataProviderClass.class, priority = 4)
+	public void proxyTest(ConfigManager conf) {
+		service = new APIService();
+		Assert.assertEquals(service.getEndPoint(),
+				"https://svcs.sandbox.paypal.com/proxy");
+	}
+
 	@AfterClass
 	public void afterClass() {
 		service = null;
