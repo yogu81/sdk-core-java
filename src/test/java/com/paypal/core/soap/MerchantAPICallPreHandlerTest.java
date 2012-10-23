@@ -34,7 +34,7 @@ public class MerchantAPICallPreHandlerTest {
 		credentialmgr = CredentialManager.getInstance();
 	}
 	
-	@Test(dataProvider = "configParams", dataProviderClass = com.paypal.core.DataProviderClass.class)
+	@Test(dataProvider = "configParamsForSoap", dataProviderClass = com.paypal.core.DataProviderClass.class)
 	public void getHeaderMapSignatureTest(ConfigManager configMgr) throws Exception{
 		
 		ICredential signatureCredential = credentialmgr.getCredentialObject("jb-us-seller_api1.paypal.com"); 
@@ -49,7 +49,7 @@ public class MerchantAPICallPreHandlerTest {
 		Assert.assertEquals(Constants.PAYLOAD_FORMAT_SOAP,headers.get(Constants.PAYPAL_RESPONSE_DATA_FORMAT_HEADER));
 	}
 	
-	@Test(dataProvider = "configParams", dataProviderClass = com.paypal.core.DataProviderClass.class)
+	@Test(dataProvider = "configParamsForSoap", dataProviderClass = com.paypal.core.DataProviderClass.class)
 	public void getHeaderMapCertificateTest(ConfigManager conf) throws Exception{
 		
 		ICredential certificateCredential = credentialmgr.getCredentialObject("certuser_biz_api1.paypal.com"); 
@@ -64,7 +64,7 @@ public class MerchantAPICallPreHandlerTest {
 		Assert.assertEquals(soapHandler.getSdkName() +"-"+ soapHandler.getSdkVersion(),headers.get(Constants.PAYPAL_REQUEST_SOURCE_HEADER));
 	}
 	
-	@Test(dataProvider = "configParams", dataProviderClass = com.paypal.core.DataProviderClass.class)
+	@Test(dataProvider = "configParamsForSoap", dataProviderClass = com.paypal.core.DataProviderClass.class)
 	public void getPayLoadForSignature(ConfigManager conf) throws Exception{
 		ICredential signatureCredential = credentialmgr.getCredentialObject("jb-us-seller_api1.paypal.com"); 
 		MerchantAPICallPreHandler soapHandler = new MerchantAPICallPreHandler(defaultSoaphandler,signatureCredential);
@@ -94,7 +94,7 @@ public class MerchantAPICallPreHandlerTest {
 		
 	}
 	
-	@Test(dataProvider = "configParams", dataProviderClass = com.paypal.core.DataProviderClass.class)
+	@Test(dataProvider = "configParamsForSoap", dataProviderClass = com.paypal.core.DataProviderClass.class)
 	public void getPayLoadForCertificate(ConfigManager conf) throws Exception{
 		ICredential certificateCredential = credentialmgr.getCredentialObject("certuser_biz_api1.paypal.com"); 
 		MerchantAPICallPreHandler soapHandler = new MerchantAPICallPreHandler(defaultSoaphandler, certificateCredential);
@@ -120,28 +120,28 @@ public class MerchantAPICallPreHandlerTest {
 		Assert.assertEquals("test", bodyText);
 	}
 	
-	@Test(dataProvider = "configParams", dataProviderClass = com.paypal.core.DataProviderClass.class)
+	@Test(dataProvider = "configParamsForSoap", dataProviderClass = com.paypal.core.DataProviderClass.class)
 	public void setGetSDKNameTest(ConfigManager conf) throws Exception{
-		ICredential signatureCredential = credentialmgr.getCredentialObject("certuser_biz_api1.paypal.com"); 
-		MerchantAPICallPreHandler soapHandler = new MerchantAPICallPreHandler(defaultSoaphandler, signatureCredential);
+		ICredential certificateCredential = credentialmgr.getCredentialObject("certuser_biz_api1.paypal.com"); 
+		MerchantAPICallPreHandler soapHandler = new MerchantAPICallPreHandler(defaultSoaphandler, certificateCredential);
 		soapHandler.setSdkName("testsdk");
 		Assert.assertEquals("testsdk",soapHandler.getSdkName() );
 	}
 	
-	@Test(dataProvider = "configParams", dataProviderClass = com.paypal.core.DataProviderClass.class)
+	@Test(dataProvider = "configParamsForSoap", dataProviderClass = com.paypal.core.DataProviderClass.class)
 	public void setGetSDKVersionTest(ConfigManager conf) throws Exception{
-		ICredential signatureCredential = credentialmgr.getCredentialObject("certuser_biz_api1.paypal.com"); 
-		MerchantAPICallPreHandler soapHandler = new MerchantAPICallPreHandler(defaultSoaphandler, signatureCredential);
+		ICredential certificateCredential = credentialmgr.getCredentialObject("certuser_biz_api1.paypal.com"); 
+		MerchantAPICallPreHandler soapHandler = new MerchantAPICallPreHandler(defaultSoaphandler, certificateCredential);
 		soapHandler.setSdkVersion("1.0.0");
 		Assert.assertEquals("1.0.0",soapHandler.getSdkVersion() );
 	}
 	
-	@Test(dataProvider = "configParams", dataProviderClass = com.paypal.core.DataProviderClass.class)
+	@Test(dataProvider = "configParamsForSoap", dataProviderClass = com.paypal.core.DataProviderClass.class)
 	public void getEndPointTest(ConfigManager conf) throws Exception{
-		ICredential signatureCredential = credentialmgr.getCredentialObject("certuser_biz_api1.paypal.com"); 
-		MerchantAPICallPreHandler soapHandler = new MerchantAPICallPreHandler(defaultSoaphandler, signatureCredential);
+		ICredential certificateCredential = credentialmgr.getCredentialObject("certuser_biz_api1.paypal.com"); 
+		MerchantAPICallPreHandler soapHandler = new MerchantAPICallPreHandler(defaultSoaphandler, certificateCredential);
 		String endpoint = soapHandler.getEndPoint();
-		Assert.assertEquals("https://svcs.sandbox.paypal.com/", endpoint);
+		Assert.assertEquals("https://api-3t.sandbox.paypal.com/2.0", endpoint);
 	}
 	
 	@Test(expectedExceptions =IllegalArgumentException.class)

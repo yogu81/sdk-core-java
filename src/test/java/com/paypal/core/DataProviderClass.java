@@ -14,10 +14,9 @@ public class DataProviderClass {
 			IOException {
 		conf = ConfigManager.getInstance();
 		InputStream in = DataProviderClass.class
-				.getResourceAsStream("/sdk_config.properties");
+					.getResourceAsStream("/sdk_config.properties");
 		conf.load(in);
 		return new Object[][] { new Object[] { conf } };
-
 	}
 
 	@DataProvider(name = "configParamsForSoap")
@@ -25,10 +24,8 @@ public class DataProviderClass {
 			throws FileNotFoundException, IOException {
 		conf = ConfigManager.getInstance();
 		InputStream in = DataProviderClass.class
-				.getResourceAsStream("/sdk_config_soap.properties");
+					.getResourceAsStream("/sdk_config_soap.properties");
 		conf.load(in);
 		return new Object[][] { new Object[] { conf } };
-
 	}
-
 }

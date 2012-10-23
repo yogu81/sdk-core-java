@@ -21,12 +21,7 @@ import com.paypal.core.credential.TokenAuthorization;
 
 public class SignatureSOAPHeaderAuthStrategyTest {
 
-	private CredentialManager credentialmgr;
 	
-	@BeforeClass
-	public void setUp(){
-		credentialmgr = CredentialManager.getInstance();
-	}
 	
 	@Test
 	public void generateHeaderStrategyForTokenTest() throws Exception{
@@ -108,8 +103,5 @@ public class SignatureSOAPHeaderAuthStrategyTest {
 		return builder.parse(stream);
     }
 	
-	@AfterClass
-	public void tearDown(){
-		credentialmgr = null;
-	}
+	
 }
