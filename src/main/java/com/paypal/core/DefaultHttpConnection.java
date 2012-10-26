@@ -2,6 +2,7 @@ package com.paypal.core;
 
 import java.io.IOException;
 import java.net.Authenticator;
+import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
@@ -55,15 +56,16 @@ public class DefaultHttpConnection extends HttpConnection {
 			proxy = new Proxy(Proxy.Type.HTTP, addr);
 		}
 		if (proxy != null) {
-			this.connection = (HttpsURLConnection) url.openConnection(proxy);
+			this.connection = (HttpURLConnection) url.openConnection(proxy);
 		} else {
-			this.connection = (HttpsURLConnection) url
+			this.connection = (HttpURLConnection) url
 					.openConnection(Proxy.NO_PROXY);
 		}
 		if (this.connection instanceof HttpsURLConnection) {
 			((HttpsURLConnection) this.connection)
 					.setSSLSocketFactory(this.sslContext.getSocketFactory());
 		}
+		
 		if (this.config.getProxyUserName() != null
 				&& this.config.getProxyPassword() != null) {
 			final String username = this.config.getProxyUserName();
