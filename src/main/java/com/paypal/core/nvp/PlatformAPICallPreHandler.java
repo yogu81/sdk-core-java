@@ -201,7 +201,7 @@ public class PlatformAPICallPreHandler implements APICallPreHandler {
 		ICredential returnCredential = null;
 		CredentialManager credentialManager = CredentialManager.getInstance();
 		returnCredential = credentialManager.getCredentialObject(apiUserName);
-		if (accessToken != null && !accessToken.isEmpty()) {
+		if (accessToken != null && accessToken.length() != 0) {
 			ThirdPartyAuthorization tokenAuth = new TokenAuthorization(
 					accessToken, tokenSecret);
 			if (returnCredential instanceof SignatureCredential) {
@@ -217,19 +217,20 @@ public class PlatformAPICallPreHandler implements APICallPreHandler {
 
 	private Map<String, String> getDefaultHttpHeadersNVP() {
 		Map<String, String> returnMap = new HashMap<String, String>();
-		returnMap.put(Constants.PAYPAL_APPLICATION_ID_HEADER, getApplicationId());
+		returnMap.put(Constants.PAYPAL_APPLICATION_ID_HEADER,
+				getApplicationId());
 		returnMap.put(Constants.PAYPAL_REQUEST_DATA_FORMAT_HEADER,
 				Constants.PAYLOAD_FORMAT_NVP);
 		returnMap.put(Constants.PAYPAL_RESPONSE_DATA_FORMAT_HEADER,
 				Constants.PAYLOAD_FORMAT_NVP);
 		returnMap.put(Constants.PAYPAL_REQUEST_SOURCE_HEADER, sdkName + "-"
 				+ sdkVersion);
-		
+
 		String sandboxEmailAddress = ConfigManager.getInstance().getValue(
 				Constants.SANDBOX_EMAIL_ADDRESS);
-		if(sandboxEmailAddress != null) {
+		if (sandboxEmailAddress != null) {
 			returnMap.put(Constants.PAYPAL_SANDBOX_EMAIL_ADDRESS_HEADER,
-					sandboxEmailAddress);			
+					sandboxEmailAddress);
 		}
 		return returnMap;
 	}

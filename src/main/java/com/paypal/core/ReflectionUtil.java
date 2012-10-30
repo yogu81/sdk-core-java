@@ -46,7 +46,7 @@ public class ReflectionUtil {
 						&& !m.getName().equalsIgnoreCase("getClass")) {
 					packageName = m.getReturnType().getPackage();
 					try {
-						if (!prefix.isEmpty()) {
+						if (prefix != null && prefix.length() != 0) {
 							propertyName = prefix + "."
 									+ m.getName().substring(3, 4).toLowerCase()
 									+ m.getName().substring(4);

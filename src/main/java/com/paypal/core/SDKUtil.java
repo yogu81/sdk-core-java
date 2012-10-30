@@ -14,7 +14,7 @@ public class SDKUtil {
 	private static final Pattern AMPERSAND_REPLACE = Pattern
 			.compile("&(?!([amp;[lt;[gt;[apos;[quot;]]]]]))");
 
-    /**
+/**
 	 * Pattern for replacing Lesser-than '<' character
 	 */
 	private static final Pattern LESSERTHAN_REPLACE = Pattern.compile("<");
@@ -120,7 +120,7 @@ public class SDKUtil {
 	 */
 	public static String escapeInvalidXmlCharsRegex(String textContent) {
 		String response = "";
-		if (textContent != null && !textContent.isEmpty()) {
+		if (textContent != null && textContent.length() != 0) {
 			response = APOSTROPHE_REPLACE.matcher(
 					QUOT_REPLACE.matcher(
 							GREATERTHAN_REPLACE.matcher(
@@ -185,7 +185,7 @@ public class SDKUtil {
 		if (doubleContent != null) {
 			textContent = doubleContent.toString();
 			response = escapeInvalidXmlCharsRegex(textContent);
-		} 
+		}
 		return response;
 	}
 
