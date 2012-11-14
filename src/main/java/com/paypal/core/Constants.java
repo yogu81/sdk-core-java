@@ -104,5 +104,14 @@ public class Constants {
 
 	// Sandbox Email Address Key
 	public static final String SANDBOX_EMAIL_ADDRESS = "sandbox.EmailAddress";
+	
+	public static final String HTTP_CONTENT_TYPE_HEADER = "Content-Type";
+	
+	// HTTP Configurations Defaults
+	// HTTP Method Default
+	public static final String HTTP_CONFIG_DEFAULT_HTTP_METHOD = "POST";
+	
+	// HTTP Content Type Default
+	public static final String HTTP_CONFIG_DEFAULT_CONTENT_TYPE = "application/x-www-form-urlencoded";
 
 }

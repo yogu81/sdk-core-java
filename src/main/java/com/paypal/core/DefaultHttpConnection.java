@@ -65,7 +65,7 @@ public class DefaultHttpConnection extends HttpConnection {
 			((HttpsURLConnection) this.connection)
 					.setSSLSocketFactory(this.sslContext.getSocketFactory());
 		}
-		
+
 		if (this.config.getProxyUserName() != null
 				&& this.config.getProxyPassword() != null) {
 			final String username = this.config.getProxyUserName();
@@ -78,15 +78,14 @@ public class DefaultHttpConnection extends HttpConnection {
 		System.setProperty("http.maxConnections",
 				String.valueOf(this.config.getMaxHttpConnection()));
 		System.setProperty("sun.net.http.errorstream.enableBuffering", "true");
-		this.connection.setRequestProperty("Content-Type",
-				"application/x-www-form-urlencoded");
+		this.connection.setRequestProperty(Constants.HTTP_CONTENT_TYPE_HEADER,
+				config.getContentType());
 		this.connection.setDoInput(true);
 		this.connection.setDoOutput(true);
-		this.connection.setRequestMethod("POST");
+		this.connection.setRequestMethod(config.getHttpMethod());
 		this.connection.setConnectTimeout(this.config.getConnectionTimeout());
 		this.connection.setReadTimeout(this.config.getReadTimeout());
 	}
-
 
 	/**
 	 * Private class for password based authentication
