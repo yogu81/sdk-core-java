@@ -78,16 +78,18 @@ public abstract class HttpConnection {
 					Thread.sleep(this.config.getRetryDelay());
 				}
 				try {
-					writer = new OutputStreamWriter(
-							this.connection.getOutputStream(),
-							Charset.forName(Constants.ENCODING_FORMAT));
-					writer.write(payload);
-					writer.flush();
+					if ("POST".equalsIgnoreCase(connection.getRequestMethod())) {
+						writer = new OutputStreamWriter(
+								this.connection.getOutputStream(),
+								Charset.forName(Constants.ENCODING_FORMAT));
+						writer.write(payload);
+						writer.flush();
+					}
 					int responsecode = connection.getResponseCode();
 					reader = new BufferedReader(new InputStreamReader(
 							connection.getInputStream(),
 							Constants.ENCODING_FORMAT));
-					if (responsecode == 200) {
+					if (responsecode >= 200 && responsecode < 300) {
 						successResponse = read(reader);
 						LoggingManager.debug(HttpConnection.class,
 								"Response : " + successResponse);
