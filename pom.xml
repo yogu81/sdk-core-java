@@ -7,7 +7,7 @@
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>core</name>
+	<name>paypal-core</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
