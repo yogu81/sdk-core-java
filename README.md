@@ -1,0 +1,1 @@
+This repository contains core files for all Java sdks.
