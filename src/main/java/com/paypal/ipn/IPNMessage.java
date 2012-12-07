@@ -134,11 +134,9 @@ public class IPNMessage {
 	 * @return IPN value for corresponding IpnName
 	 */
 	public String getIpnParamValue(String ipnName){
-		String ipnValue = null;
-		if(!this.ipnMap.get(ipnName).equalsIgnoreCase(Constants.EMPTY_STRING)){
-			ipnValue = this.ipnMap.get(ipnName); 
-		}
-		return ipnValue;
+		
+		return this.ipnMap.get(ipnName)!=null? this.ipnMap.get(ipnName) : null;
+	
 	}
 	
 	
@@ -153,13 +151,8 @@ public class IPNMessage {
 	 * @return Transaction Type (eg: express_checkout, cart, web_accept)
 	 */
 	public String getTransactionType(){
-		String transactionType = null;
-		if(!this.ipnMap.get("txn_type").equalsIgnoreCase(Constants.EMPTY_STRING)){
-			transactionType = this.ipnMap.get("txn_type");
-		}else if(!this.ipnMap.get("transaction_type").equalsIgnoreCase(Constants.EMPTY_STRING)){
-			transactionType = this.ipnMap.get("transaction_type");
-		}
-		return transactionType;
+		return this.ipnMap.get("txn_type") != null? this.ipnMap.get("txn_type") : 
+			(this.ipnMap.get("transaction_type")!=null? this.ipnMap.get("transaction_type"):null);
 	}
 	
 }
