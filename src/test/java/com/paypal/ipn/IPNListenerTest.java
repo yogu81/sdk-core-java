@@ -30,7 +30,7 @@ public class IPNListenerTest {
 	}
 	
 	@AfterClass
-	public void end(){
+	public void destory(){
 		ipnmsg = null;
 	}
 	
