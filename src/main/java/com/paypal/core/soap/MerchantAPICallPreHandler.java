@@ -232,7 +232,7 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	public String getEndPoint() {
 
 		/*
-		 * Fixes the multi end-point functionality by searching an end-point
+		 * Multi end-point configuration by searching an end-point
 		 * that has the portName appended to the key (service.EndPoint). Care
 		 * should be taken to use the portName specified in the WSDL, Ex: If
 		 * there is a WSDL entry <wsdl:port name="ServiceSOAP11port_http" ..>
