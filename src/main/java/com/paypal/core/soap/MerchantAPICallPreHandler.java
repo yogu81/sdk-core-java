@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.paypal.core.APICallPreHandler;
+import com.paypal.core.ConfigManager;
 import com.paypal.core.Constants;
 import com.paypal.core.CredentialManager;
 import com.paypal.core.credential.CertificateCredential;
@@ -55,7 +56,7 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	 * {@link APICallPreHandler} instance
 	 */
 	private APICallPreHandler apiCallHandler;
-	
+
 	/**
 	 * SDK Name used in tracking
 	 */
@@ -65,6 +66,11 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	 * SDK Version
 	 */
 	private String sdkVersion;
+
+	/**
+	 * PortName to which a particular operation is bound;
+	 */
+	private String portName;
 
 	/**
 	 * Internal variable to hold headers
@@ -85,8 +91,8 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	}
 
 	/**
-	 * MerchantAPICallPreHandler decorating basic {@link APICallPreHandler} using
-	 * API Username
+	 * MerchantAPICallPreHandler decorating basic {@link APICallPreHandler}
+	 * using API Username
 	 * 
 	 * @param apiCallHandler
 	 *            Instance of {@link APICallPreHandler}
@@ -110,8 +116,8 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	}
 
 	/**
-	 * MerchantAPICallPreHandler decorating basic {@link APICallPreHandler} using
-	 * {@link ICredential}
+	 * MerchantAPICallPreHandler decorating basic {@link APICallPreHandler}
+	 * using {@link ICredential}
 	 * 
 	 * @param apiCallHandler
 	 *            Instance of {@link APICallPreHandler}
@@ -127,7 +133,7 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 		}
 		this.credential = credential;
 	}
-	
+
 	/**
 	 * @return the sdkName
 	 */
@@ -158,6 +164,21 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 		this.sdkVersion = sdkVersion;
 	}
 
+	/**
+	 * @return the portName
+	 */
+	public String getPortName() {
+		return portName;
+	}
+
+	/**
+	 * @param portName
+	 *            the portName to set
+	 */
+	public void setPortName(String portName) {
+		this.portName = portName;
+	}
+
 	public Map<String, String> getHeaderMap() throws OAuthException {
 		if (headers == null) {
 			headers = apiCallHandler.getHeaderMap();
@@ -176,7 +197,7 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 		}
 		return headers;
 	}
-	
+
 	public String getPayLoad() {
 
 		// This method appends SOAP Headers to payload
@@ -190,7 +211,8 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 				signatureSoapHeaderAuthStrategy
 						.setThirdPartyAuthorization(sigCredential
 								.getThirdPartyAuthorization());
-				header = signatureSoapHeaderAuthStrategy.generateHeaderStrategy(sigCredential);
+				header = signatureSoapHeaderAuthStrategy
+						.generateHeaderStrategy(sigCredential);
 			} else if (credential instanceof CertificateCredential) {
 				CertificateCredential certCredential = (CertificateCredential) credential;
 				CertificateSOAPHeaderAuthStrategy certificateSoapHeaderAuthStrategy = new CertificateSOAPHeaderAuthStrategy();
@@ -208,7 +230,20 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	}
 
 	public String getEndPoint() {
-		return apiCallHandler.getEndPoint();
+
+		/*
+		 * Fixes the multi end-point functionality by searching an end-point
+		 * that has the portName appended to the key (service.EndPoint). Care
+		 * should be taken to use the portName specified in the WSDL, Ex: If
+		 * there is a WSDL entry <wsdl:port name="ServiceSOAP11port_http" ..>
+		 * then the application configuration should have an entry as
+		 * service.EndPoint.ServiceSOAP11port_http=http://www.sample.com....
+		 * Here the DefaultSOAPAPICallHandler returns the end-point
+		 * corresponding to service.EndPoint
+		 */
+		return ConfigManager.getInstance().getValueWithDefault(
+				Constants.END_POINT + "." + getPortName(),
+				apiCallHandler.getEndPoint());
 	}
 
 	public ICredential getCredential() {
@@ -245,8 +280,10 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	 */
 	private Map<String, String> getDefaultHttpHeadersSOAP() {
 		Map<String, String> returnMap = new HashMap<String, String>();
-		returnMap.put(Constants.PAYPAL_REQUEST_DATA_FORMAT_HEADER, Constants.PAYLOAD_FORMAT_SOAP);
-		returnMap.put(Constants.PAYPAL_RESPONSE_DATA_FORMAT_HEADER, Constants.PAYLOAD_FORMAT_SOAP);
+		returnMap.put(Constants.PAYPAL_REQUEST_DATA_FORMAT_HEADER,
+				Constants.PAYLOAD_FORMAT_SOAP);
+		returnMap.put(Constants.PAYPAL_RESPONSE_DATA_FORMAT_HEADER,
+				Constants.PAYLOAD_FORMAT_SOAP);
 		returnMap.put(Constants.PAYPAL_REQUEST_SOURCE_HEADER, sdkName + "-"
 				+ sdkVersion);
 		return returnMap;

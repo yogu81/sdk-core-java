@@ -69,6 +69,11 @@ public class PlatformAPICallPreHandler implements APICallPreHandler {
 	private String sdkVersion;
 
 	/**
+	 * PortName to which a particular operation is bound;
+	 */
+	private String portName;
+
+	/**
 	 * Internal variable to hold headers
 	 */
 	private Map<String, String> headers;
@@ -163,6 +168,21 @@ public class PlatformAPICallPreHandler implements APICallPreHandler {
 		this.sdkVersion = sdkVersion;
 	}
 
+	/**
+	 * @return the portName
+	 */
+	public String getPortName() {
+		return portName;
+	}
+
+	/**
+	 * @param portName
+	 *            the portName to set
+	 */
+	public void setPortName(String portName) {
+		this.portName = portName;
+	}
+
 	public Map<String, String> getHeaderMap() throws OAuthException {
 		if (headers == null) {
 			headers = new HashMap<String, String>();
@@ -188,7 +208,18 @@ public class PlatformAPICallPreHandler implements APICallPreHandler {
 	}
 
 	public String getEndPoint() {
-		return ConfigManager.getInstance().getValue(Constants.END_POINT)
+
+		/*
+		 * Fixes the multi end-point functionality by searching an end-point
+		 * that has the portName appended to the key (service.EndPoint). Care
+		 * should be taken to use the portName specified in the WSDL, Ex: If
+		 * there is a WSDL entry <wsdl:port name="ServiceSOAP11port_http" ..>
+		 * then the application configuration should have an entry as
+		 * service.EndPoint.ServiceSOAP11port_http=http://www.sample.com....
+		 */
+		return ConfigManager.getInstance().getValueWithDefault(
+				Constants.END_POINT + "." + getPortName(),
+				ConfigManager.getInstance().getValue(Constants.END_POINT))
 				+ serviceName + "/" + method;
 	}
 

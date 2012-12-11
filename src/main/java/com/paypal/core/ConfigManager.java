@@ -74,6 +74,19 @@ public final class ConfigManager {
 	}
 
 	/**
+	 * Mimics the call to {@link Properties}.getProperty(key, defaultValue)
+	 * 
+	 * @param key
+	 *            String key to search in properties file
+	 * @param defaultValue
+	 *            Default value to be sent in case of a miss
+	 * @return String value corresponding to the key or default value
+	 */
+	public String getValueWithDefault(String key, String defaultValue) {
+		return properties.getProperty(key, defaultValue);
+	}
+
+	/**
 	 * Gets all the values in the particular category in configuration (eg:
 	 * acct)
 	 * 

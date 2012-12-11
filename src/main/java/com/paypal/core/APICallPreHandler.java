@@ -29,7 +29,8 @@ public interface APICallPreHandler {
 	String getPayLoad();
 
 	/**
-	 * Returns the endpoint for the API call
+	 * Returns the endpoint for the API call. The implementation may calculate the endpoint
+	 * depending on parameters set on it.
 	 * 
 	 * @return Endpoint
 	 */
