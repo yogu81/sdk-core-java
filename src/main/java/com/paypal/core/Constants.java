@@ -115,6 +115,6 @@ public class Constants {
 	public static final String HTTP_CONFIG_DEFAULT_CONTENT_TYPE = "application/x-www-form-urlencoded";
 	
 	//IPN endpoint property name
-	public static final String IPN_ENDPOINT = "ipn.EndPoint";
+	public static final String IPN_ENDPOINT = "service.IPNEndpoint";
 
 }
