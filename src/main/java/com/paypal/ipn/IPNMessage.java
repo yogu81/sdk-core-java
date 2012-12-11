@@ -91,9 +91,9 @@ public class IPNMessage {
 
 		Map<String,String> headerMap = new HashMap<String,String>();
 		if(ipnEndpoint.indexOf("sandbox")>0){
-			headerMap.put("Host", "ipnbp.sandbox.paypal.com");
+			headerMap.put("Host", "ipnpb.sandbox.paypal.com");
 		}else{
-			headerMap.put("Host", "ipnbp.paypal.com");
+			headerMap.put("Host", "ipnpb.paypal.com");
 		}
 		
 		String res = Constants.EMPTY_STRING;
