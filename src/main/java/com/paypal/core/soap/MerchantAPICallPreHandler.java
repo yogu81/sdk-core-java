@@ -230,17 +230,6 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	}
 
 	public String getEndPoint() {
-
-		/*
-		 * Multi end-point configuration by searching an end-point
-		 * that has the portName appended to the key (service.EndPoint). Care
-		 * should be taken to use the portName specified in the WSDL, Ex: If
-		 * there is a WSDL entry <wsdl:port name="ServiceSOAP11port_http" ..>
-		 * then the application configuration should have an entry as
-		 * service.EndPoint.ServiceSOAP11port_http=http://www.sample.com....
-		 * Here the DefaultSOAPAPICallHandler returns the end-point
-		 * corresponding to service.EndPoint
-		 */
 		return ConfigManager.getInstance().getValueWithDefault(
 				Constants.END_POINT + "." + getPortName(),
 				apiCallHandler.getEndPoint());
