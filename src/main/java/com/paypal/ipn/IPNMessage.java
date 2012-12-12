@@ -1,6 +1,8 @@
 package com.paypal.ipn;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,19 +15,18 @@ import com.paypal.core.Constants;
 import com.paypal.core.HttpConfiguration;
 import com.paypal.core.HttpConnection;
 import com.paypal.core.LoggingManager;
-import com.paypal.exception.ClientActionRequiredException;
-import com.paypal.exception.HttpErrorException;
-import com.paypal.exception.InvalidResponseDataException;
 
 public class IPNMessage {
-	
+
 	private static final long serialVersionUID = -7187275404183441828L;
-	private Map<String,String> ipnMap =  new HashMap<String,String>();
+	private static final String ENCODING = "windows-1252";
+	
+	private Map<String, String> ipnMap = new HashMap<String, String>();
 	private ConfigManager config = ConfigManager.getInstance();
 	private HttpConfiguration httpConfiguration = null;
 	private String ipnEndpoint = Constants.EMPTY_STRING;
 	private boolean isIpnVerified = false;
-	
+	private StringBuffer payload;
 	/**
 	 * Populates HttpConfiguration with connection specifics parameters
 	 */
@@ -43,116 +44,88 @@ public class IPNMessage {
 		httpConfiguration.setMaxHttpConnection(Integer.parseInt(config
 				.getValue(Constants.HTTP_CONNECTION_MAX_CONNECTION)));
 	}
-	
-	
+
 	/**
-	 * @param ipnParamValueMap representing IPN name/value pair
-	 * @throws IOException
+	 * @param ipnMap  representing IPN name/value pair
 	 */
-	public IPNMessage(Map<String,String> ipnParamValueMap) throws IOException{
-		StringBuffer payload = new StringBuffer("cmd=_notify-validate");
-		for(Map.Entry<String,String> entry : ipnParamValueMap.entrySet()){
-			String name = entry.getKey();
-			String value = entry.getValue();
-			this.ipnMap.put(name, value);
-			payload.append("&").append(name).append("=")
-			.append(URLEncoder.encode(value));
+	public IPNMessage(Map<String, String[]> ipnMap) {
+		payload = new StringBuffer("cmd=_notify-validate");
+		if (ipnMap != null) {
+			for (Map.Entry<String, String[]> entry : ipnMap.entrySet()) {
+				String name = entry.getKey();
+				String[] value = entry.getValue();
+				try{
+					this.ipnMap.put(URLDecoder.decode(name,ENCODING), URLDecoder.decode(value[0], ENCODING));
+					payload.append("&").append(name).append("=").append(URLEncoder.encode(value[0], ENCODING));
+				}catch(Exception e){
+					LoggingManager.debug(IPNMessage.class, e.getMessage());
+				}
+			}
 		}
-		processRequest(payload.toString());
+
 	}
-	
+
 	/**
-	 * @param HttpServletrequest from PayPal IPN call back.
-	 * @throws IOException
+	 * @param HttpServletrequest received from PayPal IPN call back.
 	 */
-	public IPNMessage(HttpServletRequest request)throws IOException{
-		/* Read post from PayPal system and add 'cmd' */
-		Map<String,String[]> map = request.getParameterMap();
-		StringBuffer payload = new StringBuffer("cmd=_notify-validate");
-		for(Map.Entry<String,String[]> entry : map.entrySet()){
-			String name = entry.getKey();
-			String[] value = entry.getValue();
-			this.ipnMap.put(name, value[0]);
-			payload.append("&").append(name).append("=")
-			.append(URLEncoder.encode(value[0]));
-		}
-		processRequest(payload.toString());
+	public IPNMessage(HttpServletRequest request) {
+		this(request.getParameterMap());
 	}
-	
+
 	/**
 	 * This method post back ipn payload to PayPal system for verification
-	 * @param payload
-	 * @throws IOException
 	 */
-	private void processRequest(String payload) throws IOException{
-		
-		HttpConnection connection = ConnectionManager.getInstance().getConnection();
-		connection.createAndconfigureHttpConnection(httpConfiguration);
-
-		Map<String,String> headerMap = new HashMap<String,String>();
-		if(ipnEndpoint.indexOf("sandbox")>0){
-			headerMap.put("Host", "ipnpb.sandbox.paypal.com");
-		}else{
-			headerMap.put("Host", "ipnpb.paypal.com");
-		}
-		
+	public boolean validate() {
+		Map<String, String> headerMap = new HashMap<String, String>();
+		URL url = null;
 		String res = Constants.EMPTY_STRING;
+		HttpConnection connection = ConnectionManager.getInstance().getConnection();
 		
 		try {
 			
-			res = connection.execute(null, payload, headerMap);
-			
-		} catch (InvalidResponseDataException e) {
-			LoggingManager.debug(IPNMessage.class, e.getMessage());
-		} catch (HttpErrorException e) {
-			LoggingManager.debug(IPNMessage.class, e.getMessage());
-		} catch (ClientActionRequiredException e) {
-			LoggingManager.debug(IPNMessage.class, e.getMessage());
-		} catch (IOException e) {
-			LoggingManager.debug(IPNMessage.class, e.getMessage());
-		} catch (InterruptedException e) {
+			connection.createAndconfigureHttpConnection(httpConfiguration);
+			url = new URL(this.ipnEndpoint);
+			headerMap.put("Host", url.getHost());
+			res = Constants.EMPTY_STRING;
+			if (!this.isIpnVerified) {
+				res = connection.execute(null, payload.toString(), headerMap);
+			}
+
+		} catch (Exception e) {
 			LoggingManager.debug(IPNMessage.class, e.getMessage());
 		}
-		
+
 		// check notification validation
 		if (res.equals("VERIFIED")) {
 			isIpnVerified = true;
-		} 
-		
+		}
+
+		return isIpnVerified;
 	}
-	
-	
+
 	/**
-	 * @return Map of IPN  name/value parameters 
+	 * @return Map of IPN name/value parameters
 	 */
-	public Map<String, String> getIpnParamValueMap() {
+	public Map<String, String> getIpnMap() {
 		return ipnMap;
 	}
-	
+
 	/**
 	 * @param ipnName
 	 * @return IPN value for corresponding IpnName
 	 */
-	public String getIpnParamValue(String ipnName){
-		
-		return this.ipnMap.get(ipnName)!=null? this.ipnMap.get(ipnName) : null;
-	
-	}
-	
-	
-	/**
-	 * @return IPN verification result in boolean
-	 */
-	public boolean isIpnVerified() {
-		return isIpnVerified;
+	public String getIpnValue(String ipnName) {
+
+		return this.ipnMap.get(ipnName);
+
 	}
 
 	/**
 	 * @return Transaction Type (eg: express_checkout, cart, web_accept)
 	 */
-	public String getTransactionType(){
-		return this.ipnMap.get("txn_type") != null? this.ipnMap.get("txn_type") : 
-			(this.ipnMap.get("transaction_type")!=null? this.ipnMap.get("transaction_type"):null);
+	public String getTransactionType() {
+		return this.ipnMap.containsKey("txn_type") ? this.ipnMap
+				.get("txn_type") : this.ipnMap.get("transaction_type");
 	}
-	
+
 }
