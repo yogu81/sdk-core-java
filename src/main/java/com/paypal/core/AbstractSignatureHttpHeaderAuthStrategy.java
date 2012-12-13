@@ -55,7 +55,7 @@ public abstract class AbstractSignatureHttpHeaderAuthStrategy implements
 	}
 
 	/**
-	 * Process TokentAuthorization based on API format
+	 * Process TokenAuthorization based on API format
 	 * 
 	 * @param credential
 	 *            Instance of {@link SignatureCredential}

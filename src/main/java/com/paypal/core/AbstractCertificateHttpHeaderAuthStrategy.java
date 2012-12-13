@@ -52,7 +52,7 @@ public abstract class AbstractCertificateHttpHeaderAuthStrategy implements
 	}
 
 	/**
-	 * Process TokentAuthorization based on API format
+	 * Process TokenAuthorization based on API format
 	 * 
 	 * @param credential
 	 *            Instance of {@link CertificateCredential}
