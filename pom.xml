@@ -42,6 +42,9 @@
 					<execution>
 						<id>attach-sources</id>
 						<phase>verify</phase>
+						<configuration>
+							<includePom>true</includePom>
+						</configuration>
 						<goals>
 							<goal>jar-no-fork</goal>
 						</goals>
