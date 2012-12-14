@@ -97,7 +97,7 @@ public class APIService {
 		HttpConnection connection = connectionMgr
 				.getConnection(httpConfiguration);
 		String url = apiCallPreHandler.getEndPoint();
-		if (url == null || url.length() <= 0) {
+		if (url == null || url.trim().length() <= 0) {
 			throw new HttpErrorException(
 					"Unable to retrieve a valid end-point from configuration");
 		}

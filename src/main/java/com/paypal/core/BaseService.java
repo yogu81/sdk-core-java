@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
 
 import com.paypal.exception.ClientActionRequiredException;
 import com.paypal.exception.SSLConfigurationException;
@@ -42,6 +43,7 @@ public abstract class BaseService {
 
 	/**
 	 * Gets the Access Token
+	 * 
 	 * @return the accessToken
 	 */
 	public String getAccessToken() {
@@ -49,7 +51,8 @@ public abstract class BaseService {
 	}
 
 	/**
-	 * Sets the Access Token 
+	 * Sets the Access Token
+	 * 
 	 * @deprecated
 	 * @param accessToken
 	 *            the accessToken to set
@@ -60,6 +63,7 @@ public abstract class BaseService {
 
 	/**
 	 * Gets the Token Secret
+	 * 
 	 * @return the tokenSecret
 	 */
 	public String getTokenSecret() {
@@ -68,6 +72,7 @@ public abstract class BaseService {
 
 	/**
 	 * Sets the Token Secret
+	 * 
 	 * @deprecated
 	 * @param tokenSecret
 	 *            the tokenSecret to set
@@ -105,8 +110,6 @@ public abstract class BaseService {
 	public void setLastResponse(String lastResponse) {
 		this.lastResponse = lastResponse;
 	}
-
-	
 
 	/**
 	 * overloaded static method used to load the configuration file.
@@ -154,6 +157,17 @@ public abstract class BaseService {
 			LoggingManager.debug(BaseService.class, ioe.getMessage(), ioe);
 			throw ioe;
 		}
+	}
+
+	/**
+	 * Initializes {@link ConfigManager} with the passed {@link Properties}
+	 * instance
+	 * 
+	 * @param properties
+	 *            {@link Properties} instance
+	 */
+	public static void initConfig(Properties properties) {
+		ConfigManager.getInstance().load(properties);
 	}
 
 	/**

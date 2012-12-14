@@ -49,7 +49,7 @@ public final class ConfigManager {
 	}
 
 	/**
-	 * Overloaded method to load the configuration file.
+	 * Loads the internal properties with the passed {@link InputStream}
 	 * 
 	 * @param is
 	 *            InputStream
@@ -59,7 +59,28 @@ public final class ConfigManager {
 	public void load(InputStream is) throws IOException {
 		properties = new Properties();
 		properties.load(is);
-		setPropertyLoaded(true);
+		if (!propertyLoaded) {
+			setPropertyLoaded(true);
+		}
+	}
+
+	/**
+	 * Initializes the internal properties with the passed {@link Properties}
+	 * instance
+	 * 
+	 * @param properties
+	 *            Properties instance
+	 * 
+	 */
+	public void load(Properties properties) {
+		if (properties == null) {
+			throw new IllegalArgumentException(
+					"Initialization properties cannot be null");
+		}
+		this.properties = properties;
+		if (!propertyLoaded) {
+			setPropertyLoaded(true);
+		}
 	}
 
 	/**
