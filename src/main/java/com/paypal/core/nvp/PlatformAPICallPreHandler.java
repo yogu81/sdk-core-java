@@ -208,19 +208,13 @@ public class PlatformAPICallPreHandler implements APICallPreHandler {
 	}
 
 	public String getEndPoint() {
-		String ePoint = ConfigManager.getInstance().getValueWithDefault(
-				Constants.END_POINT + "." + getPortName(), ConfigManager.getInstance().getValue(Constants.END_POINT));
-		String endPoint = ConfigManager.getInstance().getValue(
-				Constants.END_POINT + "." + getPortName());
+		String endPoint = ConfigManager.getInstance().getValueWithDefault(
+				Constants.END_POINT + "." + getPortName(),
+				ConfigManager.getInstance().getValue(Constants.END_POINT));
 		if (endPoint != null && endPoint.length() > 0) {
 			endPoint += serviceName + "/" + method;
-		} else if ((endPoint = ConfigManager.getInstance().getValue(
-				Constants.END_POINT)) != null
-				&& endPoint.length() > 0) {
-			endPoint += serviceName + "/" + method;
-		} else {
-			endPoint = null;
 		}
+		
 		return endPoint;
 	}
 
