@@ -71,12 +71,10 @@ public abstract class HttpConnection {
 			setHttpHeaders(headers);
 		}
 		try {
-			for (int retry = 0; retry < this.config.getMaxRetry(); retry++) {
-				if (retry > 0) {
-					LoggingManager.debug(HttpConnection.class, " Retry  No : "
-							+ retry + "...");
-					Thread.sleep(this.config.getRetryDelay());
-				}
+			
+			// Changed retry logic from for loop to do while (1-29-2013)
+			int retry = 0;
+			do {
 				try {
 					if ("POST".equalsIgnoreCase(connection.getRequestMethod())) {
 						writer = new OutputStreamWriter(
@@ -114,14 +112,37 @@ public abstract class HttpConnection {
 						LoggingManager.severe(HttpConnection.class,
 								"Error code : " + responsecode
 										+ " with response : " + errorResponse);
+					} else if (connection.getInputStream() != null) {
+						
+						// Added logic to read from InputStream 
+						// HTTPError code 500 are sent (?) in InputStream
+						//(1-29-2013)
+						reader = new BufferedReader(new InputStreamReader(
+								connection.getInputStream(),
+								Constants.ENCODING_FORMAT));
+						errorResponse = read(reader);
+						LoggingManager.severe(HttpConnection.class,
+								"Error code : " + responsecode
+										+ " with response : " + errorResponse);
 					}
-					if (responsecode < 500) {
+					
+					// Throw HttpErrorException for HTTPError code 500
+					// (1-29-2013)
+					if (responsecode <= 500) {
 						throw new HttpErrorException("Error code : "
 								+ responsecode + " with response : "
 								+ errorResponse);
 					}
 				}
-			}
+				
+				// Retry logic
+				retry ++;
+				if (retry > 0) {
+					LoggingManager.debug(HttpConnection.class, " Retry  No : "
+							+ retry + "...");
+					Thread.sleep(this.config.getRetryDelay());
+				}
+			} while (retry < this.config.getMaxRetry());
 			if (successResponse.trim().length() <= 0) {
 				throw new HttpErrorException(
 						"retry fails..  check log for more information");

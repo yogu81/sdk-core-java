@@ -11,6 +11,13 @@ public class Constants {
 	public static final String SDK_VERSION = "";
 
 	// HTTP Header Constants
+
+	// HTTP Content-Type Header
+	public static final String HTTP_CONTENT_TYPE_HEADER = "Content-Type";
+	
+	// HTTP Accept Header
+	public static final String HTTP_ACCEPT_HEADER = "Accept";
+
 	// PayPal Security UserId Header
 	public static final String PAYPAL_SECURITY_USERID_HEADER = "X-PAYPAL-SECURITY-USERID";
 
@@ -104,17 +111,15 @@ public class Constants {
 
 	// Sandbox Email Address Key
 	public static final String SANDBOX_EMAIL_ADDRESS = "sandbox.EmailAddress";
-	
-	public static final String HTTP_CONTENT_TYPE_HEADER = "Content-Type";
-	
+
 	// HTTP Configurations Defaults
 	// HTTP Method Default
 	public static final String HTTP_CONFIG_DEFAULT_HTTP_METHOD = "POST";
-	
+
 	// HTTP Content Type Default
 	public static final String HTTP_CONFIG_DEFAULT_CONTENT_TYPE = "application/x-www-form-urlencoded";
-	
-	//IPN endpoint property name
+
+	// IPN endpoint property name
 	public static final String IPN_ENDPOINT = "service.IPNEndpoint";
 
 }

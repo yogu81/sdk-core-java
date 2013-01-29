@@ -1,5 +1,6 @@
 package com.paypal.core;
 
+import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
 /**
@@ -12,9 +13,9 @@ public class SDKUtil {
 	 * Pattern for replacing Ampersand '&' character
 	 */
 	private static final Pattern AMPERSAND_REPLACE = Pattern
-			.compile("&(?!([amp;[lt;[gt;[apos;[quot;]]]]]))");
+			.compile("&((?!amp;)(?!lt;)(?!gt;)(?!apos;)(?!quot;))");
 
-/**
+    /**
 	 * Pattern for replacing Lesser-than '<' character
 	 */
 	private static final Pattern LESSERTHAN_REPLACE = Pattern.compile("<");
@@ -187,6 +188,60 @@ public class SDKUtil {
 			response = escapeInvalidXmlCharsRegex(textContent);
 		}
 		return response;
+	}
+
+	/**
+	 * Formats the URI path for REST calls.
+	 * 
+	 * @param pattern
+	 *            URI pattern with place holders for replacement strings
+	 * @param parameters
+	 *            Replacement objects
+	 * @return Formatted URI path
+	 */
+	public static String formatURIPath(String pattern, Object[] parameters) {
+		String formattedPath = null;
+
+		// Perform a simple message formatting
+		String fString = MessageFormat.format(pattern, parameters);
+
+		// Process the resultant string for removing nulls
+		formattedPath = removeNullsInQS(fString);
+		return formattedPath;
+	}
+
+	private static String removeNullsInQS(String fString) {
+		if (fString != null && fString.length() != 0) {
+			String[] parts = fString.split("\\?");
+
+			// Process the query string part
+			if (parts.length == 2) {
+				String queryString = parts[1];
+				String[] querys = queryString.split("&");
+				if (querys.length > 0) {
+					StringBuilder strBuilder = new StringBuilder();
+					for (String query : querys) {
+						String[] valueSplit = query.split("=");
+						if (valueSplit.length == 2) {
+							if (valueSplit[1].trim().equalsIgnoreCase("null")) {
+								continue;
+							} else {
+								strBuilder.append(query).append("&");
+							}
+						} else if (valueSplit.length < 2) {
+							continue;
+						}
+					}
+					fString = (!strBuilder.toString().endsWith("&")) ? strBuilder
+							.toString() : strBuilder.toString().substring(0,
+							strBuilder.toString().length() - 1);
+				}
+
+				// append the query string delimiter
+				fString = (parts[0].trim() + "?") + fString;
+			}
+		}
+		return fString;
 	}
 
 }
