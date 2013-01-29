@@ -12,7 +12,7 @@ public class SDKUtil {
 	 * Pattern for replacing Ampersand '&' character
 	 */
 	private static final Pattern AMPERSAND_REPLACE = Pattern
-			.compile("&(?!([amp;[lt;[gt;[apos;[quot;]]]]]))");
+			.compile("&((?!amp;)(?!lt;)(?!gt;)(?!apos;)(?!quot;))");
 
 /**
 	 * Pattern for replacing Lesser-than '<' character
