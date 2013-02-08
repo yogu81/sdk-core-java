@@ -31,7 +31,7 @@ public final class CredentialManager {
 	/**
 	 * Singleton accessor method
 	 * 
-	 * @return
+	 * @return Singleton instance of {@link CredentialManager}
 	 */
 	public static CredentialManager getInstance() {
 		synchronized (CredentialManager.class) {

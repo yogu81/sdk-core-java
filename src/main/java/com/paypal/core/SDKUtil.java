@@ -15,7 +15,7 @@ public class SDKUtil {
 	private static final Pattern AMPERSAND_REPLACE = Pattern
 			.compile("&((?!amp;)(?!lt;)(?!gt;)(?!apos;)(?!quot;))");
 
-    /**
+/**
 	 * Pattern for replacing Lesser-than '<' character
 	 */
 	private static final Pattern LESSERTHAN_REPLACE = Pattern.compile("<");
@@ -79,14 +79,27 @@ public class SDKUtil {
 				if (ch == '&') {
 					if (i != (contentLength - 1)) {
 						if (!(i + 3 > contentLength - 1)
+								&& (textContent.charAt(i + 1) == 'g' || textContent
+										.charAt(i + 1) == 'l')
+								&& textContent.charAt(i + 2) == 't'
 								&& textContent.charAt(i + 3) == ';') {
 							stringBuilder.append(ch);
 						} else if (!(i + 4 > contentLength - 1)
+								&& textContent.charAt(i + 1) == 'a'
+								&& textContent.charAt(i + 2) == 'm'
+								&& textContent.charAt(i + 3) == 'p'
 								&& textContent.charAt(i + 4) == ';') {
 							stringBuilder.append(ch);
 						} else if (!(i + 5 > contentLength - 1)
-								&& textContent.charAt(i + 5) == ';'
-								&& textContent.charAt(i + 4) != 't') {
+								&& ((textContent.charAt(i + 1) == 'q'
+										&& (textContent.charAt(i + 2) == 'u'
+												&& textContent.charAt(i + 3) == 'o' && textContent
+												.charAt(i + 4) == 't') || (textContent
+										.charAt(i + 1) == 'a' && (textContent
+										.charAt(i + 2) == 'p'
+										&& textContent.charAt(i + 3) == 'o' && textContent
+										.charAt(i + 4) == 's'))
+										&& textContent.charAt(i + 5) == ';'))) {
 							stringBuilder.append(ch);
 						} else {
 							stringBuilder.append(AMPERSAND);
@@ -202,11 +215,13 @@ public class SDKUtil {
 	public static String formatURIPath(String pattern, Object[] parameters) {
 		String formattedPath = null;
 
-		// Perform a simple message formatting
-		String fString = MessageFormat.format(pattern, parameters);
+		if (pattern != null) {
+			// Perform a simple message formatting
+			String fString = MessageFormat.format(pattern, parameters);
 
-		// Process the resultant string for removing nulls
-		formattedPath = removeNullsInQS(fString);
+			// Process the resultant string for removing nulls
+			formattedPath = removeNullsInQS(fString);
+		}
 		return formattedPath;
 	}
 
