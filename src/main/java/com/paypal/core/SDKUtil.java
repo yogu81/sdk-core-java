@@ -1,5 +1,8 @@
 package com.paypal.core;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 /**
@@ -187,6 +190,26 @@ public class SDKUtil {
 			response = escapeInvalidXmlCharsRegex(textContent);
 		}
 		return response;
+	}
+
+	/**
+	 * Constructs a Map<String, String> from a {@link Properties} object
+	 * 
+	 * @param properties
+	 *            Input {@link Properties}
+	 * @return Map<String, String>
+	 */
+	public static Map<String, String> constructMap(Properties properties) {
+		Map<String, String> propsMap = null;
+		if (properties != null) {
+			propsMap = new HashMap<String, String>();
+			for (Object object : properties.keySet()) {
+				String key = object.toString();
+				String value = properties.getProperty(key);
+				propsMap.put(key, value);
+			}
+		}
+		return propsMap;
 	}
 
 }

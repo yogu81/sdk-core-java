@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -23,7 +24,7 @@ public class CredentialManagerTest {
 
 	@BeforeClass
 	public void beforeClass() {
-		cred = CredentialManager.getInstance();
+		cred = new CredentialManager((Properties) null);
 	}
 
 	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class, priority = 0)

@@ -5,14 +5,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
 
 import com.paypal.exception.ClientActionRequiredException;
-import com.paypal.exception.SSLConfigurationException;
 import com.paypal.exception.HttpErrorException;
 import com.paypal.exception.InvalidCredentialException;
 import com.paypal.exception.InvalidResponseDataException;
 import com.paypal.exception.MissingCredentialException;
+import com.paypal.exception.SSLConfigurationException;
 import com.paypal.sdk.exceptions.OAuthException;
 
 /**
@@ -20,6 +21,11 @@ import com.paypal.sdk.exceptions.OAuthException;
  * Service class generated may extend this class to make API calls through HTTP
  */
 public abstract class BaseService {
+	
+	/*
+	 * Map used for to override ConfigManager configurations
+	 */
+	protected Map<String, String> configurationMap = null;
 
 	/**
 	 * Access Token used in third party authorization
@@ -112,11 +118,12 @@ public abstract class BaseService {
 	}
 
 	/**
-	 * overloaded static method used to load the configuration file.
+	 * Overloaded static method used to load the configuration file.
+	 * @deprecated
 	 * 
 	 * @param is
 	 */
-	public static void initConfig(InputStream is) throws IOException {
+	protected static void initConfig(InputStream is) throws IOException {
 		try {
 			ConfigManager.getInstance().load(is);
 		} catch (IOException ioe) {
@@ -126,11 +133,12 @@ public abstract class BaseService {
 	}
 
 	/**
-	 * overloaded static method used to load the configuration file
+	 * Overloaded static method used to load the configuration file
+	 * @deprecated
 	 * 
 	 * @param file
 	 */
-	public static void initConfig(File file) throws IOException {
+	protected static void initConfig(File file) throws IOException {
 		try {
 			if (!file.exists()) {
 				throw new FileNotFoundException("File doesn't exist: "
@@ -145,11 +153,12 @@ public abstract class BaseService {
 	}
 
 	/**
-	 * overloaded static method used to load the configuration file
+	 * Overloaded static method used to load the configuration file
+	 * @deprecated
 	 * 
 	 * @param filepath
 	 */
-	public static void initConfig(String filepath) throws IOException {
+	protected static void initConfig(String filepath) throws IOException {
 		try {
 			File file = new File(filepath);
 			initConfig(file);
@@ -162,11 +171,12 @@ public abstract class BaseService {
 	/**
 	 * Initializes {@link ConfigManager} with the passed {@link Properties}
 	 * instance
+	 * @deprecated
 	 * 
 	 * @param properties
 	 *            {@link Properties} instance
 	 */
-	public static void initConfig(Properties properties) {
+	protected static void initConfig(Properties properties) {
 		ConfigManager.getInstance().load(properties);
 	}
 
@@ -194,11 +204,16 @@ public abstract class BaseService {
 		if (!ConfigManager.getInstance().isPropertyLoaded()) {
 			throw new FileNotFoundException("Property file not loaded");
 		}
-		APIService apiService = new APIService();
+		APIService apiService = new APIService(configurationMap);
 		lastRequest = apiCallPrehandler.getPayLoad();
 		String response = apiService.makeRequestUsing(apiCallPrehandler);
 		lastResponse = response;
 		return response;
+	}
+	
+	protected void loadConfigurations(InputStream inputStream) throws IOException {
+		ConfigManager configManager = ConfigManager.getInstance();
+		configManager.load(inputStream);
 	}
 
 }

@@ -3,6 +3,7 @@ package com.paypal.core.soap;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,6 +11,7 @@ import com.paypal.core.APICallPreHandler;
 import com.paypal.core.ConfigManager;
 import com.paypal.core.Constants;
 import com.paypal.core.CredentialManager;
+import com.paypal.core.SDKUtil;
 import com.paypal.core.credential.CertificateCredential;
 import com.paypal.core.credential.ICredential;
 import com.paypal.core.credential.SignatureCredential;
@@ -81,19 +83,36 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	 * Internal variable to hold payload
 	 */
 	private String payLoad;
+	
+	/**
+	 * Map used for to override ConfigManager configurations
+	 */
+	private Map<String, String> configurationMap = null;
 
-	/*
+	/**
 	 * Private Constructor
+	 * @deprecated
 	 */
 	private MerchantAPICallPreHandler(APICallPreHandler apiCallHandler) {
 		super();
 		this.apiCallHandler = apiCallHandler;
 	}
+	
+	/**
+	 * Private Constructor
+	 */
+	private MerchantAPICallPreHandler(APICallPreHandler apiCallHandler,
+			Map<String, String> configurationMap) {
+		super();
+		this.apiCallHandler = apiCallHandler;
+		this.configurationMap = configurationMap != null ? configurationMap
+				: ConfigManager.getInstance().getConf();
+	}
 
 	/**
 	 * MerchantAPICallPreHandler decorating basic {@link APICallPreHandler}
 	 * using API Username
-	 * 
+	 * @deprecated
 	 * @param apiCallHandler
 	 *            Instance of {@link APICallPreHandler}
 	 * @param apiUserName
@@ -118,6 +137,7 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	/**
 	 * MerchantAPICallPreHandler decorating basic {@link APICallPreHandler}
 	 * using {@link ICredential}
+	 * @deprecated
 	 * 
 	 * @param apiCallHandler
 	 *            Instance of {@link APICallPreHandler}
@@ -133,6 +153,73 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 		}
 		this.credential = credential;
 	}
+	
+	/**
+	 * MerchantAPICallPreHandler decorating basic {@link APICallPreHandler}
+	 * using {@link ICredential}
+	 * 
+	 * @param apiCallHandler
+	 *            Instance of {@link APICallPreHandler}
+	 * @param credential
+	 *            Instance of {@link ICredential}
+	 * @param sdkName
+	 *            SDK Name
+	 * @param sdkVersion
+	 *            sdkVersion
+	 * @param portName
+	 *            Port Name
+	 * @param configurationMap
+	 */
+	public MerchantAPICallPreHandler(APICallPreHandler apiCallHandler,
+			ICredential credential, String sdkName, String sdkVersion,
+			String portName, Map<String, String> configurationMap) {
+		this(apiCallHandler, configurationMap);
+		this.sdkName = sdkName;
+		this.sdkVersion = sdkVersion;
+		this.portName = portName;
+		if (credential == null) {
+			throw new IllegalArgumentException(
+					"Credential is null in MerchantAPICallPreHandler");
+		}
+		this.credential = credential;
+	}
+	
+	/**
+	 * MerchantAPICallPreHandler decorating basic {@link APICallPreHandler}
+	 * using API Username
+	 * 
+	 * @param apiCallHandler
+	 *            Instance of {@link APICallPreHandler}
+	 * @param apiUserName
+	 *            API Username
+	 * @param accessToken
+	 *            Access Token
+	 * @param tokenSecret
+	 *            Token Secret
+	 * @param sdkName
+	 *            SDK Name
+	 * @param sdkVersion
+	 *            sdkVersion
+	 * @param portName
+	 *            Port Name
+	 * @param configurationMap
+	 * @throws InvalidCredentialException
+	 * @throws MissingCredentialException
+	 */
+	public MerchantAPICallPreHandler(APICallPreHandler apiCallHandler,
+			String apiUserName, String accessToken, String tokenSecret,
+			String sdkName, String sdkVersion, String portName,
+			Map<String, String> configurationMap) throws InvalidCredentialException,
+			MissingCredentialException {
+		this(apiCallHandler, configurationMap);
+		this.apiUserName = apiUserName;
+		this.accessToken = accessToken;
+		this.tokenSecret = tokenSecret;
+		this.sdkName = sdkName;
+		this.sdkVersion = sdkVersion;
+		this.portName = portName;
+		initCredential();
+	}
 
 	/**
 	 * @return the sdkName
@@ -142,6 +229,7 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	}
 
 	/**
+	 * @deprecated
 	 * @param sdkName
 	 *            the sdkName to set
 	 */
@@ -157,6 +245,7 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	}
 
 	/**
+	 * @deprecated
 	 * @param sdkVersion
 	 *            the sdkVersion to set
 	 */
@@ -172,6 +261,7 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	}
 
 	/**
+	 * @deprecated
 	 * @param portName
 	 *            the portName to set
 	 */
@@ -230,9 +320,12 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	}
 
 	public String getEndPoint() {
-		return ConfigManager.getInstance().getValueWithDefault(
-				Constants.END_POINT + "." + getPortName(),
-				apiCallHandler.getEndPoint());
+		String endPoint = this.configurationMap.get(Constants.END_POINT + "."
+				+ getPortName());
+		if (endPoint == null || endPoint.length() <= 0) {
+			endPoint = apiCallHandler.getEndPoint();
+		}
+		return endPoint;
 	}
 
 	public ICredential getCredential() {
@@ -245,7 +338,8 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	private ICredential getCredentials() throws InvalidCredentialException,
 			MissingCredentialException {
 		ICredential returnCredential = null;
-		CredentialManager credentialManager = CredentialManager.getInstance();
+		CredentialManager credentialManager = new CredentialManager(
+				this.configurationMap);
 		returnCredential = credentialManager.getCredentialObject(apiUserName);
 		if (accessToken != null && accessToken.trim().length() > 0) {
 

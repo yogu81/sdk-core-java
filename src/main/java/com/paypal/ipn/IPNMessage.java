@@ -20,7 +20,7 @@ public class IPNMessage {
 
 	private static final long serialVersionUID = -7187275404183441828L;
 	private static final String ENCODING = "windows-1252";
-	
+
 	private Map<String, String> ipnMap = new HashMap<String, String>();
 	private ConfigManager config = ConfigManager.getInstance();
 	private HttpConfiguration httpConfiguration = null;
@@ -33,20 +33,23 @@ public class IPNMessage {
 	{
 		httpConfiguration = new HttpConfiguration();
 		config = ConfigManager.getInstance();
-		ipnEndpoint = config.getValue(Constants.IPN_ENDPOINT);
+		ipnEndpoint = config.getConf().get(Constants.IPN_ENDPOINT);
 		httpConfiguration.setEndPointUrl(ipnEndpoint);
-		httpConfiguration.setConnectionTimeout(Integer.parseInt(config
-				.getValue(Constants.HTTP_CONNECTION_TIMEOUT)));
-		httpConfiguration.setMaxRetry(Integer.parseInt(config
-				.getValue(Constants.HTTP_CONNECTION_RETRY)));
+		httpConfiguration.setConnectionTimeout(Integer
+				.parseInt(config.getConf().get(
+						Constants.HTTP_CONNECTION_TIMEOUT)));
+		httpConfiguration.setMaxRetry(Integer.parseInt(config.getConf().get(Constants.HTTP_CONNECTION_RETRY)));
 		httpConfiguration.setReadTimeout(Integer.parseInt(config
-				.getValue(Constants.HTTP_CONNECTION_READ_TIMEOUT)));
+				.getConf().get(
+						Constants.HTTP_CONNECTION_READ_TIMEOUT)));
 		httpConfiguration.setMaxHttpConnection(Integer.parseInt(config
-				.getValue(Constants.HTTP_CONNECTION_MAX_CONNECTION)));
+				.getConf().get(
+						Constants.HTTP_CONNECTION_MAX_CONNECTION)));
 	}
 
 	/**
-	 * @param ipnMap  representing IPN name/value pair
+	 * @param ipnMap
+	 *            representing IPN name/value pair
 	 */
 	public IPNMessage(Map<String, String[]> ipnMap) {
 		payload = new StringBuffer("cmd=_notify-validate");
@@ -54,10 +57,12 @@ public class IPNMessage {
 			for (Map.Entry<String, String[]> entry : ipnMap.entrySet()) {
 				String name = entry.getKey();
 				String[] value = entry.getValue();
-				try{
-					this.ipnMap.put(URLDecoder.decode(name,ENCODING), URLDecoder.decode(value[0], ENCODING));
-					payload.append("&").append(name).append("=").append(URLEncoder.encode(value[0], ENCODING));
-				}catch(Exception e){
+				try {
+					this.ipnMap.put(URLDecoder.decode(name, ENCODING),
+							URLDecoder.decode(value[0], ENCODING));
+					payload.append("&").append(name).append("=")
+							.append(URLEncoder.encode(value[0], ENCODING));
+				} catch (Exception e) {
 					LoggingManager.debug(IPNMessage.class, e.getMessage());
 				}
 			}
@@ -66,7 +71,8 @@ public class IPNMessage {
 	}
 
 	/**
-	 * @param HttpServletrequest received from PayPal IPN call back.
+	 * @param HttpServletrequest
+	 *            received from PayPal IPN call back.
 	 */
 	public IPNMessage(HttpServletRequest request) {
 		this(request.getParameterMap());
@@ -79,10 +85,11 @@ public class IPNMessage {
 		Map<String, String> headerMap = new HashMap<String, String>();
 		URL url = null;
 		String res = Constants.EMPTY_STRING;
-		HttpConnection connection = ConnectionManager.getInstance().getConnection();
-		
+		HttpConnection connection = ConnectionManager.getInstance()
+				.getConnection();
+
 		try {
-			
+
 			connection.createAndconfigureHttpConnection(httpConfiguration);
 			url = new URL(this.ipnEndpoint);
 			headerMap.put("Host", url.getHost());

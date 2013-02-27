@@ -1,7 +1,11 @@
 package com.paypal.core;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import com.paypal.core.credential.CertificateCredential;
 import com.paypal.core.credential.ICredential;
@@ -18,40 +22,44 @@ import com.paypal.exception.MissingCredentialException;
  */
 public final class CredentialManager {
 
-	/**
-	 * Singleton instance
+	/*
+	 * Map used for to override ConfigManager configurations
 	 */
-	private static CredentialManager instance;
+	private Map<String, String> configurationMap = null;
 
-	// Private Constructor
-	private CredentialManager() {
-
+	/**
+	 * Credential Manager
+	 * 
+	 * @param properties
+	 *            {@link Properties} object
+	 */
+	public CredentialManager(Properties properties) {
+		this.configurationMap = (properties != null) ? SDKUtil
+				.constructMap(properties) : ConfigManager.getInstance()
+				.getConf();
 	}
 
 	/**
-	 * Singleton accessor method
+	 * Credential Manager
 	 * 
-	 * @return
+	 * @param configurationMap
+	 *            {@link Map}
 	 */
-	public static CredentialManager getInstance() {
-		synchronized (CredentialManager.class) {
-			if (instance == null) {
-				instance = new CredentialManager();
-			}
-		}
-		return instance;
+	public CredentialManager(Map<String, String> configurationMap) {
+		this.configurationMap = (configurationMap != null) ? configurationMap
+				: ConfigManager.getInstance().getConf();
 	}
 
 	public ICredential getCredentialObject(String userId)
 			throws MissingCredentialException, InvalidCredentialException {
 		ICredential credential = null;
-		ConfigManager conf = ConfigManager.getInstance();
-		if (conf.getNumOfAcct().size() == 0) {
+		if (getAccounts(configurationMap).size() == 0) {
 			throw new MissingCredentialException(
 					"No API accounts have been configured in application properties");
 		}
 		String prefix = Constants.ACCOUNT_PREFIX;
-		Map<String, String> credMap = conf.getValuesByCategory(prefix);
+		Map<String, String> credMap = getValuesByCategory(configurationMap,
+				prefix);
 		if (userId != null && userId.trim().length() != 0) {
 			for (Entry<String, String> entry : credMap.entrySet()) {
 				if (entry.getKey().endsWith(
@@ -81,6 +89,73 @@ public final class CredentialManager {
 		}
 		return credential;
 	}
+
+	private Set<String> getAccounts(Map<String, String> configurationMap) {
+		String key = Constants.EMPTY_STRING;
+		Set<String> set = new HashSet<String>();
+		for (Object obj : configurationMap.keySet()) {
+			key = (String) obj;
+			if (key.contains("acct")) {
+				int pos = key.indexOf('.');
+				String acct = key.substring(0, pos);
+				set.add(acct);
+			}
+		}
+		return set;
+	}
+
+	private Map<String, String> getValuesByCategory(
+			Map<String, String> configurationMap, String category) {
+		String key = Constants.EMPTY_STRING;
+		HashMap<String, String> map = new HashMap<String, String>();
+		for (Object obj : configurationMap.keySet()) {
+			key = (String) obj;
+			if (key.contains(category)) {
+				map.put(key, configurationMap.get(key));
+			}
+		}
+		return map;
+	}
+
+	// public ICredential getCredentialObject(String userId)
+	// throws MissingCredentialException, InvalidCredentialException {
+	// ICredential credential = null;
+	// ConfigManager conf = ConfigManager.getInstance();
+	// if (conf.getNumOfAcct().size() == 0) {
+	// throw new MissingCredentialException(
+	// "No API accounts have been configured in application properties");
+	// }
+	// String prefix = Constants.ACCOUNT_PREFIX;
+	// Map<String, String> credMap = conf.getValuesByCategory(prefix);
+	// if (userId != null && userId.trim().length() != 0) {
+	// for (Entry<String, String> entry : credMap.entrySet()) {
+	// if (entry.getKey().endsWith(
+	// Constants.CREDENTIAL_USERNAME_SUFFIX)) {
+	// if (entry.getValue().equalsIgnoreCase(userId)) {
+	// String acctKey = entry.getKey().substring(0,
+	// entry.getKey().indexOf('.'));
+	// credential = returnCredential(credMap, acctKey);
+	// }
+	//
+	// }
+	// }
+	// if (credential == null) {
+	// throw new MissingCredentialException(
+	// "Account for the username does not exists in the properties file");
+	// }
+	// } else {
+	// int index = 1;
+	// String userName = (String) credMap.get(prefix + index
+	// + Constants.CREDENTIAL_USERNAME_SUFFIX);
+	// if (userName != null && userName.trim().length() != 0) {
+	// credential = returnCredential(credMap, prefix + index);
+	// } else {
+	// throw new MissingCredentialException(
+	// "Associate valid account for index 1");
+	// }
+	// }
+	// return credential;
+	// }
 
 	private ICredential returnCredential(Map<String, String> credMap,
 			String acctKey) throws InvalidCredentialException {

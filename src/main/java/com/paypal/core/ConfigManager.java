@@ -30,7 +30,9 @@ public final class ConfigManager {
 	 */
 	private boolean propertyLoaded = false;
 
-	// Private constructor
+	/**
+	 * Private constructor
+	 */
 	private ConfigManager() {
 	}
 
@@ -68,6 +70,7 @@ public final class ConfigManager {
 	 * Initializes the internal properties with the passed {@link Properties}
 	 * instance
 	 * 
+	 * @deprecated
 	 * @param properties
 	 *            Properties instance
 	 * 
@@ -84,7 +87,18 @@ public final class ConfigManager {
 	}
 
 	/**
+	 * Constructs a {@link Map} object from the underlying {@link Properties}
+	 * 
+	 * @return {@link Map}
+	 */
+	public Map<String, String> getConf() {
+		return SDKUtil.constructMap(properties);
+	}
+
+	/**
 	 * Returns a value for the corresponding key
+	 * 
+	 * @deprecated
 	 * 
 	 * @param key
 	 *            String key
@@ -96,6 +110,8 @@ public final class ConfigManager {
 
 	/**
 	 * Mimics the call to {@link Properties}.getProperty(key, defaultValue)
+	 * 
+	 * @deprecated
 	 * 
 	 * @param key
 	 *            String key to search in properties file
@@ -110,6 +126,8 @@ public final class ConfigManager {
 	/**
 	 * Gets all the values in the particular category in configuration (eg:
 	 * acct)
+	 * 
+	 * @deprecated
 	 * 
 	 * @param category
 	 * @return Map
@@ -129,7 +147,9 @@ public final class ConfigManager {
 	/**
 	 * Returns the key prefixes for all configured accounts
 	 * 
-	 * @return Set
+	 * @deprecated
+	 * 
+	 * @return {@link Set} of Accounts
 	 */
 
 	public Set<String> getNumOfAcct() {

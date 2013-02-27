@@ -1,6 +1,8 @@
 package com.paypal.core;
 
 public class Constants {
+
+	// General Constants
 	public static final String ENCODING_FORMAT = "UTF8";
 	public static final String EMPTY_STRING = "";
 	public static final String ACCOUNT_PREFIX = "acct";
@@ -9,6 +11,9 @@ public class Constants {
 	public static final String PAYLOAD_FORMAT_NVP = "NV";
 	public static final String SDK_NAME = "";
 	public static final String SDK_VERSION = "";
+
+	// Default SDK configuration file name
+	public static final String DEFAULT_CONFIGURATION_FILE = "sdk_config.properties";
 
 	// HTTP Header Constants
 	// PayPal Security UserId Header
@@ -104,17 +109,17 @@ public class Constants {
 
 	// Sandbox Email Address Key
 	public static final String SANDBOX_EMAIL_ADDRESS = "sandbox.EmailAddress";
-	
+
 	public static final String HTTP_CONTENT_TYPE_HEADER = "Content-Type";
-	
+
 	// HTTP Configurations Defaults
 	// HTTP Method Default
 	public static final String HTTP_CONFIG_DEFAULT_HTTP_METHOD = "POST";
-	
+
 	// HTTP Content Type Default
 	public static final String HTTP_CONFIG_DEFAULT_CONTENT_TYPE = "application/x-www-form-urlencoded";
-	
-	//IPN endpoint property name
+
+	// IPN endpoint property name
 	public static final String IPN_ENDPOINT = "service.IPNEndpoint";
 
 }
