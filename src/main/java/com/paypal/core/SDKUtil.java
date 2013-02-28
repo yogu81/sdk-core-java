@@ -1,6 +1,9 @@
 package com.paypal.core;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -216,6 +219,12 @@ public class SDKUtil {
 		String formattedPath = null;
 
 		if (pattern != null) {
+			if (parameters != null && parameters.length == 1
+					&& parameters[0] instanceof Map<?, ?>) {
+
+				// Form a object array using the passed Map
+				parameters = splitParameters(pattern, (Map<?, ?>) parameters[0]);
+			}
 			// Perform a simple message formatting
 			String fString = MessageFormat.format(pattern, parameters);
 
@@ -257,6 +266,50 @@ public class SDKUtil {
 			}
 		}
 		return fString;
+	}
+
+	/**
+	 * Split the URI and form a Object array using the query string and values
+	 * in the provided map. The return object array is populated only if the map
+	 * contains valid value for the query name. The object array contains null
+	 * values if there is no value found in the map
+	 * 
+	 * @param pattern
+	 *            URI pattern
+	 * @param containerMap
+	 *            Map containing the query name and value
+	 * @return Object array
+	 */
+	private static Object[] splitParameters(String pattern,
+			Map<?, ?> containerMap) {
+		List<Object> objectList = new ArrayList<Object>();
+		String[] query = pattern.split("\\?");
+		String queryString = null;
+		if (query != null) {
+			for (String part : query) {
+				if (part.contains("={")) {
+					queryString = part;
+				}
+			}
+		}
+		if (queryString != null) {
+			String[] queries = queryString.split("&");
+			if (queries != null) {
+				for (String q : queries) {
+					String[] params = q.split("=");
+					if (params != null && params.length == 2) {
+						String key = params[0].trim();
+						if (containerMap.containsKey(key)) {
+							Object object = containerMap.get(key);
+							objectList.add(object);
+						} else {
+							objectList.add(null);
+						}
+					}
+				}
+			}
+		}
+		return objectList.toArray();
 	}
 
 }

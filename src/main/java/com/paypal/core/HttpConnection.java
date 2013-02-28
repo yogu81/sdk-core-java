@@ -112,22 +112,12 @@ public abstract class HttpConnection {
 						LoggingManager.severe(HttpConnection.class,
 								"Error code : " + responsecode
 										+ " with response : " + errorResponse);
-					} else if (connection.getInputStream() != null) {
-						
-						// Added logic to read from InputStream 
-						// HTTPError code 500 are sent (?) in InputStream
-						//(1-29-2013)
-						reader = new BufferedReader(new InputStreamReader(
-								connection.getInputStream(),
-								Constants.ENCODING_FORMAT));
-						errorResponse = read(reader);
-						LoggingManager.severe(HttpConnection.class,
-								"Error code : " + responsecode
-										+ " with response : " + errorResponse);
 					}
-					
+					if ((errorResponse == null) || (errorResponse.length() == 0)) {
+						errorResponse = e.getMessage();
+					}
 					// Throw HttpErrorException for HTTPError code 500
-					// (1-29-2013)
+					// (2-26-2013)
 					if (responsecode <= 500) {
 						throw new HttpErrorException("Error code : "
 								+ responsecode + " with response : "
