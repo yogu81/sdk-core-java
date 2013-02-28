@@ -2,6 +2,7 @@ package com.paypal.core;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -284,16 +285,8 @@ public class SDKUtil {
 			Map<?, ?> containerMap) {
 		List<Object> objectList = new ArrayList<Object>();
 		String[] query = pattern.split("\\?");
-		String queryString = null;
-		if (query != null) {
-			for (String part : query) {
-				if (part.contains("={")) {
-					queryString = part;
-				}
-			}
-		}
-		if (queryString != null) {
-			String[] queries = queryString.split("&");
+		if (query != null && query.length == 2 && query[1].contains("={")) {
+			String[] queries = query[1].split("&");
 			if (queries != null) {
 				for (String q : queries) {
 					String[] params = q.split("=");
@@ -311,5 +304,4 @@ public class SDKUtil {
 		}
 		return objectList.toArray();
 	}
-
 }
