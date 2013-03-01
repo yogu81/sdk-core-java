@@ -48,7 +48,7 @@ public class ResourceLoader {
 		if (inputStream == null) {
 			if (!searchClasspath(name) && !searchResourcepath(name)) {
 				throw new IOException("Resource '" + name
-						+ "' could not be found in ");
+						+ "' could not be found");
 			}
 			if (file != null) {
 				inputStream = new BufferedInputStream(new FileInputStream(file));

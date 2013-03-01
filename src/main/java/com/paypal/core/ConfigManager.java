@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import com.paypal.sdk.util.ResourceLoader;
+
 /**
  * <code>ConfigManager</code> loads the configuration file and hands out
  * appropriate parameters to application
@@ -34,6 +36,16 @@ public final class ConfigManager {
 	 * Private constructor
 	 */
 	private ConfigManager() {
+		ResourceLoader resourceLoader = new ResourceLoader(
+				Constants.DEFAULT_CONFIGURATION_FILE);
+		try {
+			InputStream inputStream = resourceLoader.getInputStream();
+			properties = new Properties();
+			properties.load(inputStream);
+			setPropertyLoaded(true);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -52,7 +64,7 @@ public final class ConfigManager {
 
 	/**
 	 * Loads the internal properties with the passed {@link InputStream}
-	 * 
+	 * @deprecated
 	 * @param is
 	 *            InputStream
 	 * 

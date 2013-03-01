@@ -201,8 +201,8 @@ public abstract class BaseService {
 			ClientActionRequiredException, InvalidCredentialException,
 			MissingCredentialException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
-		if (!ConfigManager.getInstance().isPropertyLoaded()) {
-			throw new FileNotFoundException("Property file not loaded");
+		if ((this.configurationMap == null) && (!ConfigManager.getInstance().isPropertyLoaded())) {
+			throw new ClientActionRequiredException("Configuration not loaded..");
 		}
 		APIService apiService = new APIService(configurationMap);
 		lastRequest = apiCallPrehandler.getPayLoad();
@@ -211,9 +211,12 @@ public abstract class BaseService {
 		return response;
 	}
 	
-	protected void loadConfigurations(InputStream inputStream) throws IOException {
+	/**
+	 * Load default configurations into {@link ConfigManager}
+	 * @throws IOException
+	 */
+	protected void loadConfigurations() {
 		ConfigManager configManager = ConfigManager.getInstance();
-		configManager.load(inputStream);
 	}
 
 }
