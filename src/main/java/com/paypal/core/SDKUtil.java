@@ -1,5 +1,10 @@
 package com.paypal.core;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -78,14 +83,27 @@ public class SDKUtil {
 				if (ch == '&') {
 					if (i != (contentLength - 1)) {
 						if (!(i + 3 > contentLength - 1)
+								&& (textContent.charAt(i + 1) == 'g' || textContent
+										.charAt(i + 1) == 'l')
+								&& textContent.charAt(i + 2) == 't'
 								&& textContent.charAt(i + 3) == ';') {
 							stringBuilder.append(ch);
 						} else if (!(i + 4 > contentLength - 1)
+								&& textContent.charAt(i + 1) == 'a'
+								&& textContent.charAt(i + 2) == 'm'
+								&& textContent.charAt(i + 3) == 'p'
 								&& textContent.charAt(i + 4) == ';') {
 							stringBuilder.append(ch);
 						} else if (!(i + 5 > contentLength - 1)
-								&& textContent.charAt(i + 5) == ';'
-								&& textContent.charAt(i + 4) != 't') {
+								&& ((textContent.charAt(i + 1) == 'q'
+										&& (textContent.charAt(i + 2) == 'u'
+												&& textContent.charAt(i + 3) == 'o' && textContent
+												.charAt(i + 4) == 't') || (textContent
+										.charAt(i + 1) == 'a' && (textContent
+										.charAt(i + 2) == 'p'
+										&& textContent.charAt(i + 3) == 'o' && textContent
+										.charAt(i + 4) == 's'))
+										&& textContent.charAt(i + 5) == ';'))) {
 							stringBuilder.append(ch);
 						} else {
 							stringBuilder.append(AMPERSAND);

@@ -37,7 +37,7 @@ public class OAuthSignature {
 	private String timestamp;
 	private String httpMethod;
 	private ArrayList queryParams;
-	
+
 	public enum HTTPMethod {
 		GET, HEAD, POST, PUT, UPDATE
 	}
@@ -148,19 +148,20 @@ public class OAuthSignature {
 	 *             if invalid arguments.
 	 */
 	public String computeV1Signature() throws OAuthException {
-		validate( this.consumerKey, "API UserName" );
-		validate( this.consumerSecret, "API Password" );
-		validate( this.token, "Access Token" );
-		validate( this.tokenSecret, "Token Secret" );
-		validate( this.requestURI, "Request URI" );
-		validate( this.timestamp, "Timestamp" );
-		
+		validate(this.consumerKey, "API UserName");
+		validate(this.consumerSecret, "API Password");
+		validate(this.token, "Access Token");
+		validate(this.tokenSecret, "Token Secret");
+		validate(this.requestURI, "Request URI");
+		validate(this.timestamp, "Timestamp");
+
 		String signature = "";
 		try {
-			String key = PayPalURLEncoder.encode(new String(consumerSecret),ENCODING);
+			String key = PayPalURLEncoder.encode(new String(consumerSecret),
+					ENCODING);
 			key += PARAM_DELIMETER;
 			key += PayPalURLEncoder.encode(new String(tokenSecret), ENCODING);
-			
+
 			ArrayList params = queryParams;
 
 			params.add(new Parameter("oauth_consumer_key", this.consumerKey));
@@ -175,8 +176,7 @@ public class OAuthSignature {
 
 			signatureBase += PayPalURLEncoder.encode(requestURI, ENCODING);
 			signatureBase += PARAM_DELIMETER;
-            
-			
+
 			String paramString = "";
 			Iterator it = params.iterator();
 			while (it.hasNext()) {
@@ -193,12 +193,13 @@ public class OAuthSignature {
 			signatureBase += PayPalURLEncoder.encode(paramString, ENCODING);
 
 			Mac hmac = Mac.getInstance(SIGNATURE_ALGORITHM);
-			hmac.init(new SecretKeySpec(key.getBytes(ENCODING), hmac.getAlgorithm()));
+			hmac.init(new SecretKeySpec(key.getBytes(ENCODING), hmac
+					.getAlgorithm()));
 			hmac.update(signatureBase.getBytes(ENCODING));
 			byte[] digest = hmac.doFinal();
 
 			Base64 b64Encoder = new Base64();
-			signature = new String(b64Encoder.encode(digest),ENCODING);
+			signature = new String(b64Encoder.encode(digest), ENCODING);
 
 		} catch (NoSuchAlgorithmException algoe) {
 			throw new OAuthException(algoe.getMessage());
@@ -210,7 +211,7 @@ public class OAuthSignature {
 
 		return signature;
 	}
-	
+
 	/**
 	 * Validate that the specified parameter is not null and not empty.
 	 * 
@@ -223,11 +224,11 @@ public class OAuthSignature {
 	 *             If the parameter is not valid.
 	 */
 	private void validate(String param, String name) throws OAuthException {
-		if ( ( param == null ) || ( param.length() == 0 ) ) {
-			throw new OAuthException( "Value is required: " + name );
+		if ((param == null) || (param.length() == 0)) {
+			throw new OAuthException("Value is required: " + name);
 		}
 	}
-	
+
 	/**
 	 * verifyV1Signature verifies signature against computed signature.
 	 * 
@@ -305,8 +306,6 @@ public class OAuthSignature {
 		return normalizedURI;
 	}
 
-	
-
 	/**
 	 * Inner class for sorting Collection
 	 * 
@@ -356,88 +355,92 @@ public class OAuthSignature {
 		private String m_name;
 		private String m_value;
 	}
-	
+
 	/**
-	 * getAuthHeader accepts the required parameters and Provides OAuth signature and TimeStamp.
+	 * Accepts the required parameters and Provides OAuth signature and
+	 * TimeStamp.
 	 * 
 	 * @param apiUserName
-	 *                   API User name.
-	 * @param apiPsw
-	 *               	 API Password of user.
+	 *            API User name.
+	 * @param apiPassword
+	 *            API Password of user.
 	 * @param accessToken
-	 * 					 Obtained during Permission Request of token.	
+	 *            Obtained during Permission Request of token.
 	 * @param tokenSecret
-	 * 					 Obtained during Permission Request of token.
+	 *            Obtained during Permission Request of token.
 	 * @param httpMethod
-	 *                   HTTP Method (GET,POST etc.) 
+	 *            HTTP Method (GET,POST etc.)
 	 * @param scriptURI
-	 *                   API Server End Point.
+	 *            API Server End Point.
 	 * @param queryParams
-	 *                   Extra 'name/value' parameters if required.
-	 * @return
+	 *            Extra 'name/value' parameters if required.
+	 * @return {@link Map} of HTTPHeaders
 	 */
 	public static Map getAuthHeader(String apiUserName, String apiPassword,
 			String accessToken, String tokenSecret, HTTPMethod httpMethod,
-			String scriptURI,Map queryParams) throws OAuthException {
-		
-		Map headers=new HashMap();
+			String scriptURI, Map queryParams) throws OAuthException {
+
+		Map headers = new HashMap();
 		String consumerKey = apiUserName;
 		String consumerSecretStr = apiPassword;
-		String time = String.valueOf(System.currentTimeMillis()/1000);
-		
-		OAuthSignature oauth = new OAuthSignature(consumerKey,consumerSecretStr);
-		if(HTTPMethod.GET.equals(httpMethod) && queryParams != null){
+		String time = String.valueOf(System.currentTimeMillis() / 1000);
+
+		OAuthSignature oauth = new OAuthSignature(consumerKey,
+				consumerSecretStr);
+		if (HTTPMethod.GET.equals(httpMethod) && queryParams != null) {
 			Iterator itr = queryParams.entrySet().iterator();
-		    while (itr.hasNext()) {
-		        Map.Entry param = (Map.Entry)itr.next();
-		        String key=(String)param.getKey();
-		        String value=(String)param.getValue();
-		        oauth.addParameter(key,value);
-		    }
-		  }	
+			while (itr.hasNext()) {
+				Map.Entry param = (Map.Entry) itr.next();
+				String key = (String) param.getKey();
+				String value = (String) param.getValue();
+				oauth.addParameter(key, value);
+			}
+		}
 		oauth.setToken(accessToken);
 		oauth.setTokenSecret(tokenSecret);
 		oauth.setHTTPMethod(httpMethod);
 		oauth.setTokenTimestamp(time);
 		oauth.setRequestURI(scriptURI);
-		//Compute Signature
+		// Compute Signature
 		String sig = oauth.computeV1Signature();
-		
+
 		headers.put("Signature", sig);
 		headers.put("TimeStamp", time);
 		return headers;
-		
+
 	}
-	
+
 	/**
 	 * Computes the value of the X_PP_AUTHORIZATION header
-	 *  
+	 * 
 	 * @param apiUserName
-	 *                   API User name.
-	 * @param apiPsw
-	 *               	 API Password of user.
+	 *            API User name.
+	 * @param apiPassword
+	 *            API Password of user.
 	 * @param accessToken
-	 * 					 Obtained during Permission Request of token.	
+	 *            Obtained during Permission Request of token.
 	 * @param tokenSecret
-	 * 					 Obtained during Permission Request of token.
+	 *            Obtained during Permission Request of token.
 	 * @param httpMethod
-	 *                   HTTP Method (GET,POST etc.) 
+	 *            HTTP Method (GET,POST etc.)
 	 * @param scriptURI
-	 *                   API Server End Point.
+	 *            API Server End Point.
 	 * @param queryParams
-	 *                   Extra 'name/value' parameters if required.
-	 * @return
-	 *
+	 *            Extra 'name/value' parameters if required.
+	 * @return Auth String
+	 * 
 	 * @throws OAuthException
 	 */
-	public static String getFullAuthString(String apiUserName, String apiPassword,
-			String accessToken, String tokenSecret, HTTPMethod httpMethod,
-			String scriptURI,Map queryParams) throws OAuthException {
-		
-		Map headers = getAuthHeader(apiUserName, apiPassword, accessToken, 
+	public static String getFullAuthString(String apiUserName,
+			String apiPassword, String accessToken, String tokenSecret,
+			HTTPMethod httpMethod, String scriptURI, Map queryParams)
+			throws OAuthException {
+
+		Map headers = getAuthHeader(apiUserName, apiPassword, accessToken,
 				tokenSecret, httpMethod, scriptURI, queryParams);
-		return "token=" + accessToken + ",signature=" + headers.get("Signature") 
-				+ ",timestamp="+ headers.get("TimeStamp");		
-		
+		return "token=" + accessToken + ",signature="
+				+ headers.get("Signature") + ",timestamp="
+				+ headers.get("TimeStamp");
+
 	}
 }

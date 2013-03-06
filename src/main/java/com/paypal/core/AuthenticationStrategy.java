@@ -14,11 +14,12 @@ import com.paypal.core.credential.ICredential;
 public interface AuthenticationStrategy<T, E extends ICredential> {
 
 	/**
-	 * Generates Headers {@link ICredential} as any type as chosen by the implementation
+	 * Generates Headers {@link ICredential} as any type as chosen by the
+	 * implementation
 	 * 
 	 * @param e
 	 *            {@link ICredential} instance
-	 * @return
+	 * @return T
 	 * @throws Exception
 	 */
 	T generateHeaderStrategy(E e) throws Exception;
