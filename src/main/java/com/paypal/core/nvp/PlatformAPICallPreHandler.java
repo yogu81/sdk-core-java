@@ -2,13 +2,10 @@ package com.paypal.core.nvp;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import com.paypal.core.APICallPreHandler;
-import com.paypal.core.ConfigManager;
 import com.paypal.core.Constants;
 import com.paypal.core.CredentialManager;
-import com.paypal.core.SDKUtil;
 import com.paypal.core.credential.CertificateCredential;
 import com.paypal.core.credential.ICredential;
 import com.paypal.core.credential.SignatureCredential;
@@ -110,8 +107,7 @@ public class PlatformAPICallPreHandler implements APICallPreHandler {
 		this.rawPayLoad = rawPayLoad;
 		this.serviceName = serviceName;
 		this.method = method;
-		this.configurationMap = configurationMap != null ? configurationMap
-				: ConfigManager.getInstance().getConf();
+		this.configurationMap = configurationMap;
 	}
 
 	/**

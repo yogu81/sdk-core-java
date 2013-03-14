@@ -1,7 +1,10 @@
 package com.paypal.core;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,6 +34,42 @@ public final class ConfigManager {
 	 * Initialized notifier
 	 */
 	private boolean propertyLoaded = false;
+
+	/**
+	 * Map View of internal {@link Properties}
+	 */
+	private Map<String, String> mapView = null;
+
+	/**
+	 * Map View of internal Default {@link Properties}
+	 */
+	private static Map<String, String> defaultMapView = null;
+
+	/**
+	 * Default {@link Properties}
+	 */
+	private static final Properties DEFAULT_PROPERTIES;
+
+	// Initialize DEFAULT_PROPERTIES
+	static {
+		DEFAULT_PROPERTIES = new Properties();
+		DEFAULT_PROPERTIES.put(Constants.HTTP_CONNECTION_TIMEOUT, "5000");
+		DEFAULT_PROPERTIES.put(Constants.HTTP_CONNECTION_RETRY, "2");
+		DEFAULT_PROPERTIES.put(Constants.HTTP_CONNECTION_READ_TIMEOUT, "30000");
+		DEFAULT_PROPERTIES.put(Constants.HTTP_CONNECTION_MAX_CONNECTION, "100");
+		DEFAULT_PROPERTIES.put(Constants.DEVICE_IP_ADDRESS, "127.0.0.1");
+		DEFAULT_PROPERTIES.put(Constants.GOOGLE_APP_ENGINE, "false");
+		DEFAULT_PROPERTIES.put(Constants.END_POINT,
+				"https://svcs.sandbox.paypal.com/");
+		DEFAULT_PROPERTIES.put(Constants.SERVICE_REDIRECT_ENDPOINT,
+				"https://www.sandbox.paypal.com/webscr&cmd=");
+		DEFAULT_PROPERTIES.put(Constants.SERVICE_DEVCENTRAL_ENDPOINT,
+				"https://developer.paypal.com");
+		DEFAULT_PROPERTIES.put(Constants.IPN_ENDPOINT,
+				"https://www.sandbox.paypal.com/cgi-bin/webscr");
+		DEFAULT_PROPERTIES.put(Constants.SANDBOX_EMAIL_ADDRESS,
+				"Platform.sdk.seller@gmail.com");
+	}
 
 	/**
 	 * Private constructor
@@ -63,7 +102,65 @@ public final class ConfigManager {
 	}
 
 	/**
+	 * Returns the Default {@link Properties} of System Configuration
+	 * 
+	 * @return Default {@link Properties}
+	 */
+	public static final Properties getDefaultProperties() {
+		return DEFAULT_PROPERTIES;
+	}
+
+	/**
+	 * Returns a {@link Map} view of Default {@link Properties}
+	 * 
+	 * @return {@link Map} view of Default {@link Properties}
+	 */
+	public static Map<String, String> getDefaultSDKMap() {
+		if (defaultMapView == null) {
+			defaultMapView = new HashMap<String, String>();
+			for (Object object : DEFAULT_PROPERTIES.keySet()) {
+				defaultMapView.put(object.toString().trim(), DEFAULT_PROPERTIES
+						.getProperty(object.toString()).trim());
+			}
+		}
+		return defaultMapView;
+	}
+	
+	/**
+	 * Combines some {@link Properties} with Default {@link Properties}
+	 * 
+	 * @param receivedProperties
+	 *            Properties used to combine with Default {@link Properties}
+	 * 
+	 * @return Combined {@link Properties}
+	 */
+	public static Properties combineDefaultProperties(
+			Properties receivedProperties) {
+		Properties combinedProperties = new Properties(getDefaultProperties());
+		if (receivedProperties.size() > 0) {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream(1024);
+			try {
+				receivedProperties.store(bos, null);
+				combinedProperties.load(new ByteArrayInputStream(bos
+						.toByteArray()));
+			} catch (IOException e) {
+				// TODO return defaultProperties
+			}
+			
+			// Since the default properties are only searchable
+			Enumeration<?> defaultKeys = combinedProperties.propertyNames();
+			while(defaultKeys.hasMoreElements()) {
+				String key = defaultKeys.nextElement().toString();
+				String value = combinedProperties.getProperty(key);
+				combinedProperties.setProperty(key, value);
+			}
+		}
+		return combinedProperties;
+	}
+
+	/**
 	 * Loads the internal properties with the passed {@link InputStream}
+	 * 
 	 * @deprecated
 	 * @param is
 	 *            InputStream
@@ -103,8 +200,17 @@ public final class ConfigManager {
 	 * 
 	 * @return {@link Map}
 	 */
-	public Map<String, String> getConf() {
-		return SDKUtil.constructMap(properties);
+	public Map<String, String> getConfigurationMap() {
+		if (mapView == null) {
+			mapView = new HashMap<String, String>();
+			if (properties != null) {
+				for (Object object : properties.keySet()) {
+					mapView.put(object.toString().trim(), properties
+							.getProperty(object.toString()).trim());
+				}
+			}
+		}
+		return mapView;
 	}
 
 	/**
@@ -179,6 +285,10 @@ public final class ConfigManager {
 
 	}
 
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public boolean isPropertyLoaded() {
 		return propertyLoaded;
 	}

@@ -79,8 +79,10 @@ public class APIService {
 	 *            {@link Map} to over-ride default Config Manager configuration
 	 */
 	public APIService(Map<String, String> configurationMap) {
-		this.configurationMap = (configurationMap != null) ? configurationMap
-				: ConfigManager.getInstance().getConf();
+		if (configurationMap == null) {
+			throw new IllegalArgumentException("ConfigurationMap cannot be null");
+		}
+		this.configurationMap = configurationMap;
 		httpConfiguration = new HttpConfiguration();
 		endPoint = (String) this.configurationMap.get(Constants.END_POINT);
 		httpConfiguration.setGoogleAppEngine(Boolean

@@ -3,15 +3,12 @@ package com.paypal.core.soap;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.paypal.core.APICallPreHandler;
-import com.paypal.core.ConfigManager;
 import com.paypal.core.Constants;
 import com.paypal.core.CredentialManager;
-import com.paypal.core.SDKUtil;
 import com.paypal.core.credential.CertificateCredential;
 import com.paypal.core.credential.ICredential;
 import com.paypal.core.credential.SignatureCredential;
@@ -105,8 +102,7 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 			Map<String, String> configurationMap) {
 		super();
 		this.apiCallHandler = apiCallHandler;
-		this.configurationMap = configurationMap != null ? configurationMap
-				: ConfigManager.getInstance().getConf();
+		this.configurationMap = configurationMap;
 	}
 
 	/**

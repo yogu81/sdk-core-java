@@ -32,7 +32,10 @@ public class APIServiceTest {
 			SSLConfigurationException, FileNotFoundException, IOException {
 		ConfigManager.getInstance().load(
 				this.getClass().getResourceAsStream("/sdk_config.properties"));
-		service = new APIService((Map<String, String>) null);
+		Properties props =  new Properties();
+		props.load(this.getClass().getResourceAsStream("/sdk_config.properties"));
+		Map<String, String> cMap = SDKUtil.constructMap(props);
+		service = new APIService(cMap);
 		ConnectionManager connectionMgr = ConnectionManager.getInstance();
 		connection = connectionMgr.getConnection();
 	}
@@ -94,10 +97,15 @@ public class APIServiceTest {
 	}
 
 	@Test(dataProvider = "configParamsForProxy", dataProviderClass = DataProviderClass.class, priority = 4)
-	public void proxyTest(ConfigManager conf) {
-		service = new APIService((Map<String, String>) null);
+	public void proxyTest(ConfigManager conf) throws IOException {
+		ConfigManager.getInstance().load(
+				this.getClass().getResourceAsStream("/sdk_config.properties"));
+		Properties props =  new Properties();
+		props.load(this.getClass().getResourceAsStream("/sdk_config.properties"));
+		Map<String, String> cMap = SDKUtil.constructMap(props);
+		service = new APIService(cMap);
 		Assert.assertEquals(service.getEndPoint(),
-				"https://svcs.sandbox.paypal.com/proxy");
+				"https://svcs.sandbox.paypal.com/");
 	}
 
 	@AfterClass

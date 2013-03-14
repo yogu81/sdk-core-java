@@ -21,7 +21,7 @@ import com.paypal.sdk.exceptions.OAuthException;
  * Service class generated may extend this class to make API calls through HTTP
  */
 public abstract class BaseService {
-	
+
 	/*
 	 * Map used for to override ConfigManager configurations
 	 */
@@ -46,6 +46,50 @@ public abstract class BaseService {
 	 * Last response received
 	 */
 	private String lastResponse = null;
+
+	/**
+	 * Default Constructor
+	 */
+	public BaseService() {
+		configurationMap = SDKUtil.combineDefaultMap(ConfigManager
+				.getInstance().getConfigurationMap());
+	}
+
+	/**
+	 * Constructs {@link BaseService} using the supplied {@link InputStream} for
+	 * {@link Properties} configuration
+	 * 
+	 * @param inputStream
+	 *            {@link Properties} configuration stream
+	 * @throws IOException
+	 */
+	public BaseService(InputStream inputStream) throws IOException {
+		Properties properties = new Properties();
+		properties.load(inputStream);
+		this.configurationMap = SDKUtil.constructMap(properties);
+	}
+
+	/**
+	 * Constructs {@link BaseService} using the supplied {@link Properties} for
+	 * configuration
+	 * 
+	 * @param properties
+	 *            Configuration {@link Properties}
+	 */
+	public BaseService(Properties properties) {
+		this.configurationMap = SDKUtil.constructMap(properties);
+	}
+
+	/**
+	 * Constructs {@link BaseService} using the supplied {@link Map} for
+	 * configuration
+	 * 
+	 * @param configurationMap
+	 *            Configuration {@link Map}
+	 */
+	public BaseService(Map<String, String> configurationMap) {
+		this.configurationMap = SDKUtil.combineDefaultMap(configurationMap);
+	}
 
 	/**
 	 * Gets the Access Token
@@ -119,6 +163,7 @@ public abstract class BaseService {
 
 	/**
 	 * Overloaded static method used to load the configuration file.
+	 * 
 	 * @deprecated
 	 * 
 	 * @param is
@@ -134,6 +179,7 @@ public abstract class BaseService {
 
 	/**
 	 * Overloaded static method used to load the configuration file
+	 * 
 	 * @deprecated
 	 * 
 	 * @param file
@@ -154,6 +200,7 @@ public abstract class BaseService {
 
 	/**
 	 * Overloaded static method used to load the configuration file
+	 * 
 	 * @deprecated
 	 * 
 	 * @param filepath
@@ -171,6 +218,7 @@ public abstract class BaseService {
 	/**
 	 * Initializes {@link ConfigManager} with the passed {@link Properties}
 	 * instance
+	 * 
 	 * @deprecated
 	 * 
 	 * @param properties
@@ -201,22 +249,15 @@ public abstract class BaseService {
 			ClientActionRequiredException, InvalidCredentialException,
 			MissingCredentialException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
-		if ((this.configurationMap == null) && (!ConfigManager.getInstance().isPropertyLoaded())) {
-			throw new ClientActionRequiredException("Configuration not loaded..");
+		if (this.configurationMap == null || this.configurationMap.size() <= 0) {
+			throw new ClientActionRequiredException(
+					"Configuration not loaded..");
 		}
 		APIService apiService = new APIService(configurationMap);
 		lastRequest = apiCallPrehandler.getPayLoad();
 		String response = apiService.makeRequestUsing(apiCallPrehandler);
 		lastResponse = response;
 		return response;
-	}
-	
-	/**
-	 * Load default configurations into {@link ConfigManager}
-	 * @throws IOException
-	 */
-	protected void loadConfigurations() {
-		ConfigManager configManager = ConfigManager.getInstance();
 	}
 
 }

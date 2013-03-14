@@ -147,8 +147,7 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 		this.rawPayLoad = rawPayLoad;
 		this.namespaces = namespaces;
 		this.headerString = headerString;
-		this.configurationMap = (configurationMap != null) ? configurationMap
-				: ConfigManager.getInstance().getConf();
+		this.configurationMap = configurationMap;
 	}
 
 	public Map<String, String> getHeaderMap() {

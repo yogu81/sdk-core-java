@@ -1,6 +1,5 @@
 package com.paypal.ipn;
 
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -33,17 +32,17 @@ public class IPNMessage {
 	{
 		httpConfiguration = new HttpConfiguration();
 		config = ConfigManager.getInstance();
-		ipnEndpoint = config.getConf().get(Constants.IPN_ENDPOINT);
+		ipnEndpoint = config.getConfigurationMap().get(Constants.IPN_ENDPOINT);
 		httpConfiguration.setEndPointUrl(ipnEndpoint);
 		httpConfiguration.setConnectionTimeout(Integer
-				.parseInt(config.getConf().get(
+				.parseInt(config.getConfigurationMap().get(
 						Constants.HTTP_CONNECTION_TIMEOUT)));
-		httpConfiguration.setMaxRetry(Integer.parseInt(config.getConf().get(Constants.HTTP_CONNECTION_RETRY)));
+		httpConfiguration.setMaxRetry(Integer.parseInt(config.getConfigurationMap().get(Constants.HTTP_CONNECTION_RETRY)));
 		httpConfiguration.setReadTimeout(Integer.parseInt(config
-				.getConf().get(
+				.getConfigurationMap().get(
 						Constants.HTTP_CONNECTION_READ_TIMEOUT)));
 		httpConfiguration.setMaxHttpConnection(Integer.parseInt(config
-				.getConf().get(
+				.getConfigurationMap().get(
 						Constants.HTTP_CONNECTION_MAX_CONNECTION)));
 	}
 

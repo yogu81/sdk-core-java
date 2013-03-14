@@ -23,8 +23,11 @@ public class CredentialManagerTest {
 	ICredential credential;
 
 	@BeforeClass
-	public void beforeClass() {
-		cred = new CredentialManager((Properties) null);
+	public void beforeClass() throws IOException {
+		Properties props =  new Properties();
+		props.load(this.getClass().getResourceAsStream("/sdk_config.properties"));
+		Map<String, String> cMap = SDKUtil.constructMap(props);
+		cred = new CredentialManager(cMap);
 	}
 
 	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class, priority = 0)

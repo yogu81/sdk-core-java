@@ -30,24 +30,14 @@ public final class CredentialManager {
 	/**
 	 * Credential Manager
 	 * 
-	 * @param properties
-	 *            {@link Properties} object
-	 */
-	public CredentialManager(Properties properties) {
-		this.configurationMap = (properties != null) ? SDKUtil
-				.constructMap(properties) : ConfigManager.getInstance()
-				.getConf();
-	}
-
-	/**
-	 * Credential Manager
-	 * 
 	 * @param configurationMap
 	 *            {@link Map}
 	 */
 	public CredentialManager(Map<String, String> configurationMap) {
-		this.configurationMap = (configurationMap != null) ? configurationMap
-				: ConfigManager.getInstance().getConf();
+		if (configurationMap == null) {
+			throw new IllegalArgumentException("ConfigurationMap cannot be null");
+		}
+		this.configurationMap = configurationMap;
 	}
 
 	public ICredential getCredentialObject(String userId)
@@ -116,46 +106,6 @@ public final class CredentialManager {
 		}
 		return map;
 	}
-
-	// public ICredential getCredentialObject(String userId)
-	// throws MissingCredentialException, InvalidCredentialException {
-	// ICredential credential = null;
-	// ConfigManager conf = ConfigManager.getInstance();
-	// if (conf.getNumOfAcct().size() == 0) {
-	// throw new MissingCredentialException(
-	// "No API accounts have been configured in application properties");
-	// }
-	// String prefix = Constants.ACCOUNT_PREFIX;
-	// Map<String, String> credMap = conf.getValuesByCategory(prefix);
-	// if (userId != null && userId.trim().length() != 0) {
-	// for (Entry<String, String> entry : credMap.entrySet()) {
-	// if (entry.getKey().endsWith(
-	// Constants.CREDENTIAL_USERNAME_SUFFIX)) {
-	// if (entry.getValue().equalsIgnoreCase(userId)) {
-	// String acctKey = entry.getKey().substring(0,
-	// entry.getKey().indexOf('.'));
-	// credential = returnCredential(credMap, acctKey);
-	// }
-	//
-	// }
-	// }
-	// if (credential == null) {
-	// throw new MissingCredentialException(
-	// "Account for the username does not exists in the properties file");
-	// }
-	// } else {
-	// int index = 1;
-	// String userName = (String) credMap.get(prefix + index
-	// + Constants.CREDENTIAL_USERNAME_SUFFIX);
-	// if (userName != null && userName.trim().length() != 0) {
-	// credential = returnCredential(credMap, prefix + index);
-	// } else {
-	// throw new MissingCredentialException(
-	// "Associate valid account for index 1");
-	// }
-	// }
-	// return credential;
-	// }
 
 	private ICredential returnCredential(Map<String, String> credMap,
 			String acctKey) throws InvalidCredentialException {

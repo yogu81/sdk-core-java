@@ -52,6 +52,12 @@ public class Constants {
 	// Constants key defined for configuration options in application properties
 	// End point
 	public static final String END_POINT = "service.EndPoint";
+	
+	// Service Redirect Endpoint
+	public static final String SERVICE_REDIRECT_ENDPOINT = "service.RedirectURL";
+	
+	// Service DevCentral Endpoint
+	public static final String SERVICE_DEVCENTRAL_ENDPOINT = "service.DevCentralURL";
 
 	// Use Google App Engine
 	public static final String GOOGLE_APP_ENGINE = "http.GoogleAppEngine";
