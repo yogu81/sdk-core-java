@@ -112,9 +112,7 @@ public class CredentialManagerTest {
 	public void getCredentialObjectMissingCredentialFromEmptyConfigFile()
 			throws IOException, MissingCredentialException,
 			InvalidCredentialException {
-		ConfigManager.getInstance().load(
-				this.getClass().getResourceAsStream(
-						"/sdk_config_empty.properties"));
+		cred = new CredentialManager(new HashMap<String, String>());
 		cred.getCredentialObject(null);
 
 	}
@@ -123,9 +121,7 @@ public class CredentialManagerTest {
 	public void getCredentialObjectMissingCredentialFromWithoutDefaultAccountValue()
 			throws IOException, MissingCredentialException,
 			InvalidCredentialException {
-		ConfigManager.getInstance().load(
-				this.getClass().getResourceAsStream(
-						"/sdk_config_withoutdefaultaccount.properties"));
+		cred = new CredentialManager(new HashMap<String, String>());
 		cred.getCredentialObject(null);
 
 	}

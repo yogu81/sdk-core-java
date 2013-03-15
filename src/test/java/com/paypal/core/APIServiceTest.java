@@ -22,19 +22,24 @@ import com.paypal.exception.SSLConfigurationException;
 import com.paypal.sdk.exceptions.OAuthException;
 
 public class APIServiceTest {
+
 	APIService service;
+
 	HttpConnection connection;
+
+	Properties props;
+
+	Map<String, String> cMap;
 
 	Map<String, String> map = new HashMap<String, String>();
 
 	@BeforeClass
 	public void beforeClass() throws NumberFormatException,
 			SSLConfigurationException, FileNotFoundException, IOException {
-		ConfigManager.getInstance().load(
-				this.getClass().getResourceAsStream("/sdk_config.properties"));
-		Properties props =  new Properties();
-		props.load(this.getClass().getResourceAsStream("/sdk_config.properties"));
-		Map<String, String> cMap = SDKUtil.constructMap(props);
+		props = new Properties();
+		props.load(this.getClass()
+				.getResourceAsStream("/sdk_config.properties"));
+		cMap = SDKUtil.constructMap(props);
 		service = new APIService(cMap);
 		ConnectionManager connectionMgr = ConnectionManager.getInstance();
 		connection = connectionMgr.getConnection();
@@ -53,33 +58,37 @@ public class APIServiceTest {
 			InvalidResponseDataException, HttpErrorException,
 			ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
+		cMap.put("service.EndPoint", "https://svcs.sandbox.paypal.com/");
+		service = new APIService(cMap);
 		String payload = "requestEnvelope.errorLanguage=en_US&baseAmountList.currency(0).code=USD&baseAmountList.currency(0).amount=2.0&convertToCurrencyList.currencyCode(0)=GBP";
 		APICallPreHandler handler = new PlatformAPICallPreHandler(payload,
 				"AdaptivePayments", "ConvertCurrency",
-				UnitTestConstants.API_USER_NAME, null, null, null, null, null, (Map<String, String>)null);
+				UnitTestConstants.API_USER_NAME, null, null, null, null, null,
+				cMap);
 		String response = service.makeRequestUsing(handler);
 		Assert.assertNotNull(response);
 		Assert.assertTrue(response.contains("responseEnvelope.ack=Success"));
 	}
 
-//	@Test(dataProvider = "configParamsForSoap", dataProviderClass = DataProviderClass.class, priority = 3)
-//	public void makeRequestUsingForSOAPSignatureCredentialTest(
-//			ConfigManager conf) throws InvalidCredentialException,
-//			MissingCredentialException, InvalidResponseDataException,
-//			HttpErrorException, ClientActionRequiredException, OAuthException,
-//			SSLConfigurationException, IOException, InterruptedException {
-//
-//		service = new APIService((Properties) null);
-//		String payload = "<ns:GetBalanceReq><ns:GetBalanceRequest><ebl:Version>94.0</ebl:Version></ns:GetBalanceRequest></ns:GetBalanceReq>";
-//		DefaultSOAPAPICallHandler apiCallHandler = new DefaultSOAPAPICallHandler(
-//				payload, null, null, null);
-//		APICallPreHandler handler = new MerchantAPICallPreHandler(
-//				apiCallHandler, UnitTestConstants.API_USER_NAME, null, null, null, null, null, (Properties)null);
-//		String response = service.makeRequestUsing(handler);
-//		Assert.assertNotNull(response);
-//		Assert.assertTrue(response
-//				.contains("<Ack xmlns=\"urn:ebay:apis:eBLBaseComponents\">Success</Ack>"));
-//	}
+	@Test(dataProvider = "configParamsForSoap", dataProviderClass = DataProviderClass.class, priority = 3)
+	public void makeRequestUsingForSOAPSignatureCredentialTest(
+			ConfigManager conf) throws InvalidCredentialException,
+			MissingCredentialException, InvalidResponseDataException,
+			HttpErrorException, ClientActionRequiredException, OAuthException,
+			SSLConfigurationException, IOException, InterruptedException {
+		cMap.put("service.EndPoint", "https://api-3t.sandbox.paypal.com/2.0");
+		service = new APIService(cMap);
+		String payload = "<ns:GetBalanceReq><ns:GetBalanceRequest><ebl:Version>94.0</ebl:Version></ns:GetBalanceRequest></ns:GetBalanceReq>";
+		DefaultSOAPAPICallHandler apiCallHandler = new DefaultSOAPAPICallHandler(
+				payload, null, null, cMap);
+		APICallPreHandler handler = new MerchantAPICallPreHandler(
+				apiCallHandler, UnitTestConstants.API_USER_NAME, null, null,
+				null, null, null, cMap);
+		String response = service.makeRequestUsing(handler);
+		Assert.assertNotNull(response);
+		Assert.assertTrue(response
+				.contains("<Ack xmlns=\"urn:ebay:apis:eBLBaseComponents\">Success</Ack>"));
+	}
 
 	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class, priority = 2)
 	public void makeRequestUsingForNVPCertificateCredentialTest(
@@ -87,10 +96,13 @@ public class APIServiceTest {
 			MissingCredentialException, InvalidResponseDataException,
 			HttpErrorException, ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
+		service = new APIService(cMap);
+		cMap.put("service.EndPoint", "https://svcs.sandbox.paypal.com/");
 		String payload = "requestEnvelope.errorLanguage=en_US&baseAmountList.currency(0).code=USD&baseAmountList.currency(0).amount=2.0&convertToCurrencyList.currencyCode(0)=GBP";
 		APICallPreHandler handler = new PlatformAPICallPreHandler(payload,
 				"AdaptivePayments", "ConvertCurrency",
-				"certuser_biz_api1.paypal.com", null, null, null, null, null, (Map<String, String>)null);
+				"certuser_biz_api1.paypal.com", null, null, null, null, null,
+				cMap);
 		String response = service.makeRequestUsing(handler);
 		Assert.assertNotNull(response);
 		Assert.assertTrue(response.contains("responseEnvelope.ack=Success"));
@@ -98,14 +110,8 @@ public class APIServiceTest {
 
 	@Test(dataProvider = "configParamsForProxy", dataProviderClass = DataProviderClass.class, priority = 4)
 	public void proxyTest(ConfigManager conf) throws IOException {
-		ConfigManager.getInstance().load(
-				this.getClass().getResourceAsStream("/sdk_config.properties"));
-		Properties props =  new Properties();
-		props.load(this.getClass().getResourceAsStream("/sdk_config.properties"));
-		Map<String, String> cMap = SDKUtil.constructMap(props);
-		service = new APIService(cMap);
 		Assert.assertEquals(service.getEndPoint(),
-				"https://svcs.sandbox.paypal.com/");
+				"https://api-3t.sandbox.paypal.com/2.0");
 	}
 
 	@AfterClass

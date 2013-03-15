@@ -18,29 +18,29 @@ public class ConfigManagerTest {
 		Assert.assertEquals(conf.isPropertyLoaded(), true);
 	}
 
-//	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
-//	public void getValueTest(ConfigManager conf) {
-//		Assert.assertEquals(conf.getProperties().getProperty("service.EndPoint"),
-//				UnitTestConstants.API_ENDPOINT);
-//	}
+	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
+	public void getValueTest(ConfigManager conf) {
+		Assert.assertEquals(conf.getConfigurationMap().get("service.EndPoint"),
+				UnitTestConstants.API_ENDPOINT);
+	}
 
-//	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
-//	public void getValuesByCategoryTest(ConfigManager conf) {
-//		Map<String, String> map = conf.getValuesByCategory("acct");
-//		Iterator<String> itr = map.keySet().iterator();
-//		while (itr.hasNext()) {
-//			assert (((String) itr.next()).contains("acct"));
-//		}
-//
-//	}
+	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
+	public void getValuesByCategoryTest(ConfigManager conf) {
+		Map<String, String> map = conf.getValuesByCategory("acct");
+		Iterator<String> itr = map.keySet().iterator();
+		while (itr.hasNext()) {
+			assert (((String) itr.next()).contains("acct"));
+		}
 
-//	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
-//	public void getNumOfAcctTest(ConfigManager conf) {
-//		Set<String> set = conf.getNumOfAcct();
-//		Iterator<String> itr = set.iterator();
-//		while (itr.hasNext()) {
-//			assert (((String) itr.next()).contains("acct"));
-//		}
-//	}
+	}
+
+	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class)
+	public void getNumOfAcctTest(ConfigManager conf) {
+		Set<String> set = conf.getNumOfAcct();
+		Iterator<String> itr = set.iterator();
+		while (itr.hasNext()) {
+			assert (((String) itr.next()).contains("acct"));
+		}
+	}
 
 }
