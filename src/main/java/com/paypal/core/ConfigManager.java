@@ -146,14 +146,6 @@ public final class ConfigManager {
 			} catch (IOException e) {
 				// TODO return defaultProperties
 			}
-			
-			// Since the default properties are only searchable
-			Enumeration<?> defaultKeys = combinedProperties.propertyNames();
-			while(defaultKeys.hasMoreElements()) {
-				String key = defaultKeys.nextElement().toString();
-				String value = combinedProperties.getProperty(key);
-				combinedProperties.setProperty(key, value);
-			}
 		}
 		return combinedProperties;
 	}
