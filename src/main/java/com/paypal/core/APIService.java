@@ -47,7 +47,7 @@ public class APIService {
 	public APIService() {
 		httpConfiguration = new HttpConfiguration();
 		config = ConfigManager.getInstance();
-		endPoint = config.getValue(Constants.END_POINT);
+		endPoint = config.getValue(Constants.ENDPOINT);
 		httpConfiguration.setGoogleAppEngine(Boolean.parseBoolean(config
 				.getValue(Constants.GOOGLE_APP_ENGINE)));
 		if (Boolean.parseBoolean(config.getValue(Constants.USE_HTTP_PROXY))) {
@@ -80,11 +80,12 @@ public class APIService {
 	 */
 	public APIService(Map<String, String> configurationMap) {
 		if (configurationMap == null) {
-			throw new IllegalArgumentException("ConfigurationMap cannot be null");
+			throw new IllegalArgumentException(
+					"ConfigurationMap cannot be null");
 		}
 		this.configurationMap = configurationMap;
 		httpConfiguration = new HttpConfiguration();
-		endPoint = (String) this.configurationMap.get(Constants.END_POINT);
+		endPoint = (String) this.configurationMap.get(Constants.ENDPOINT);
 		httpConfiguration.setGoogleAppEngine(Boolean
 				.parseBoolean((String) this.configurationMap
 						.get(Constants.GOOGLE_APP_ENGINE)));
@@ -144,6 +145,7 @@ public class APIService {
 		 * apiCallPreHandlers
 		 */
 		String response = null;
+		apiCallPreHandler.validate();
 		Map<String, String> headers = null;
 		ConnectionManager connectionMgr = ConnectionManager.getInstance();
 		HttpConnection connection = connectionMgr

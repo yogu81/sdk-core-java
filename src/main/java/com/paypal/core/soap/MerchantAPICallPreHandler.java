@@ -14,6 +14,7 @@ import com.paypal.core.credential.ICredential;
 import com.paypal.core.credential.SignatureCredential;
 import com.paypal.core.credential.ThirdPartyAuthorization;
 import com.paypal.core.credential.TokenAuthorization;
+import com.paypal.exception.ClientActionRequiredException;
 import com.paypal.exception.InvalidCredentialException;
 import com.paypal.exception.MissingCredentialException;
 import com.paypal.sdk.exceptions.OAuthException;
@@ -80,7 +81,7 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	 * Internal variable to hold payload
 	 */
 	private String payLoad;
-	
+
 	/**
 	 * Map used for to override ConfigManager configurations
 	 */
@@ -88,13 +89,14 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 
 	/**
 	 * Private Constructor
+	 * 
 	 * @deprecated
 	 */
 	private MerchantAPICallPreHandler(APICallPreHandler apiCallHandler) {
 		super();
 		this.apiCallHandler = apiCallHandler;
 	}
-	
+
 	/**
 	 * Private Constructor
 	 */
@@ -108,6 +110,7 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	/**
 	 * MerchantAPICallPreHandler decorating basic {@link APICallPreHandler}
 	 * using API Username
+	 * 
 	 * @deprecated
 	 * @param apiCallHandler
 	 *            Instance of {@link APICallPreHandler}
@@ -133,6 +136,7 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	/**
 	 * MerchantAPICallPreHandler decorating basic {@link APICallPreHandler}
 	 * using {@link ICredential}
+	 * 
 	 * @deprecated
 	 * 
 	 * @param apiCallHandler
@@ -149,7 +153,7 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 		}
 		this.credential = credential;
 	}
-	
+
 	/**
 	 * MerchantAPICallPreHandler decorating basic {@link APICallPreHandler}
 	 * using {@link ICredential}
@@ -179,7 +183,7 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 		}
 		this.credential = credential;
 	}
-	
+
 	/**
 	 * MerchantAPICallPreHandler decorating basic {@link APICallPreHandler}
 	 * using API Username
@@ -205,8 +209,8 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	public MerchantAPICallPreHandler(APICallPreHandler apiCallHandler,
 			String apiUserName, String accessToken, String tokenSecret,
 			String sdkName, String sdkVersion, String portName,
-			Map<String, String> configurationMap) throws InvalidCredentialException,
-			MissingCredentialException {
+			Map<String, String> configurationMap)
+			throws InvalidCredentialException, MissingCredentialException {
 		this(apiCallHandler, configurationMap);
 		this.apiUserName = apiUserName;
 		this.accessToken = accessToken;
@@ -316,15 +320,25 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	}
 
 	public String getEndPoint() {
-		String endPoint = this.configurationMap.get(Constants.END_POINT + "."
+		String endPoint = this.configurationMap.get(Constants.ENDPOINT + "."
 				+ getPortName());
 		if (endPoint == null || endPoint.length() <= 0) {
 			endPoint = apiCallHandler.getEndPoint();
 			if (endPoint == null || endPoint.length() <= 0) {
-				if (getCredential() instanceof CertificateCredential) {
-					endPoint = Constants.MERCHANT_SANDBOX_ENDPOINT_CERTIFICATE;
-				} else {
-					endPoint = Constants.MERCHANT_SANDBOX_ENDPOINT_SIGNATURE;
+				if (Constants.SANDBOX.equalsIgnoreCase(this.configurationMap
+						.get(Constants.MODE))) {
+					if (getCredential() instanceof CertificateCredential) {
+						endPoint = Constants.MERCHANT_SANDBOX_CERTIFICATE_ENDPOINT;
+					} else {
+						endPoint = Constants.MERCHANT_SANDBOX_SIGNATURE_ENDPOINT;
+					}
+				} else if (Constants.LIVE.equalsIgnoreCase(this.configurationMap
+						.get(Constants.MODE))) {
+					if (getCredential() instanceof CertificateCredential) {
+						endPoint = Constants.MERCHANT_LIVE_CERTIFICATE_ENDPOINT;
+					} else {
+						endPoint = Constants.MERCHANT_LIVE_SIGNATURE_ENDPOINT;
+					}
 				}
 			}
 		}
@@ -333,6 +347,19 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 
 	public ICredential getCredential() {
 		return credential;
+	}
+
+	public void validate() throws ClientActionRequiredException {
+		String mode = configurationMap.get(Constants.MODE).trim();
+		if ((mode == null && getEndPoint() == null)
+				|| ((mode != null) && (!mode
+						.equalsIgnoreCase(Constants.LIVE) && !mode
+						.equalsIgnoreCase(Constants.SANDBOX)))) {
+
+			// Mandatory Mode not specified.
+			throw new ClientActionRequiredException(
+					"mode[production/live] OR endpoint not specified");
+		}
 	}
 
 	/*

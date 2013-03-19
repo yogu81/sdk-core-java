@@ -58,7 +58,8 @@ public class APIServiceTest {
 			InvalidResponseDataException, HttpErrorException,
 			ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
-		cMap.put("service.EndPoint", "https://svcs.sandbox.paypal.com/");
+		cMap.remove("service.EndPoint");
+		cMap.put("mode", "sandbox");
 		service = new APIService(cMap);
 		String payload = "requestEnvelope.errorLanguage=en_US&baseAmountList.currency(0).code=USD&baseAmountList.currency(0).amount=2.0&convertToCurrencyList.currencyCode(0)=GBP";
 		APICallPreHandler handler = new PlatformAPICallPreHandler(payload,
@@ -96,8 +97,8 @@ public class APIServiceTest {
 			MissingCredentialException, InvalidResponseDataException,
 			HttpErrorException, ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
-		service = new APIService(cMap);
 		cMap.put("service.EndPoint", "https://svcs.sandbox.paypal.com/");
+		service = new APIService(cMap);
 		String payload = "requestEnvelope.errorLanguage=en_US&baseAmountList.currency(0).code=USD&baseAmountList.currency(0).amount=2.0&convertToCurrencyList.currencyCode(0)=GBP";
 		APICallPreHandler handler = new PlatformAPICallPreHandler(payload,
 				"AdaptivePayments", "ConvertCurrency",

@@ -3,6 +3,7 @@ package com.paypal.core;
 import java.util.Map;
 
 import com.paypal.core.credential.ICredential;
+import com.paypal.exception.ClientActionRequiredException;
 import com.paypal.sdk.exceptions.OAuthException;
 
 /**
@@ -44,5 +45,12 @@ public interface APICallPreHandler {
 	 * @return ICredential object
 	 */
 	ICredential getCredential();
+
+	/**
+	 * Validates settings and integrity before call
+	 * 
+	 * @throws ClientActionRequiredException
+	 */
+	void validate() throws ClientActionRequiredException;
 
 }

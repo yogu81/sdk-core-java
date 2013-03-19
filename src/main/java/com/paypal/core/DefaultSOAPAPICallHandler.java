@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.paypal.core.credential.ICredential;
+import com.paypal.exception.ClientActionRequiredException;
 
 /**
  * <code>DefaultSOAPAPICallHandler</code> acts a basic SOAP
@@ -166,11 +167,15 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	}
 
 	public String getEndPoint() {
-		return this.configurationMap.get("service.EndPoint");
+		return this.configurationMap.get(Constants.ENDPOINT);
 	}
 
 	public ICredential getCredential() {
 		return null;
+	}
+
+	public void validate() throws ClientActionRequiredException {
+		return;
 	}
 
 	private String getSoapEnvelopeStart() {

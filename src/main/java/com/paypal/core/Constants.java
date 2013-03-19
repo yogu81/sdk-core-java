@@ -51,7 +51,7 @@ public class Constants {
 
 	// Constants key defined for configuration options in application properties
 	// End point
-	public static final String END_POINT = "service.EndPoint";
+	public static final String ENDPOINT = "service.EndPoint";
 	
 	// Service Redirect Endpoint
 	public static final String SERVICE_REDIRECT_ENDPOINT = "service.RedirectURL";
@@ -131,10 +131,28 @@ public class Constants {
 	// Platform Sandbox Endpoint
 	public static final String PLATFORM_SANDBOX_ENDPOINT = "https://svcs.sandbox.paypal.com/";
 	
+	// Platform Live Endpoint
+	public static final String PLATFORM_LIVE_ENDPOINT = "https://svcs.paypal.com/";
+	
 	// Merchant Sandbox Endpoint Signature
-	public static final String MERCHANT_SANDBOX_ENDPOINT_SIGNATURE = "https://api-3t.sandbox.paypal.com/2.0";
+	public static final String MERCHANT_SANDBOX_SIGNATURE_ENDPOINT = "https://api-3t.sandbox.paypal.com/2.0";
+	
+	// Merchant Live Endpoint Signature
+	public static final String MERCHANT_LIVE_SIGNATURE_ENDPOINT = "https://api-3t.paypal.com/2.0";
 	
 	// Merchant Sandbox Endpoint Certificate
-	public static final String MERCHANT_SANDBOX_ENDPOINT_CERTIFICATE = "https://api.sandbox.paypal.com/2.0";
+	public static final String MERCHANT_SANDBOX_CERTIFICATE_ENDPOINT = "https://api.sandbox.paypal.com/2.0";
+	
+	// Merchant Live Endpoint Certificate
+	public static final String MERCHANT_LIVE_CERTIFICATE_ENDPOINT = "https://api.paypal.com/2.0";
+	
+	// Mode(sandbox/live)
+	public static final String MODE = "mode";
+	
+	// SANDBOX Mode
+	public static final String SANDBOX = "sandbox";
+	
+	// LIVE Mode 
+	public static final String LIVE = "live";
 
 }

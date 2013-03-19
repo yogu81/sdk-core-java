@@ -11,6 +11,7 @@ import com.paypal.core.credential.ICredential;
 import com.paypal.core.credential.SignatureCredential;
 import com.paypal.core.credential.ThirdPartyAuthorization;
 import com.paypal.core.credential.TokenAuthorization;
+import com.paypal.exception.ClientActionRequiredException;
 import com.paypal.exception.InvalidCredentialException;
 import com.paypal.exception.MissingCredentialException;
 import com.paypal.sdk.exceptions.OAuthException;
@@ -310,10 +311,10 @@ public class PlatformAPICallPreHandler implements APICallPreHandler {
 	}
 
 	public String getEndPoint() {
-		String endPoint = this.configurationMap.get(Constants.END_POINT + "."
+		String endPoint = this.configurationMap.get(Constants.ENDPOINT + "."
 				+ getPortName());
 		if (endPoint == null || endPoint.length() <= 0) {
-			endPoint = this.configurationMap.get(Constants.END_POINT);
+			endPoint = this.configurationMap.get(Constants.ENDPOINT);
 		}
 		if (endPoint != null && endPoint.trim().length() > 0) {
 			if (endPoint.endsWith("/")) {
@@ -321,14 +322,33 @@ public class PlatformAPICallPreHandler implements APICallPreHandler {
 			} else {
 				endPoint += "/" + serviceName + "/" + method;
 			}
-		} else {
-			endPoint = Constants.PLATFORM_SANDBOX_ENDPOINT + serviceName + "/" + method;
+		} else if (Constants.SANDBOX.equalsIgnoreCase(this.configurationMap
+				.get(Constants.MODE))) {
+			endPoint = Constants.PLATFORM_SANDBOX_ENDPOINT + serviceName + "/"
+					+ method;
+		} else if (Constants.LIVE.equalsIgnoreCase(this.configurationMap
+				.get(Constants.MODE))) {
+			endPoint = Constants.PLATFORM_LIVE_ENDPOINT + serviceName + "/"
+					+ method;
 		}
 		return endPoint;
 	}
 
 	public ICredential getCredential() {
 		return credential;
+	}
+
+	public void validate() throws ClientActionRequiredException {
+		String mode = configurationMap.get(Constants.MODE).trim();
+		if ((mode == null && getEndPoint() == null)
+				|| ((mode != null) && (!mode
+						.equalsIgnoreCase(Constants.LIVE) && !mode
+						.equalsIgnoreCase(Constants.SANDBOX)))) {
+
+			// Mandatory Mode not specified.
+			throw new ClientActionRequiredException(
+					"mode[production/live] OR endpoint not specified");
+		}
 	}
 
 	private ICredential getCredentials() throws InvalidCredentialException,
