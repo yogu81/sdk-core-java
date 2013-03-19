@@ -9,6 +9,8 @@ import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -17,7 +19,27 @@ import javax.net.ssl.SSLContext;
 import com.paypal.exception.SSLConfigurationException;
 
 public abstract class SSLUtil {
-	private static KeyManagerFactory kmf = null;
+
+	/**
+	 * KeyManagerFactory used for {@link SSLContext} {@link KeyManager}
+	 */
+	private static final KeyManagerFactory kmf;
+
+	/**
+	 * Private {@link Map} used for caching {@link KeyStore}s
+	 */
+	private static final Map<String, KeyStore> storeMap;
+
+	static {
+		try {
+			
+			// Initialize KeyManagerFactory and local KeyStore cache
+			kmf = KeyManagerFactory.getInstance("SunX509");
+			storeMap = new HashMap<String, KeyStore>();
+		} catch (NoSuchAlgorithmException e) {
+			throw new ExceptionInInitializerError(e);
+		}
+	}
 
 	/**
 	 * Returns a SSLContext
@@ -43,11 +65,14 @@ public abstract class SSLUtil {
 	}
 
 	/**
-	 * Loads certificate into java keystore
+	 * Retrieves keyStore from the cached {@link Map}, if not present loads
+	 * certificate into java keyStore and caches it for further references
 	 * 
 	 * @param p12Path
+	 *            Path to the client certificate
 	 * @param password
-	 * @return keystore
+	 *            {@link KeyStore} password
+	 * @return keyStore {@link KeyStore} loaded with the certificate
 	 * @throws NoSuchProviderException
 	 * @throws KeyStoreException
 	 * @throws CertificateException
@@ -58,18 +83,21 @@ public abstract class SSLUtil {
 	private static KeyStore p12ToKeyStore(String p12Path, String password)
 			throws NoSuchProviderException, KeyStoreException,
 			CertificateException, NoSuchAlgorithmException, IOException {
-		KeyStore ks = null;
-		ks = KeyStore.getInstance("PKCS12", "SunJSSE");
-		FileInputStream in = null;
-		try {
-			in = new FileInputStream(p12Path);
-			ks.load(in, password.toCharArray());
-		} finally {
-			if (in != null) {
-				in.close();
+		KeyStore keyStore = storeMap.get(p12Path);
+		if (keyStore == null) {
+			keyStore = KeyStore.getInstance("PKCS12", "SunJSSE");
+			FileInputStream in = null;
+			try {
+				in = new FileInputStream(p12Path);
+				keyStore.load(in, password.toCharArray());
+				storeMap.put(p12Path, keyStore);
+			} finally {
+				if (in != null) {
+					in.close();
+				}
 			}
 		}
-		return ks;
+		return keyStore;
 	}
 
 	/**
@@ -84,7 +112,6 @@ public abstract class SSLUtil {
 			throws SSLConfigurationException {
 		SSLContext sslContext = null;
 		try {
-			kmf = KeyManagerFactory.getInstance("SunX509");
 			KeyStore ks = p12ToKeyStore(certPath, certPassword);
 			kmf.init(ks, certPassword.toCharArray());
 			sslContext = getSSLContext(kmf.getKeyManagers());

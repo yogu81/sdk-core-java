@@ -176,6 +176,10 @@ public class APIService {
 		return response;
 	}
 
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public String getEndPoint() {
 		return endPoint;
 	}

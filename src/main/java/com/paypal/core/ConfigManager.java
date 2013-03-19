@@ -59,16 +59,12 @@ public final class ConfigManager {
 		DEFAULT_PROPERTIES.put(Constants.HTTP_CONNECTION_MAX_CONNECTION, "100");
 		DEFAULT_PROPERTIES.put(Constants.DEVICE_IP_ADDRESS, "127.0.0.1");
 		DEFAULT_PROPERTIES.put(Constants.GOOGLE_APP_ENGINE, "false");
-		DEFAULT_PROPERTIES.put(Constants.END_POINT,
-				"https://svcs.sandbox.paypal.com/");
 		DEFAULT_PROPERTIES.put(Constants.SERVICE_REDIRECT_ENDPOINT,
 				"https://www.sandbox.paypal.com/webscr&cmd=");
 		DEFAULT_PROPERTIES.put(Constants.SERVICE_DEVCENTRAL_ENDPOINT,
 				"https://developer.paypal.com");
 		DEFAULT_PROPERTIES.put(Constants.IPN_ENDPOINT,
 				"https://www.sandbox.paypal.com/cgi-bin/webscr");
-		DEFAULT_PROPERTIES.put(Constants.SANDBOX_EMAIL_ADDRESS,
-				"Platform.sdk.seller@gmail.com");
 	}
 
 	/**
@@ -137,7 +133,7 @@ public final class ConfigManager {
 	public static Properties combineDefaultProperties(
 			Properties receivedProperties) {
 		Properties combinedProperties = new Properties(getDefaultProperties());
-		if (receivedProperties.size() > 0) {
+		if ((receivedProperties != null) && (receivedProperties.size() > 0)) {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream(1024);
 			try {
 				receivedProperties.store(bos, null);

@@ -320,6 +320,13 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 				+ getPortName());
 		if (endPoint == null || endPoint.length() <= 0) {
 			endPoint = apiCallHandler.getEndPoint();
+			if (endPoint == null || endPoint.length() <= 0) {
+				if (getCredential() instanceof CertificateCredential) {
+					endPoint = Constants.MERCHANT_SANDBOX_ENDPOINT_CERTIFICATE;
+				} else {
+					endPoint = Constants.MERCHANT_SANDBOX_ENDPOINT_SIGNATURE;
+				}
+			}
 		}
 		return endPoint;
 	}

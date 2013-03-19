@@ -29,10 +29,12 @@ public interface APICallPreHandler {
 	String getPayLoad();
 
 	/**
-	 * Returns the endpoint for the API call. The implementation may calculate the endpoint
-	 * depending on parameters set on it.
+	 * Returns the endpoint for the API call. The implementation may calculate
+	 * the endpoint depending on parameters set on it. If no endpoint is found
+	 * in the passed configuration, then SANDBOX endpoints (hardcoded in
+	 * {@link Constants})are taken to be default for the API call.
 	 * 
-	 * @return Endpoint
+	 * @return Endpoint String.
 	 */
 	String getEndPoint();
 

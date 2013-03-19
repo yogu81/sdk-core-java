@@ -316,7 +316,13 @@ public class PlatformAPICallPreHandler implements APICallPreHandler {
 			endPoint = this.configurationMap.get(Constants.END_POINT);
 		}
 		if (endPoint != null && endPoint.trim().length() > 0) {
-			endPoint += serviceName + "/" + method;
+			if (endPoint.endsWith("/")) {
+				endPoint += serviceName + "/" + method;
+			} else {
+				endPoint += "/" + serviceName + "/" + method;
+			}
+		} else {
+			endPoint = Constants.PLATFORM_SANDBOX_ENDPOINT + serviceName + "/" + method;
 		}
 		return endPoint;
 	}

@@ -127,5 +127,14 @@ public class Constants {
 
 	// IPN endpoint property name
 	public static final String IPN_ENDPOINT = "service.IPNEndpoint";
+	
+	// Platform Sandbox Endpoint
+	public static final String PLATFORM_SANDBOX_ENDPOINT = "https://svcs.sandbox.paypal.com/";
+	
+	// Merchant Sandbox Endpoint Signature
+	public static final String MERCHANT_SANDBOX_ENDPOINT_SIGNATURE = "https://api-3t.sandbox.paypal.com/2.0";
+	
+	// Merchant Sandbox Endpoint Certificate
+	public static final String MERCHANT_SANDBOX_ENDPOINT_CERTIFICATE = "https://api.sandbox.paypal.com/2.0";
 
 }

@@ -205,18 +205,16 @@ public class SDKUtil {
 	 */
 	static Map<String, String> constructMap(Properties properties) {
 		Map<String, String> propsMap = null;
-		if (properties != null) {
-			Properties combinedProperties = ConfigManager
-					.combineDefaultProperties(properties);
-			propsMap = new HashMap<String, String>();
-			
-			// Since the default properties are only searchable
-			Enumeration<?> keys = combinedProperties.propertyNames();
-			while (keys.hasMoreElements()) {
-				String key = keys.nextElement().toString().trim();
-				String value = combinedProperties.getProperty(key).trim();
-				propsMap.put(key, value);
-			}
+		Properties combinedProperties = ConfigManager
+				.combineDefaultProperties(properties);
+		propsMap = new HashMap<String, String>();
+
+		// Since the default properties are only searchable
+		Enumeration<?> keys = combinedProperties.propertyNames();
+		while (keys.hasMoreElements()) {
+			String key = keys.nextElement().toString().trim();
+			String value = combinedProperties.getProperty(key).trim();
+			propsMap.put(key, value);
 		}
 		return propsMap;
 	}
