@@ -25,8 +25,10 @@ The core uses .properties format configuration file. Sample of this file is at
  
 'src/test/resources/'. You can use the 'sdk_config.properties' configuration file to configure
 
-*	(Multiple) API account credentials.
+*	Mode is specified using the parameter name 'mode' with values 'sandbox' or 'live', if specified 'service.EndPoint' parameter is not required and the SDK choses the sandbox or live endpoints automatically.
 
-*	HTTP connection parameters.
+*	(Multiple) API account credentials, by appending a '.' (dot) character and the service name to 'service.EndPoint' parameter.
+
+*	HTTP connection parameters, if certain connection parameters are not specified, the SDK will assume defaults for them.
 
 *	Service configuration.
