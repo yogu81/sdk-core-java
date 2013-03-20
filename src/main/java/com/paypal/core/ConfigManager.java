@@ -63,8 +63,6 @@ public final class ConfigManager {
 				"https://www.sandbox.paypal.com/webscr&cmd=");
 		DEFAULT_PROPERTIES.put(Constants.SERVICE_DEVCENTRAL_ENDPOINT,
 				"https://developer.paypal.com");
-		DEFAULT_PROPERTIES.put(Constants.IPN_ENDPOINT,
-				"https://www.sandbox.paypal.com/cgi-bin/webscr");
 	}
 
 	/**
