@@ -32,12 +32,12 @@ public class IPNMessage {
 	{
 		httpConfiguration = new HttpConfiguration();
 		config = ConfigManager.getInstance();
-		ipnEndpoint = config.getConfigurationMap().get(Constants.IPN_ENDPOINT);
+		ipnEndpoint = getIPNEndpoint();
 		httpConfiguration.setEndPointUrl(ipnEndpoint);
-		httpConfiguration.setConnectionTimeout(Integer
-				.parseInt(config.getConfigurationMap().get(
-						Constants.HTTP_CONNECTION_TIMEOUT)));
-		httpConfiguration.setMaxRetry(Integer.parseInt(config.getConfigurationMap().get(Constants.HTTP_CONNECTION_RETRY)));
+		httpConfiguration.setConnectionTimeout(Integer.parseInt(config
+				.getConfigurationMap().get(Constants.HTTP_CONNECTION_TIMEOUT)));
+		httpConfiguration.setMaxRetry(Integer.parseInt(config
+				.getConfigurationMap().get(Constants.HTTP_CONNECTION_RETRY)));
 		httpConfiguration.setReadTimeout(Integer.parseInt(config
 				.getConfigurationMap().get(
 						Constants.HTTP_CONNECTION_READ_TIMEOUT)));
@@ -132,6 +132,24 @@ public class IPNMessage {
 	public String getTransactionType() {
 		return this.ipnMap.containsKey("txn_type") ? this.ipnMap
 				.get("txn_type") : this.ipnMap.get("transaction_type");
+	}
+
+	private String getIPNEndpoint() {
+		String ipnEndpoint = null;
+		ipnEndpoint = config.getConfigurationMap().get(Constants.IPN_ENDPOINT);
+		if (ipnEndpoint == null) {
+			String mode = config.getConfigurationMap().get(Constants.MODE);
+			if (mode != null
+					&& (Constants.SANDBOX.equalsIgnoreCase(config
+							.getConfigurationMap().get(Constants.MODE).trim()))) {
+				ipnEndpoint = Constants.IPN_SANDBOX_ENDPOINT;
+			} else if (mode != null
+					&& (Constants.LIVE.equalsIgnoreCase(config
+							.getConfigurationMap().get(Constants.MODE).trim()))) {
+				ipnEndpoint = Constants.IPN_LIVE_ENDPOINT;
+			}
+		}
+		return ipnEndpoint;
 	}
 
 }

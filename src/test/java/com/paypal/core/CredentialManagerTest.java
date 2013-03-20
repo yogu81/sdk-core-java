@@ -24,8 +24,9 @@ public class CredentialManagerTest {
 
 	@BeforeClass
 	public void beforeClass() throws IOException {
-		Properties props =  new Properties();
-		props.load(this.getClass().getResourceAsStream("/sdk_config.properties"));
+		Properties props = new Properties();
+		props.load(this.getClass()
+				.getResourceAsStream("/sdk_config.properties"));
 		Map<String, String> cMap = SDKUtil.constructMap(props);
 		cred = new CredentialManager(cMap);
 	}
