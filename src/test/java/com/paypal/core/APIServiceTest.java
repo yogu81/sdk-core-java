@@ -31,8 +31,6 @@ public class APIServiceTest {
 
 	Map<String, String> cMap;
 
-	Map<String, String> map = new HashMap<String, String>();
-
 	@BeforeClass
 	public void beforeClass() throws NumberFormatException,
 			SSLConfigurationException, FileNotFoundException, IOException {
@@ -45,15 +43,14 @@ public class APIServiceTest {
 		connection = connectionMgr.getConnection();
 	}
 
-	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class, priority = 0)
-	public void getEndPointTest(ConfigManager conf) {
+	@Test(priority = 0)
+	public void getEndPointTest() {
 		Assert.assertEquals(UnitTestConstants.API_ENDPOINT,
 				service.getEndPoint());
-
 	}
 
-	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class, priority = 1)
-	public void makeRequestUsingForNVPSignatureCredentialTest(ConfigManager conf)
+	@Test(priority = 1)
+	public void makeRequestUsingForNVPSignatureCredentialTest()
 			throws InvalidCredentialException, MissingCredentialException,
 			InvalidResponseDataException, HttpErrorException,
 			ClientActionRequiredException, OAuthException,
@@ -71,11 +68,11 @@ public class APIServiceTest {
 		Assert.assertTrue(response.contains("responseEnvelope.ack=Success"));
 	}
 
-	@Test(dataProvider = "configParamsForSoap", dataProviderClass = DataProviderClass.class, priority = 3)
-	public void makeRequestUsingForSOAPSignatureCredentialTest(
-			ConfigManager conf) throws InvalidCredentialException,
-			MissingCredentialException, InvalidResponseDataException,
-			HttpErrorException, ClientActionRequiredException, OAuthException,
+	@Test(priority = 3)
+	public void makeRequestUsingForSOAPSignatureCredentialTest()
+			throws InvalidCredentialException, MissingCredentialException,
+			InvalidResponseDataException, HttpErrorException,
+			ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
 		cMap.put("service.EndPoint", "https://api-3t.sandbox.paypal.com/2.0");
 		service = new APIService(cMap);
@@ -91,11 +88,11 @@ public class APIServiceTest {
 				.contains("<Ack xmlns=\"urn:ebay:apis:eBLBaseComponents\">Success</Ack>"));
 	}
 
-	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class, priority = 2)
-	public void makeRequestUsingForNVPCertificateCredentialTest(
-			ConfigManager conf) throws InvalidCredentialException,
-			MissingCredentialException, InvalidResponseDataException,
-			HttpErrorException, ClientActionRequiredException, OAuthException,
+	@Test(priority = 2)
+	public void makeRequestUsingForNVPCertificateCredentialTest()
+			throws InvalidCredentialException, MissingCredentialException,
+			InvalidResponseDataException, HttpErrorException,
+			ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
 		cMap.put("service.EndPoint", "https://svcs.sandbox.paypal.com/");
 		service = new APIService(cMap);
@@ -109,10 +106,25 @@ public class APIServiceTest {
 		Assert.assertTrue(response.contains("responseEnvelope.ack=Success"));
 	}
 
-	@Test(dataProvider = "configParamsForProxy", dataProviderClass = DataProviderClass.class, priority = 4)
-	public void proxyTest(ConfigManager conf) throws IOException {
+	@Test(priority = 4)
+	public void proxyTest() throws IOException {
 		Assert.assertEquals(service.getEndPoint(),
 				"https://api-3t.sandbox.paypal.com/2.0");
+	}
+
+	@Test(priority = 5, expectedExceptions = {ClientActionRequiredException.class})
+	public void modeTest() throws InvalidCredentialException, MissingCredentialException, InvalidResponseDataException, HttpErrorException, ClientActionRequiredException, OAuthException, SSLConfigurationException, IOException, InterruptedException {
+		Map<String, String> initMap = DataProviderClass
+				.getCertificateConfiguration();
+		initMap.remove("mode");
+		initMap = SDKUtil.combineDefaultMap(initMap);
+		service = new APIService(initMap);
+		String payload = "requestEnvelope.errorLanguage=en_US&baseAmountList.currency(0).code=USD&baseAmountList.currency(0).amount=2.0&convertToCurrencyList.currencyCode(0)=GBP";
+		APICallPreHandler handler = new PlatformAPICallPreHandler(payload,
+				"AdaptivePayments", "ConvertCurrency",
+				"certuser_biz_api1.paypal.com", null, null, null, null, null,
+				initMap);
+		service.makeRequestUsing(handler);
 	}
 
 	@AfterClass
