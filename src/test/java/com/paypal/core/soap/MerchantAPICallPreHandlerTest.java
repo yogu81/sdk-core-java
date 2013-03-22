@@ -18,7 +18,7 @@ import org.w3c.dom.NodeList;
 import com.paypal.core.ConfigManager;
 import com.paypal.core.Constants;
 import com.paypal.core.CredentialManager;
-import com.paypal.core.DataProviderClass;
+import com.paypal.core.ConfigurationUtil;
 import com.paypal.core.DefaultSOAPAPICallHandler;
 import com.paypal.core.credential.ICredential;
 
@@ -30,7 +30,7 @@ public class MerchantAPICallPreHandlerTest {
 
 	@Test()
 	public void getHeaderMapSignatureTest() throws Exception {
-		Map<String, String> initMap = DataProviderClass
+		Map<String, String> initMap = ConfigurationUtil
 				.getSignatureConfiguration();
 		CredentialManager credentialmgr = new CredentialManager(initMap);
 		ICredential signatureCredential = credentialmgr
@@ -58,7 +58,7 @@ public class MerchantAPICallPreHandlerTest {
 
 	@Test()
 	public void getHeaderMapCertificateTest() throws Exception {
-		Map<String, String> initMap = DataProviderClass
+		Map<String, String> initMap = ConfigurationUtil
 				.getCertificateConfiguration();
 		CredentialManager credentialmgr = new CredentialManager(initMap);
 		DefaultSOAPAPICallHandler defaultSoaphandler = new DefaultSOAPAPICallHandler(
@@ -86,7 +86,7 @@ public class MerchantAPICallPreHandlerTest {
 
 	@Test()
 	public void getPayLoadForSignature() throws Exception {
-		Map<String, String> initMap = DataProviderClass
+		Map<String, String> initMap = ConfigurationUtil
 				.getSignatureConfiguration();
 		CredentialManager credentialmgr = new CredentialManager(initMap);
 		ICredential signatureCredential = credentialmgr
@@ -129,9 +129,9 @@ public class MerchantAPICallPreHandlerTest {
 
 	}
 
-	@Test(dataProvider = "configParamsForSoap", dataProviderClass = com.paypal.core.DataProviderClass.class)
+	@Test()
 	public void getPayLoadForCertificate(ConfigManager conf) throws Exception {
-		Map<String, String> initMap = DataProviderClass
+		Map<String, String> initMap = ConfigurationUtil
 				.getCertificateConfiguration();
 		CredentialManager credentialmgr = new CredentialManager(initMap);
 		DefaultSOAPAPICallHandler defaultSoaphandler = new DefaultSOAPAPICallHandler(
@@ -169,7 +169,7 @@ public class MerchantAPICallPreHandlerTest {
 
 	@Test()
 	public void setGetSDKNameTest() throws Exception {
-		Map<String, String> initMap = DataProviderClass
+		Map<String, String> initMap = ConfigurationUtil
 				.getCertificateConfiguration();
 		CredentialManager credentialmgr = new CredentialManager(initMap);
 		DefaultSOAPAPICallHandler defaultSoaphandler = new DefaultSOAPAPICallHandler(
@@ -182,9 +182,9 @@ public class MerchantAPICallPreHandlerTest {
 		Assert.assertEquals("testsdk", soapHandler.getSdkName());
 	}
 
-	@Test(dataProvider = "configParamsForSoap", dataProviderClass = com.paypal.core.DataProviderClass.class)
+	@Test()
 	public void setGetSDKVersionTest(ConfigManager conf) throws Exception {
-		Map<String, String> initMap = DataProviderClass
+		Map<String, String> initMap = ConfigurationUtil
 				.getCertificateConfiguration();
 		CredentialManager credentialmgr = new CredentialManager(initMap);
 		DefaultSOAPAPICallHandler defaultSoaphandler = new DefaultSOAPAPICallHandler(
@@ -199,7 +199,7 @@ public class MerchantAPICallPreHandlerTest {
 
 	@Test()
 	public void getEndPointTest() throws Exception {
-		Map<String, String> initMap = DataProviderClass
+		Map<String, String> initMap = ConfigurationUtil
 				.getCertificateConfiguration();
 		CredentialManager credentialmgr = new CredentialManager(initMap);
 		DefaultSOAPAPICallHandler defaultSoaphandler = new DefaultSOAPAPICallHandler(
@@ -215,7 +215,7 @@ public class MerchantAPICallPreHandlerTest {
 
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void MerchantAPICallPreHandlerConstructorTest() {
-		Map<String, String> initMap = DataProviderClass
+		Map<String, String> initMap = ConfigurationUtil
 				.getCertificateConfiguration();
 		DefaultSOAPAPICallHandler defaultSoaphandler = new DefaultSOAPAPICallHandler(
 				"<Request>test</Request>", null, null, initMap);

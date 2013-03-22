@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -113,7 +115,7 @@ public final class ConfigManager {
 						.getProperty(object.toString()).trim());
 			}
 		}
-		return defaultMapView;
+		return new HashMap<String, String>(defaultMapView);
 	}
 	
 	/**
@@ -192,7 +194,7 @@ public final class ConfigManager {
 				}
 			}
 		}
-		return mapView;
+		return new HashMap<String, String>(mapView);
 	}
 
 	/**

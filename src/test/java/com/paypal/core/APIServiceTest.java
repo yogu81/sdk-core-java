@@ -2,9 +2,7 @@ package com.paypal.core;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -28,36 +26,21 @@ public class APIServiceTest {
 
 	HttpConnection connection;
 
-	Properties props;
-
-	Map<String, String> cMap;
-
 	@BeforeClass
 	public void beforeClass() throws NumberFormatException,
 			SSLConfigurationException, FileNotFoundException, IOException {
-		props = new Properties();
-		props.load(this.getClass()
-				.getResourceAsStream("/sdk_config.properties"));
-		cMap = SDKUtil.constructMap(props);
-		service = new APIService(cMap);
 		ConnectionManager connectionMgr = ConnectionManager.getInstance();
 		connection = connectionMgr.getConnection();
 	}
 
-	@Test(priority = 0)
-	public void getEndPointTest() {
-		Assert.assertEquals(UnitTestConstants.API_ENDPOINT,
-				service.getEndPoint());
-	}
-
-	@Test(priority = 1)
+	@Test(priority = 0, singleThreaded = true)
 	public void makeRequestUsingForNVPSignatureCredentialTest()
 			throws InvalidCredentialException, MissingCredentialException,
 			InvalidResponseDataException, HttpErrorException,
 			ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
-		cMap.remove("service.EndPoint");
-		cMap.put("mode", "sandbox");
+		Map<String, String> cMap = ConfigurationUtil.getSignatureConfiguration();
+		cMap = SDKUtil.combineDefaultMap(cMap);
 		service = new APIService(cMap);
 		String payload = "requestEnvelope.errorLanguage=en_US&baseAmountList.currency(0).code=USD&baseAmountList.currency(0).amount=2.0&convertToCurrencyList.currencyCode(0)=GBP";
 		APICallPreHandler handler = new PlatformAPICallPreHandler(payload,
@@ -69,33 +52,35 @@ public class APIServiceTest {
 		Assert.assertTrue(response.contains("responseEnvelope.ack=Success"));
 	}
 
-	@Test(priority = 3)
+	@Test(priority = 1, singleThreaded = true)
 	public void makeRequestUsingForSOAPSignatureCredentialTest()
 			throws InvalidCredentialException, MissingCredentialException,
 			InvalidResponseDataException, HttpErrorException,
 			ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
-		cMap.put("service.EndPoint", "https://api-3t.sandbox.paypal.com/2.0");
-		service = new APIService(cMap);
+		Map<String, String> c1Map = ConfigurationUtil.getSignatureConfiguration();
+		c1Map = SDKUtil.combineDefaultMap(c1Map);
+		service = new APIService(c1Map);
 		String payload = "<ns:GetBalanceReq><ns:GetBalanceRequest><ebl:Version>94.0</ebl:Version></ns:GetBalanceRequest></ns:GetBalanceReq>";
 		DefaultSOAPAPICallHandler apiCallHandler = new DefaultSOAPAPICallHandler(
-				payload, null, null, cMap);
+				payload, null, null, c1Map);
 		APICallPreHandler handler = new MerchantAPICallPreHandler(
 				apiCallHandler, UnitTestConstants.API_USER_NAME, null, null,
-				null, null, null, cMap);
+				null, null, null, c1Map);
 		String response = service.makeRequestUsing(handler);
 		Assert.assertNotNull(response);
 		Assert.assertTrue(response
 				.contains("<Ack xmlns=\"urn:ebay:apis:eBLBaseComponents\">Success</Ack>"));
 	}
 
-	@Test(priority = 2)
+	@Test(priority = 2, singleThreaded = true)
 	public void makeRequestUsingForNVPCertificateCredentialTest()
 			throws InvalidCredentialException, MissingCredentialException,
 			InvalidResponseDataException, HttpErrorException,
 			ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
-		cMap.put("service.EndPoint", "https://svcs.sandbox.paypal.com/");
+		Map<String, String> cMap = ConfigurationUtil.getCertificateConfiguration();
+		cMap = SDKUtil.combineDefaultMap(cMap);
 		service = new APIService(cMap);
 		String payload = "requestEnvelope.errorLanguage=en_US&baseAmountList.currency(0).code=USD&baseAmountList.currency(0).amount=2.0&convertToCurrencyList.currencyCode(0)=GBP";
 		APICallPreHandler handler = new PlatformAPICallPreHandler(payload,
@@ -107,21 +92,14 @@ public class APIServiceTest {
 		Assert.assertTrue(response.contains("responseEnvelope.ack=Success"));
 	}
 
-	@Test(priority = 4)
-	public void proxyTest() throws IOException {
-		Assert.assertEquals(service.getEndPoint(),
-				"https://api-3t.sandbox.paypal.com/2.0");
-	}
-
-	@Test(priority = 5, expectedExceptions = { ClientActionRequiredException.class })
+	@Test(priority = 3, expectedExceptions = { ClientActionRequiredException.class }, singleThreaded = true)
 	public void modeTest() throws InvalidCredentialException,
 			MissingCredentialException, InvalidResponseDataException,
 			HttpErrorException, ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
-		Map<String, String> initMap = DataProviderClass
-				.getCertificateConfiguration();
-		initMap.remove("mode");
+		Map<String, String> initMap = ConfigurationUtil.getCertificateConfiguration();
 		initMap = SDKUtil.combineDefaultMap(initMap);
+		initMap.remove("mode");
 		service = new APIService(initMap);
 		String payload = "requestEnvelope.errorLanguage=en_US&baseAmountList.currency(0).code=USD&baseAmountList.currency(0).amount=2.0&convertToCurrencyList.currencyCode(0)=GBP";
 		APICallPreHandler handler = new PlatformAPICallPreHandler(payload,
@@ -131,14 +109,13 @@ public class APIServiceTest {
 		service.makeRequestUsing(handler);
 	}
 
-	@Test(priority = 6)
+	@Test(priority = 4, singleThreaded = true)
 	public void defaultPlatformSandboxEndpointTest()
 			throws InvalidCredentialException, MissingCredentialException,
 			InvalidResponseDataException, HttpErrorException,
 			ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
-		Map<String, String> initMap = DataProviderClass
-				.getCertificateConfiguration();
+		Map<String, String> initMap = ConfigurationUtil.getCertificateConfiguration();
 		initMap = SDKUtil.combineDefaultMap(initMap);
 		service = new APIService(initMap);
 		String payload = "requestEnvelope.errorLanguage=en_US&baseAmountList.currency(0).code=USD&baseAmountList.currency(0).amount=2.0&convertToCurrencyList.currencyCode(0)=GBP";
@@ -150,14 +127,13 @@ public class APIServiceTest {
 				"https://svcs.sandbox.paypal.com/AdaptivePayments/ConvertCurrency");
 	}
 
-	@Test(priority = 7)
+	@Test(priority = 5, singleThreaded = true)
 	public void defaultPlatformLiveEndpointTest()
 			throws InvalidCredentialException, MissingCredentialException,
 			InvalidResponseDataException, HttpErrorException,
 			ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
-		Map<String, String> initMap = DataProviderClass
-				.getCertificateConfiguration();
+		Map<String, String> initMap = ConfigurationUtil.getCertificateConfiguration();
 		initMap = SDKUtil.combineDefaultMap(initMap);
 		initMap.put("mode", "live");
 		service = new APIService(initMap);
@@ -170,14 +146,13 @@ public class APIServiceTest {
 				"https://svcs.paypal.com/AdaptivePayments/ConvertCurrency");
 	}
 
-	@Test(priority = 8)
+	@Test(priority = 6, singleThreaded = true)
 	public void defaultMerchantCertificateSandboxEndpointTest()
 			throws InvalidCredentialException, MissingCredentialException,
 			InvalidResponseDataException, HttpErrorException,
 			ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
-		Map<String, String> initMap = DataProviderClass
-				.getCertificateConfiguration();
+		Map<String, String> initMap = ConfigurationUtil.getCertificateConfiguration();
 		CredentialManager credentialmgr = new CredentialManager(initMap);
 		DefaultSOAPAPICallHandler defaultSoaphandler = new DefaultSOAPAPICallHandler(
 				"<Request>test</Request>", null, null, initMap);
@@ -190,14 +165,13 @@ public class APIServiceTest {
 		Assert.assertEquals("https://api.sandbox.paypal.com/2.0", endpoint);
 	}
 	
-	@Test(priority = 8)
+	@Test(priority = 7, singleThreaded = true)
 	public void defaultMerchantSignatureSandboxEndpointTest()
 			throws InvalidCredentialException, MissingCredentialException,
 			InvalidResponseDataException, HttpErrorException,
 			ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
-		Map<String, String> initMap = DataProviderClass
-				.getSignatureConfiguration();
+		Map<String, String> initMap = ConfigurationUtil.getSignatureConfiguration();
 		CredentialManager credentialmgr = new CredentialManager(initMap);
 		DefaultSOAPAPICallHandler defaultSoaphandler = new DefaultSOAPAPICallHandler(
 				"<Request>test</Request>", null, null, initMap);
@@ -210,14 +184,13 @@ public class APIServiceTest {
 		Assert.assertEquals("https://api-3t.sandbox.paypal.com/2.0", endpoint);
 	}
 	
-	@Test(priority = 8)
+	@Test(priority = 8, singleThreaded = true)
 	public void defaultMerchantCertificateLiveEndpointTest()
 			throws InvalidCredentialException, MissingCredentialException,
 			InvalidResponseDataException, HttpErrorException,
 			ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
-		Map<String, String> initMap = DataProviderClass
-				.getCertificateConfiguration();
+		Map<String, String> initMap = ConfigurationUtil.getCertificateConfiguration();
 		initMap.put("mode", "live");
 		CredentialManager credentialmgr = new CredentialManager(initMap);
 		DefaultSOAPAPICallHandler defaultSoaphandler = new DefaultSOAPAPICallHandler(
@@ -231,14 +204,13 @@ public class APIServiceTest {
 		Assert.assertEquals("https://api.paypal.com/2.0", endpoint);
 	}
 	
-	@Test(priority = 8)
+	@Test(priority = 9, singleThreaded = true)
 	public void defaultMerchantSignatureLiveEndpointTest()
 			throws InvalidCredentialException, MissingCredentialException,
 			InvalidResponseDataException, HttpErrorException,
 			ClientActionRequiredException, OAuthException,
 			SSLConfigurationException, IOException, InterruptedException {
-		Map<String, String> initMap = DataProviderClass
-				.getSignatureConfiguration();
+		Map<String, String> initMap = ConfigurationUtil.getSignatureConfiguration();
 		initMap.put("mode", "live");
 		CredentialManager credentialmgr = new CredentialManager(initMap);
 		DefaultSOAPAPICallHandler defaultSoaphandler = new DefaultSOAPAPICallHandler(

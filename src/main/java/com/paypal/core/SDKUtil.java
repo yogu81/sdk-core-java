@@ -203,7 +203,7 @@ public class SDKUtil {
 	 * @return Map<String, String>
 	 * @throws IOException
 	 */
-	static Map<String, String> constructMap(Properties properties) {
+	public static Map<String, String> constructMap(Properties properties) {
 		Map<String, String> propsMap = null;
 		Properties combinedProperties = ConfigManager
 				.combineDefaultProperties(properties);
@@ -226,7 +226,7 @@ public class SDKUtil {
 	 *            {@link Map} used to combine with Default {@link Map}
 	 * @return Combined {@link Map}
 	 */
-	static Map<String, String> combineDefaultMap(Map<String, String> receivedMap) {
+	public static Map<String, String> combineDefaultMap(Map<String, String> receivedMap) {
 		Map<String, String> combinedMap = ConfigManager.getDefaultSDKMap();
 		combinedMap.putAll(receivedMap);
 		return combinedMap;

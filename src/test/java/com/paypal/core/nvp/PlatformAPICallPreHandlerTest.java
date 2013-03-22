@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 
 import com.paypal.core.ConfigManager;
 import com.paypal.core.CredentialManager;
-import com.paypal.core.DataProviderClass;
+import com.paypal.core.ConfigurationUtil;
 import com.paypal.core.SDKUtil;
 import com.paypal.core.credential.ICredential;
 import com.paypal.core.credential.SignatureCredential;
@@ -26,8 +26,7 @@ public class PlatformAPICallPreHandlerTest {
 	@Test()
 	public void getHeaderMapSignatureWithoutTokenTest()
 			throws Exception {
-		Map<String, String> initMap = DataProviderClass
-				.getSignatureConfiguration();
+		Map<String, String> initMap = ConfigurationUtil.getSignatureConfiguration();
 		CredentialManager credentialmgr = new CredentialManager(initMap);
 		ICredential signatureCredential = credentialmgr
 				.getCredentialObject("jb-us-seller_api1.paypal.com");
@@ -50,7 +49,7 @@ public class PlatformAPICallPreHandlerTest {
 
 	@Test()
 	public void getHeaderMapCertificateWithoutTokenTest() throws Exception {
-		Map<String, String> initMap = DataProviderClass
+		Map<String, String> initMap = ConfigurationUtil
 				.getCertificateConfiguration();
 		CredentialManager credentialmgr = new CredentialManager(initMap);
 		ICredential certificateCredential = credentialmgr
@@ -72,7 +71,7 @@ public class PlatformAPICallPreHandlerTest {
 
 	@Test
 	public void getHeaderMapWithSignatureUserTokenTest() throws Exception {
-		Map<String, String> initMap = DataProviderClass
+		Map<String, String> initMap = ConfigurationUtil
 				.getSignatureConfiguration();
 		PlatformAPICallPreHandler platformApiCaller = new PlatformAPICallPreHandler(
 				"payload", "servicename", "method",
@@ -86,7 +85,7 @@ public class PlatformAPICallPreHandlerTest {
 
 	@Test()
 	public void getHeaderMapWithCertificateUserTokenTest() throws Exception {
-		Map<String, String> initMap = DataProviderClass
+		Map<String, String> initMap = ConfigurationUtil
 				.getCertificateConfiguration();
 		PlatformAPICallPreHandler platformApiCaller = new PlatformAPICallPreHandler(
 				"payload", "servicename", "method",
@@ -100,7 +99,7 @@ public class PlatformAPICallPreHandlerTest {
 
 	@Test
 	public void payloadEndpointCredentialTest() throws Exception {
-		Map<String, String> initMap = DataProviderClass
+		Map<String, String> initMap = ConfigurationUtil
 				.getSignatureConfiguration();
 		PlatformAPICallPreHandler platformApiCaller = new PlatformAPICallPreHandler(
 				"payload", "servicename", "method",
@@ -121,7 +120,7 @@ public class PlatformAPICallPreHandlerTest {
 	@Test()
 	public void setGetSDKVersionAndNameTest()
 			throws Exception {
-		Map<String, String> initMap = DataProviderClass
+		Map<String, String> initMap = ConfigurationUtil
 				.getSignatureConfiguration();
 		PlatformAPICallPreHandler platformApiCaller = new PlatformAPICallPreHandler(
 				"payload", "servicename", "method",

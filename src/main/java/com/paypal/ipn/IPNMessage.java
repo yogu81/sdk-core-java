@@ -14,6 +14,7 @@ import com.paypal.core.Constants;
 import com.paypal.core.HttpConfiguration;
 import com.paypal.core.HttpConnection;
 import com.paypal.core.LoggingManager;
+import com.paypal.core.SDKUtil;
 
 public class IPNMessage {
 
@@ -21,36 +22,82 @@ public class IPNMessage {
 	private static final String ENCODING = "windows-1252";
 
 	private Map<String, String> ipnMap = new HashMap<String, String>();
-	private ConfigManager config = ConfigManager.getInstance();
+	private Map<String, String> configurationMap = null;
 	private HttpConfiguration httpConfiguration = null;
 	private String ipnEndpoint = Constants.EMPTY_STRING;
 	private boolean isIpnVerified = false;
 	private StringBuffer payload;
+
 	/**
 	 * Populates HttpConfiguration with connection specifics parameters
 	 */
-	{
+	private void initialize() {
 		httpConfiguration = new HttpConfiguration();
-		config = ConfigManager.getInstance();
 		ipnEndpoint = getIPNEndpoint();
 		httpConfiguration.setEndPointUrl(ipnEndpoint);
-		httpConfiguration.setConnectionTimeout(Integer.parseInt(config
-				.getConfigurationMap().get(Constants.HTTP_CONNECTION_TIMEOUT)));
-		httpConfiguration.setMaxRetry(Integer.parseInt(config
-				.getConfigurationMap().get(Constants.HTTP_CONNECTION_RETRY)));
-		httpConfiguration.setReadTimeout(Integer.parseInt(config
-				.getConfigurationMap().get(
-						Constants.HTTP_CONNECTION_READ_TIMEOUT)));
-		httpConfiguration.setMaxHttpConnection(Integer.parseInt(config
-				.getConfigurationMap().get(
-						Constants.HTTP_CONNECTION_MAX_CONNECTION)));
+		httpConfiguration.setConnectionTimeout(Integer
+				.parseInt(configurationMap
+						.get(Constants.HTTP_CONNECTION_TIMEOUT)));
+		httpConfiguration.setMaxRetry(Integer.parseInt(configurationMap
+				.get(Constants.HTTP_CONNECTION_RETRY)));
+		httpConfiguration.setReadTimeout(Integer.parseInt(configurationMap
+				.get(Constants.HTTP_CONNECTION_READ_TIMEOUT)));
+		httpConfiguration.setMaxHttpConnection(Integer
+				.parseInt(configurationMap
+						.get(Constants.HTTP_CONNECTION_MAX_CONNECTION)));
+	}
+	
+	/**
+	 * Constructs {@link IPNMessage} using the given {@link HttpServletRequest}
+	 * to retrieve the name and value {@link Map}.
+	 * 
+	 * @param request
+	 *            {@link HttpServletRequest} object received from PayPal IPN
+	 *            call back.
+	 */
+	public IPNMessage(HttpServletRequest request) {
+		this(request.getParameterMap());
 	}
 
 	/**
+	 * Constructs {@link IPNMessage} using the given {@link Map} for name and
+	 * values.
+	 * 
 	 * @param ipnMap
-	 *            representing IPN name/value pair
+	 *            {@link Map} representing IPN name/value pair
 	 */
 	public IPNMessage(Map<String, String[]> ipnMap) {
+		this(ipnMap, ConfigManager.getInstance().getConfigurationMap());
+	}
+
+	/**
+	 * Constructs {@link IPNMessage} using the given {@link HttpServletRequest}
+	 * to retrieve the name and value {@link Map} and a custom configuration
+	 * {@link Map}
+	 * 
+	 * @param request
+	 *            {@link HttpServletRequest} object received from PayPal IPN
+	 *            call back.
+	 * @param configurationMap
+	 *            custom configuration {@link Map}
+	 */
+	public IPNMessage(HttpServletRequest request,
+			Map<String, String> configurationMap) {
+		this(request.getParameterMap(), configurationMap);
+	}
+
+	/**
+	 * Constructs {@link IPNMessage} using the given {@link Map} for name and
+	 * values and a custom configuration {@link Map}
+	 * 
+	 * @param ipnMap
+	 *            {@link Map} representing IPN name/value pair
+	 * @param configurationMap
+	 */
+	public IPNMessage(Map<String, String[]> ipnMap,
+			Map<String, String> configurationMap) {
+		this.configurationMap = SDKUtil.combineDefaultMap(configurationMap);
+		initialize();
 		payload = new StringBuffer("cmd=_notify-validate");
 		if (ipnMap != null) {
 			for (Map.Entry<String, String[]> entry : ipnMap.entrySet()) {
@@ -66,15 +113,6 @@ public class IPNMessage {
 				}
 			}
 		}
-
-	}
-
-	/**
-	 * @param HttpServletrequest
-	 *            received from PayPal IPN call back.
-	 */
-	public IPNMessage(HttpServletRequest request) {
-		this(request.getParameterMap());
 	}
 
 	/**
@@ -136,16 +174,16 @@ public class IPNMessage {
 
 	private String getIPNEndpoint() {
 		String ipnEndpoint = null;
-		ipnEndpoint = config.getConfigurationMap().get(Constants.IPN_ENDPOINT);
+		ipnEndpoint = configurationMap.get(Constants.IPN_ENDPOINT);
 		if (ipnEndpoint == null) {
-			String mode = config.getConfigurationMap().get(Constants.MODE);
+			String mode = configurationMap.get(Constants.MODE);
 			if (mode != null
-					&& (Constants.SANDBOX.equalsIgnoreCase(config
-							.getConfigurationMap().get(Constants.MODE).trim()))) {
+					&& (Constants.SANDBOX.equalsIgnoreCase(configurationMap
+							.get(Constants.MODE).trim()))) {
 				ipnEndpoint = Constants.IPN_SANDBOX_ENDPOINT;
 			} else if (mode != null
-					&& (Constants.LIVE.equalsIgnoreCase(config
-							.getConfigurationMap().get(Constants.MODE).trim()))) {
+					&& (Constants.LIVE.equalsIgnoreCase(configurationMap.get(
+							Constants.MODE).trim()))) {
 				ipnEndpoint = Constants.IPN_LIVE_ENDPOINT;
 			}
 		}
