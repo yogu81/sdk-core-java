@@ -56,9 +56,6 @@ public class IPNListenerTest {
 	public void getTransactionTypeTest(){
 		String transactionType = ipnmsg.getTransactionType();
 		Assert.assertEquals("Adaptive Payment PAY", transactionType);
-		
 	}
-	
-	
 	
 }

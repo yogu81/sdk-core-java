@@ -1,7 +1,11 @@
 package com.paypal.core;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import com.paypal.core.credential.CertificateCredential;
 import com.paypal.core.credential.ICredential;
@@ -18,40 +22,34 @@ import com.paypal.exception.MissingCredentialException;
  */
 public final class CredentialManager {
 
-	/**
-	 * Singleton instance
+	/*
+	 * Map used for to override ConfigManager configurations
 	 */
-	private static CredentialManager instance;
-
-	// Private Constructor
-	private CredentialManager() {
-
-	}
+	private Map<String, String> configurationMap = null;
 
 	/**
-	 * Singleton accessor method
+	 * Credential Manager
 	 * 
-	 * @return Singleton instance of {@link CredentialManager}
+	 * @param configurationMap
+	 *            {@link Map}
 	 */
-	public static CredentialManager getInstance() {
-		synchronized (CredentialManager.class) {
-			if (instance == null) {
-				instance = new CredentialManager();
-			}
+	public CredentialManager(Map<String, String> configurationMap) {
+		if (configurationMap == null) {
+			throw new IllegalArgumentException("ConfigurationMap cannot be null");
 		}
-		return instance;
+		this.configurationMap = configurationMap;
 	}
 
 	public ICredential getCredentialObject(String userId)
 			throws MissingCredentialException, InvalidCredentialException {
 		ICredential credential = null;
-		ConfigManager conf = ConfigManager.getInstance();
-		if (conf.getNumOfAcct().size() == 0) {
+		if (getAccounts(configurationMap).size() == 0) {
 			throw new MissingCredentialException(
 					"No API accounts have been configured in application properties");
 		}
 		String prefix = Constants.ACCOUNT_PREFIX;
-		Map<String, String> credMap = conf.getValuesByCategory(prefix);
+		Map<String, String> credMap = getValuesByCategory(configurationMap,
+				prefix);
 		if (userId != null && userId.trim().length() != 0) {
 			for (Entry<String, String> entry : credMap.entrySet()) {
 				if (entry.getKey().endsWith(
@@ -80,6 +78,33 @@ public final class CredentialManager {
 			}
 		}
 		return credential;
+	}
+
+	private Set<String> getAccounts(Map<String, String> configurationMap) {
+		String key = Constants.EMPTY_STRING;
+		Set<String> set = new HashSet<String>();
+		for (Object obj : configurationMap.keySet()) {
+			key = (String) obj;
+			if (key.contains("acct")) {
+				int pos = key.indexOf('.');
+				String acct = key.substring(0, pos);
+				set.add(acct);
+			}
+		}
+		return set;
+	}
+
+	private Map<String, String> getValuesByCategory(
+			Map<String, String> configurationMap, String category) {
+		String key = Constants.EMPTY_STRING;
+		HashMap<String, String> map = new HashMap<String, String>();
+		for (Object obj : configurationMap.keySet()) {
+			key = (String) obj;
+			if (key.contains(category)) {
+				map.put(key, configurationMap.get(key));
+			}
+		}
+		return map;
 	}
 
 	private ICredential returnCredential(Map<String, String> credMap,

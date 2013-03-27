@@ -1,10 +1,10 @@
 package com.paypal.core;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 /**
@@ -205,6 +205,44 @@ public class SDKUtil {
 			response = escapeInvalidXmlCharsRegex(textContent);
 		}
 		return response;
+	}
+
+	/**
+	 * Constructs a Map<String, String> from a {@link Properties} object by
+	 * combining the default values from Default {@link Properties}
+	 * 
+	 * @param properties
+	 *            Input {@link Properties}
+	 * @return Map<String, String>
+	 * @throws IOException
+	 */
+	public static Map<String, String> constructMap(Properties properties) {
+		Map<String, String> propsMap = null;
+		Properties combinedProperties = ConfigManager
+				.combineDefaultProperties(properties);
+		propsMap = new HashMap<String, String>();
+
+		// Since the default properties are only searchable
+		Enumeration<?> keys = combinedProperties.propertyNames();
+		while (keys.hasMoreElements()) {
+			String key = keys.nextElement().toString().trim();
+			String value = combinedProperties.getProperty(key).trim();
+			propsMap.put(key, value);
+		}
+		return propsMap;
+	}
+
+	/**
+	 * Combines some {@link Map} with Default {@link Map}
+	 * 
+	 * @param receivedMap
+	 *            {@link Map} used to combine with Default {@link Map}
+	 * @return Combined {@link Map}
+	 */
+	public static Map<String, String> combineDefaultMap(Map<String, String> receivedMap) {
+		Map<String, String> combinedMap = ConfigManager.getDefaultSDKMap();
+		combinedMap.putAll(receivedMap);
+		return combinedMap;
 	}
 
 }

@@ -2,6 +2,7 @@ package com.paypal.core;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Properties;
 
 import com.paypal.core.credential.CertificateCredential;
 import com.paypal.exception.ClientActionRequiredException;
@@ -24,7 +25,12 @@ public class APIService {
 	private String endPoint;
 
 	/**
-	 * Configuration Manager
+	 * Map used for to override ConfigManager configurations
+	 */
+	private Map<String, String> configurationMap = null;
+
+	/**
+	 * @deprecated Configuration Manager
 	 */
 	private ConfigManager config = null;
 
@@ -35,11 +41,13 @@ public class APIService {
 
 	/**
 	 * APISerice
+	 * 
+	 * @deprecated
 	 */
 	public APIService() {
 		httpConfiguration = new HttpConfiguration();
 		config = ConfigManager.getInstance();
-		endPoint = config.getValue(Constants.END_POINT);
+		endPoint = config.getValue(Constants.ENDPOINT);
 		httpConfiguration.setGoogleAppEngine(Boolean.parseBoolean(config
 				.getValue(Constants.GOOGLE_APP_ENGINE)));
 		if (Boolean.parseBoolean(config.getValue(Constants.USE_HTTP_PROXY))) {
@@ -62,6 +70,51 @@ public class APIService {
 				.getValue(Constants.HTTP_CONNECTION_MAX_CONNECTION)));
 		httpConfiguration.setIpAddress(config
 				.getValue(Constants.DEVICE_IP_ADDRESS));
+	}
+
+	/**
+	 * APIService configured through {@link Map}
+	 * 
+	 * @param configurationMap
+	 *            {@link Map} to over-ride default Config Manager configuration
+	 */
+	public APIService(Map<String, String> configurationMap) {
+		if (configurationMap == null) {
+			throw new IllegalArgumentException(
+					"ConfigurationMap cannot be null");
+		}
+		this.configurationMap = configurationMap;
+		httpConfiguration = new HttpConfiguration();
+		endPoint = (String) this.configurationMap.get(Constants.ENDPOINT);
+		httpConfiguration.setGoogleAppEngine(Boolean
+				.parseBoolean((String) this.configurationMap
+						.get(Constants.GOOGLE_APP_ENGINE)));
+		if (Boolean.parseBoolean((String) this.configurationMap
+				.get(Constants.USE_HTTP_PROXY))) {
+			httpConfiguration.setProxyPort(Integer
+					.parseInt((String) this.configurationMap
+							.get(Constants.HTTP_PROXY_PORT)));
+			httpConfiguration.setProxyHost((String) this.configurationMap
+					.get(Constants.HTTP_PROXY_HOST));
+			httpConfiguration.setProxyUserName((String) this.configurationMap
+					.get(Constants.HTTP_PROXY_USERNAME));
+			httpConfiguration.setProxyPassword((String) this.configurationMap
+					.get(Constants.HTTP_PROXY_PASSWORD));
+		}
+		httpConfiguration.setConnectionTimeout(Integer
+				.parseInt((String) this.configurationMap
+						.get(Constants.HTTP_CONNECTION_TIMEOUT)));
+		httpConfiguration.setMaxRetry(Integer
+				.parseInt((String) this.configurationMap
+						.get(Constants.HTTP_CONNECTION_RETRY)));
+		httpConfiguration.setReadTimeout(Integer
+				.parseInt((String) this.configurationMap
+						.get(Constants.HTTP_CONNECTION_READ_TIMEOUT)));
+		httpConfiguration.setMaxHttpConnection(Integer
+				.parseInt((String) this.configurationMap
+						.get(Constants.HTTP_CONNECTION_MAX_CONNECTION)));
+		httpConfiguration.setIpAddress((String) this.configurationMap
+				.get(Constants.DEVICE_IP_ADDRESS));
 	}
 
 	/**
@@ -92,6 +145,7 @@ public class APIService {
 		 * apiCallPreHandlers
 		 */
 		String response = null;
+		apiCallPreHandler.validate();
 		Map<String, String> headers = null;
 		ConnectionManager connectionMgr = ConnectionManager.getInstance();
 		HttpConnection connection = connectionMgr
@@ -108,7 +162,8 @@ public class APIService {
 		if (apiCallPreHandler.getCredential() instanceof CertificateCredential) {
 			CertificateCredential credential = (CertificateCredential) apiCallPreHandler
 					.getCredential();
-			connection.setupClientSSL(credential.getCertificatePath(), credential.getCertificateKey());
+			connection.setupClientSSL(credential.getCertificatePath(),
+					credential.getCertificateKey());
 		}
 		connection.createAndconfigureHttpConnection(httpConfiguration);
 
@@ -123,6 +178,10 @@ public class APIService {
 		return response;
 	}
 
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public String getEndPoint() {
 		return endPoint;
 	}

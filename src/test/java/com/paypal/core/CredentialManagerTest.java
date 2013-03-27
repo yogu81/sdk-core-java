@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -22,8 +23,12 @@ public class CredentialManagerTest {
 	ICredential credential;
 
 	@BeforeClass
-	public void beforeClass() {
-		cred = CredentialManager.getInstance();
+	public void beforeClass() throws IOException {
+		Properties props = new Properties();
+		props.load(this.getClass()
+				.getResourceAsStream("/sdk_config.properties"));
+		Map<String, String> cMap = SDKUtil.constructMap(props);
+		cred = new CredentialManager(cMap);
 	}
 
 	@Test(dataProvider = "configParams", dataProviderClass = DataProviderClass.class, priority = 0)
@@ -108,9 +113,7 @@ public class CredentialManagerTest {
 	public void getCredentialObjectMissingCredentialFromEmptyConfigFile()
 			throws IOException, MissingCredentialException,
 			InvalidCredentialException {
-		ConfigManager.getInstance().load(
-				this.getClass().getResourceAsStream(
-						"/sdk_config_empty.properties"));
+		cred = new CredentialManager(new HashMap<String, String>());
 		cred.getCredentialObject(null);
 
 	}
@@ -119,9 +122,7 @@ public class CredentialManagerTest {
 	public void getCredentialObjectMissingCredentialFromWithoutDefaultAccountValue()
 			throws IOException, MissingCredentialException,
 			InvalidCredentialException {
-		ConfigManager.getInstance().load(
-				this.getClass().getResourceAsStream(
-						"/sdk_config_withoutdefaultaccount.properties"));
+		cred = new CredentialManager(new HashMap<String, String>());
 		cred.getCredentialObject(null);
 
 	}

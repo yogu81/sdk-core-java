@@ -3,8 +3,10 @@ package com.paypal.core;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import com.paypal.core.credential.ICredential;
+import com.paypal.exception.ClientActionRequiredException;
 
 /**
  * <code>DefaultSOAPAPICallHandler</code> acts a basic SOAP
@@ -62,6 +64,11 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	private String namespaces;
 
 	/**
+	 * Map used for to override ConfigManager configurations
+	 */
+	private Map<String, String> configurationMap = null;
+
+	/**
 	 * @return the headerString
 	 */
 	public String getHeaderString() {
@@ -94,6 +101,8 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	/**
 	 * DefaultSOAPAPICallHandler acts as the base SOAPAPICallHandler.
 	 * 
+	 * @deprecated
+	 * 
 	 * @param rawPayLoad
 	 *            Raw SOAP payload that goes into SOAP:BODY
 	 * @param namespaces
@@ -115,6 +124,33 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 		this.headerString = headerString;
 	}
 
+	/**
+	 * DefaultSOAPAPICallHandler acts as the base SOAPAPICallHandler.
+	 * 
+	 * @param rawPayLoad
+	 *            Raw SOAP payload that goes into SOAP:BODY
+	 * @param namespaces
+	 *            Namespace attributes that should be appended to SOAP:ENVELOPE,
+	 *            this argument can take any valid String value, empty String or
+	 *            NULL. If the value is NULL {0} value is sandwiched between
+	 *            SOAP:HEADER element that can be used for decorating purpose
+	 * @param headerString
+	 *            SOAP header String that should be appended to SOAP:HEADER,
+	 *            this argument can take any valid String value, empty String or
+	 *            NULL. If the value is NULL {1} value is sandwiched between
+	 *            SOAP:HEADER element that can be used for decorating purpose
+	 * @param configurationMap
+	 *            {@link Map}
+	 */
+	public DefaultSOAPAPICallHandler(String rawPayLoad, String namespaces,
+			String headerString, Map<String, String> configurationMap) {
+		super();
+		this.rawPayLoad = rawPayLoad;
+		this.namespaces = namespaces;
+		this.headerString = headerString;
+		this.configurationMap = configurationMap;
+	}
+
 	public Map<String, String> getHeaderMap() {
 		return new HashMap<String, String>();
 	}
@@ -131,11 +167,15 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	}
 
 	public String getEndPoint() {
-		return ConfigManager.getInstance().getValue("service.EndPoint");
+		return this.configurationMap.get(Constants.ENDPOINT);
 	}
 
 	public ICredential getCredential() {
 		return null;
+	}
+
+	public void validate() throws ClientActionRequiredException {
+		return;
 	}
 
 	private String getSoapEnvelopeStart() {

@@ -84,6 +84,9 @@ public abstract class HttpConnection {
 						writer.flush();
 					}
 					int responsecode = connection.getResponseCode();
+					
+					// Response code of 500 will throw IOException at
+					// this point
 					reader = new BufferedReader(new InputStreamReader(
 							connection.getInputStream(),
 							Constants.ENCODING_FORMAT));

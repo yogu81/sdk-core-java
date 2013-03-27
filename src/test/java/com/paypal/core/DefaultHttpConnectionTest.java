@@ -45,26 +45,17 @@ public class DefaultHttpConnectionTest {
 	public void createAndConfigureHttpConnectionForProxyTest(
 			ConfigManager config) throws IOException {
 
-		httpConfiguration.setGoogleAppEngine(Boolean.parseBoolean(config
-				.getValue(Constants.GOOGLE_APP_ENGINE)));
-		if (Boolean.parseBoolean(config.getValue(Constants.USE_HTTP_PROXY))) {
-			httpConfiguration.setProxyPort(Integer.parseInt(config
-					.getValue(Constants.HTTP_PROXY_PORT)));
-			httpConfiguration.setProxyHost(config
-					.getValue(Constants.HTTP_PROXY_HOST));
-			httpConfiguration.setProxyUserName(config
-					.getValue(Constants.HTTP_PROXY_USERNAME));
-			httpConfiguration.setProxyPassword(config
-					.getValue(Constants.HTTP_PROXY_PASSWORD));
+		httpConfiguration.setGoogleAppEngine(Boolean.parseBoolean(config.getConfigurationMap().get(Constants.GOOGLE_APP_ENGINE)));
+		if (Boolean.parseBoolean(config.getConfigurationMap().get(Constants.USE_HTTP_PROXY))) {
+			httpConfiguration.setProxyPort(Integer.parseInt(config.getConfigurationMap().get(Constants.HTTP_PROXY_PORT)));
+			httpConfiguration.setProxyHost(config.getConfigurationMap().get(Constants.HTTP_PROXY_HOST));
+			httpConfiguration.setProxyUserName(config.getConfigurationMap().get(Constants.HTTP_PROXY_USERNAME));
+			httpConfiguration.setProxyPassword(config.getConfigurationMap().get(Constants.HTTP_PROXY_PASSWORD));
 		}
-		httpConfiguration.setConnectionTimeout(Integer.parseInt(config
-				.getValue(Constants.HTTP_CONNECTION_TIMEOUT)));
-		httpConfiguration.setMaxRetry(Integer.parseInt(config
-				.getValue(Constants.HTTP_CONNECTION_RETRY)));
-		httpConfiguration.setReadTimeout(Integer.parseInt(config
-				.getValue(Constants.HTTP_CONNECTION_READ_TIMEOUT)));
-		httpConfiguration.setMaxHttpConnection(Integer.parseInt(config
-				.getValue(Constants.HTTP_CONNECTION_MAX_CONNECTION)));
+		httpConfiguration.setConnectionTimeout(Integer.parseInt(config.getConfigurationMap().get(Constants.HTTP_CONNECTION_TIMEOUT)));
+		httpConfiguration.setMaxRetry(Integer.parseInt(config.getConfigurationMap().get(Constants.HTTP_CONNECTION_RETRY)));
+		httpConfiguration.setReadTimeout(Integer.parseInt(config.getConfigurationMap().get(Constants.HTTP_CONNECTION_READ_TIMEOUT)));
+		httpConfiguration.setMaxHttpConnection(Integer.parseInt(config.getConfigurationMap().get(Constants.HTTP_CONNECTION_MAX_CONNECTION)));
 		httpConfiguration
 				.setEndPointUrl("https://svcs.sandbox.paypal.com/AdaptivePayments/ConvertCurrency");
 		defaultHttpConnection
