@@ -157,6 +157,12 @@ public class Constants {
 	// Merchant Live Endpoint Certificate
 	public static final String MERCHANT_LIVE_CERTIFICATE_ENDPOINT = "https://api.paypal.com/2.0";
 	
+	// REST Sandbox Endpoint
+	public static final String REST_SANDBOX_ENDPOINT = "https://api.sandbox.paypal.com/";
+	
+	// REST Live Endpoint
+	public static final String REST_LIVE_ENDPOINT = "https://api.paypal.com/";
+	
 	// Mode(sandbox/live)
 	public static final String MODE = "mode";
 	
@@ -170,6 +176,6 @@ public class Constants {
 	public static final String OPENID_REDIRECT_URI = "openid.RedirectUri";
 	
 	// Open Id redirect URI Constant
-	public static final String OPENID_REDIRECT_URI_CONSTANT = "https://www.paypal.com/webapps/auth/protocol/openidconnect/v1/authorize";
+	public static final String OPENID_REDIRECT_URI_CONSTANT = "https://www.paypal.com/webapps/auth/protocol/openidconnect";
 
 }

@@ -204,7 +204,6 @@ public class Tokeninfo {
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromAuthorizationCodeParameters
 				.getContainerMap());
-		paramsMap.put("grant_type", "authorization_code");
 		Object[] parameters = new Object[] { paramsMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);
@@ -241,7 +240,6 @@ public class Tokeninfo {
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromAuthorizationCodeParameters
 				.getContainerMap());
-		paramsMap.put("grant_type", "authorization_code");
 		Object[] parameters = new Object[] { paramsMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);
@@ -275,7 +273,6 @@ public class Tokeninfo {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&code={1}&redirect_uri={2}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(containerMap);
-		paramsMap.put("grant_type", "authorization_code");
 		Object[] parameters = new Object[] { paramsMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);
@@ -311,7 +308,6 @@ public class Tokeninfo {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&code={1}&redirect_uri={2}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(containerMap);
-		paramsMap.put("grant_type", "authorization_code");
 		Object[] parameters = new Object[] { paramsMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);
@@ -345,7 +341,6 @@ public class Tokeninfo {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromRefreshTokenParameters.getContainerMap());
-		paramsMap.put("grant_type", "refresh_token");
 		paramsMap.put("refresh_token", getRefreshToken());
 		Object[] parameters = new Object[] { paramsMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
@@ -382,7 +377,6 @@ public class Tokeninfo {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromRefreshTokenParameters.getContainerMap());
-		paramsMap.put("grant_type", "refresh_token");
 		paramsMap.put("refresh_token", getRefreshToken());
 		Object[] parameters = new Object[] { paramsMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
@@ -416,7 +410,6 @@ public class Tokeninfo {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(containerMap);
-		paramsMap.put("grant_type", "refresh_token");
 		paramsMap.put("refresh_token", getRefreshToken());
 		Object[] parameters = new Object[] { paramsMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
@@ -453,7 +446,6 @@ public class Tokeninfo {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(containerMap);
-		paramsMap.put("grant_type", "refresh_token");
 		paramsMap.put("refresh_token", getRefreshToken());
 		Object[] parameters = new Object[] { paramsMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
@@ -465,6 +457,7 @@ public class Tokeninfo {
 				HttpMethod.POST, resourcePath, headersMap, payLoad,
 				Tokeninfo.class);
 	}
+
 	/**
 	 * Returns a JSON string corresponding to object state
 	 * 

@@ -161,6 +161,7 @@ public class Address {
 		return this.country;
 	}
 	
+
 	/**
 	 * Returns a JSON string corresponding to object state
 	 * 

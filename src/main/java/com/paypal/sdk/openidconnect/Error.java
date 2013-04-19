@@ -130,6 +130,7 @@ public class Error {
 		return this.errorUri;
 	}
 	
+
 	/**
 	 * Returns a JSON string corresponding to object state
 	 * 

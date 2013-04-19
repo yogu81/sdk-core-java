@@ -217,6 +217,17 @@ public class RESTConfiguration {
 	public URL getBaseURL() throws MalformedURLException {
 		if (url == null) {
 			String urlString = this.configurationMap.get("service.EndPoint");
+			if (urlString == null || urlString.length() <= 0) {
+				String mode = this.configurationMap.get("mode");
+				if ("sandbox".equalsIgnoreCase(mode)) {
+					urlString = Constants.REST_SANDBOX_ENDPOINT;
+				} else if ("live".equalsIgnoreCase(mode)) {
+					urlString = Constants.REST_LIVE_ENDPOINT;
+				} else {
+					throw new MalformedURLException(
+							"service.EndPoint not set (OR) mode not configured to sandbox/live ");
+				}
+			}
 			if (!urlString.endsWith("/")) {
 				urlString += "/";
 			}

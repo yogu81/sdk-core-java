@@ -547,6 +547,7 @@ public class Userinfo {
 		return PayPalResource.configureAndExecute(configurationMap,
 				HttpMethod.GET, resourcePath, null, payLoad, Userinfo.class);
 	}
+
 	/**
 	 * Returns a JSON string corresponding to object state
 	 * 

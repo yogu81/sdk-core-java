@@ -15,7 +15,7 @@ import org.testng.log4testng.Logger;
 import com.paypal.exception.ClientActionRequiredException;
 import com.paypal.exception.HttpErrorException;
 import com.paypal.exception.InvalidResponseDataException;
-import com.paypal.sdk.openidconnect.Authorization;
+import com.paypal.sdk.openidconnect.PPOpenIdSession;
 import com.paypal.sdk.openidconnect.CreateFromAuthorizationCodeParameters;
 import com.paypal.sdk.openidconnect.CreateFromRefreshTokenParameters;
 import com.paypal.sdk.openidconnect.PayPalRESTException;
@@ -32,9 +32,9 @@ public class OpenIdTest {
 	Map<String, String> configurationMap = new HashMap<String, String>();
 
 	public OpenIdTest() {
-		//configurationMap.put("clientId", "");
-		//configurationMap.put("clientSecret", "");
-		configurationMap.put("service.EndPoint", "https://api.paypal.com/");
+//		configurationMap.put("clientId", "");
+//		configurationMap.put("clientSecret", "");
+		configurationMap.put("mode", "live");
 		configurationMap.put("http.ConnectionTimeOut", "5000");
 		configurationMap.put("http.Retry", "2");
 		configurationMap.put("http.ReadTimeOut", "30000");
@@ -48,7 +48,7 @@ public class OpenIdTest {
 			ClientActionRequiredException, PayPalRESTException,
 			URISyntaxException, IOException, InterruptedException {
 		CreateFromAuthorizationCodeParameters param = new CreateFromAuthorizationCodeParameters();
-		param.setCode("68aU9GB3MKVakhIYJpem6kE6Uq8pkTD9AC861VVT7ZZeQqV87HW3qEfQna3CbV-UhTcbYljZPX3gSwQASHSFyPSV7cL9YFdtW1BCahbvMFiNtXEP");
+		param.setCode("vmqgP0cyIeoL2t1rZu9m_0OpT59zSRpvEugsxdOOOlS5ewbYQ0EPWYwshIQ78MnOFKhytav0QkwM_yEpf2mZv5r5r_yhjlo-j7ct8jxj34LT4o0k");
 		info = Tokeninfo.createFromAuthorizationCode(configurationMap, param);
 		logger.info("Generated Access Token : " + info.getAccessToken());
 		logger.info("Generated Refrest Token: " + info.getRefreshToken());
@@ -84,16 +84,29 @@ public class OpenIdTest {
 	public void testAuthorizationURL() {
 		Map<String, String> m = new HashMap<String, String>();
 		m.put("openid.RedirectUri",
-				"https://www.paypal.com/webapps/auth/protocol/openidconnect/v1/authorize");
+				"https://www.paypal.com/webapps/auth/protocol/openidconnect");
 		m.put("clientId", "ANdfsalkoiarT");
 		List<String> l = new ArrayList<String>();
 		l.add("openid");
 		l.add("profile");
-		String redirectURL = Authorization.getRedirectURL("http://google.com",
+		String redirectURL = PPOpenIdSession.getRedirectURL("http://google.com",
 				l, m);
 		logger.info("Redirect URL: " + redirectURL);
 		Assert.assertEquals(
 				redirectURL,
 				"https://www.paypal.com/webapps/auth/protocol/openidconnect/v1/authorize?client_id=ANdfsalkoiarT&response_type=code&scope=openid+profile+&redirect_uri=http%3A%2F%2Fgoogle.com");
+	}
+	
+	@Test()
+	public void testLogoutURL() {
+		Map<String, String> m = new HashMap<String, String>();
+		m.put("openid.RedirectUri",
+				"https://www.paypal.com/webapps/auth/protocol/openidconnect");
+		String logoutURL = PPOpenIdSession.getLogoutUrl("http://google.com",
+				"tokenId", m);
+		logger.info("Redirect URL: " + logoutURL);
+		Assert.assertEquals(
+				logoutURL,
+				"https://www.paypal.com/webapps/auth/protocol/openidconnect/v1/endsession?id_token=tokenId&redirect_uri=http%3A%2F%2Fgoogle.com&logout=true");
 	}
 }

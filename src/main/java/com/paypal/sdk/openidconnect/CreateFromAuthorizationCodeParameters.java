@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CreateFromAuthorizationCodeParameters {
-	
+
 	/**
 	 * Code
 	 */
@@ -14,13 +14,19 @@ public class CreateFromAuthorizationCodeParameters {
 	 * Redirect URI
 	 */
 	private static final String REDIRECTURI = "redirect_uri";
-	
+
+	/**
+	 * Grant Type
+	 */
+	private static final String GRANTTYPE = "grant_type";
+
 	// Map backing QueryParameters intended to processed
 	// by SDK library 'RESTUtil'
 	private Map<String, String> containerMap;
 
 	public CreateFromAuthorizationCodeParameters() {
 		containerMap = new HashMap<String, String>();
+		containerMap.put(GRANTTYPE, "authorization_code");
 	}
 
 	/**
@@ -29,7 +35,7 @@ public class CreateFromAuthorizationCodeParameters {
 	Map<String, String> getContainerMap() {
 		return containerMap;
 	}
-	
+
 	/**
 	 * Set the code
 	 * 
@@ -47,5 +53,14 @@ public class CreateFromAuthorizationCodeParameters {
 	public void setRedirectURI(String redirectURI) {
 		containerMap.put(REDIRECTURI, redirectURI);
 	}
-	
+
+	/**
+	 * Set the Grant Type
+	 * 
+	 * @param grantType
+	 */
+	public void setGrantType(String grantType) {
+		containerMap.put(GRANTTYPE, grantType);
+	}
+
 }
