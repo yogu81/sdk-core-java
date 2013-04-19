@@ -29,7 +29,6 @@ The core uses .properties format configuration file. Sample of this file is at
 *	Service configuration.
 
 ## OpenID Connect
-
    * Redirect your buyer to `Authorization.getRedirectUrl(redirectURI, scope, configurationMap);` to obtain authorization.
    * Capture the authorization code that is available as a query parameter (`code`) in the redirect url
    * Exchange the authorization code for a access token, refresh token, id token combo
@@ -47,7 +46,7 @@ The core uses .properties format configuration file. Sample of this file is at
 ```
    * The access token is valid for a predefined duration and can be used for seamless XO or for retrieving user information
 
-```php
+```java
     Map<String, String> configurationMap = new HashMap<String, String>();
     configurationMap.put("clientId", "...");
     configurationMap.put("clientSecret", "...");
@@ -60,7 +59,7 @@ The core uses .properties format configuration file. Sample of this file is at
 ```
    * If the access token has expired, you can obtain a new access token using the refresh token from the 3'rd step.
 
-```php
+```java
     Map<String, String> configurationMap = new HashMap<String, String>();
     configurationMap.put("clientId", "...");
     configurationMap.put("clientSecret", "...");
