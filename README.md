@@ -16,9 +16,7 @@ This repository contains core files for all Java sdks.
 
 		  
 ## Core Configuration:
-The core uses .properties format configuration file. Sample of this file is at 
- 
-'src/test/resources/'. You can use the 'sdk_config.properties' configuration file to configure
+The core uses .properties format configuration file. Sample of this file is at 'src/test/resources/'. You can use the 'sdk_config.properties' configuration file to configure
 
 *	Mode is specified using the parameter name 'mode' with values 'sandbox' or 'live', if specified 'service.EndPoint' parameter is not required and the SDK choses the sandbox or live endpoints automatically.
 
