@@ -2,7 +2,7 @@ This repository contains core files for all Java sdks.
 
 ## Prerequisites:
 *	Java JDK-1.5 or higher
-*	Apache Maven 2 or higher
+*	Apache Maven 3 or higher
 
 ## To build this application:
 *	Run 'mvn install' to build jar file.
