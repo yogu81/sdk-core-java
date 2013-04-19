@@ -165,5 +165,11 @@ public class Constants {
 	
 	// LIVE Mode 
 	public static final String LIVE = "live";
+	
+	// Open Id redirect URI
+	public static final String OPENID_REDIRECT_URI = "openid.RedirectUri";
+	
+	// Open Id redirect URI Constant
+	public static final String OPENID_REDIRECT_URI_CONSTANT = "https://www.paypal.com/webapps/auth/protocol/openidconnect/v1/authorize";
 
 }
