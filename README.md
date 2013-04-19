@@ -28,7 +28,7 @@ The core uses .properties format configuration file. Sample of this file is at
 
 *	Service configuration.
 
-## Openid
+## OpenID Connect
 
    * Redirect your buyer to `Authorization.getRedirectUrl(redirectURI, scope, configurationMap);` to obtain authorization.
    * Capture the authorization code that is available as a query parameter (`code`) in the redirect url
