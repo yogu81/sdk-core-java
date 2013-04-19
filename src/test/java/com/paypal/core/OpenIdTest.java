@@ -35,11 +35,6 @@ public class OpenIdTest {
 //		configurationMap.put("clientId", "");
 //		configurationMap.put("clientSecret", "");
 		configurationMap.put("mode", "live");
-		configurationMap.put("http.ConnectionTimeOut", "5000");
-		configurationMap.put("http.Retry", "2");
-		configurationMap.put("http.ReadTimeOut", "30000");
-		configurationMap.put("http.MaxConnection", "100");
-		configurationMap.put("http.IPAddress", "127.0.0.1");
 	}
 
 	@Test(enabled = false)

@@ -193,18 +193,25 @@ public class RESTConfiguration {
 			httpConfiguration.setProxyPassword(this.configurationMap
 					.get((Constants.HTTP_PROXY_PASSWORD)));
 		}
-		httpConfiguration.setConnectionTimeout(Integer
-				.parseInt(this.configurationMap
-						.get((Constants.HTTP_CONNECTION_TIMEOUT))));
-		httpConfiguration.setMaxRetry(Integer.parseInt(this.configurationMap
-				.get((Constants.HTTP_CONNECTION_RETRY))));
-		httpConfiguration.setReadTimeout(Integer.parseInt(this.configurationMap
-				.get((Constants.HTTP_CONNECTION_READ_TIMEOUT))));
-		httpConfiguration.setMaxHttpConnection(Integer
-				.parseInt(this.configurationMap
-						.get((Constants.HTTP_CONNECTION_MAX_CONNECTION))));
+		httpConfiguration
+				.setConnectionTimeout(Integer.parseInt(this.configurationMap
+						.get(Constants.HTTP_CONNECTION_TIMEOUT) != null ? this.configurationMap
+						.get(Constants.HTTP_CONNECTION_TIMEOUT) : "5000"));
+		httpConfiguration
+				.setMaxRetry(Integer.parseInt(this.configurationMap
+						.get(Constants.HTTP_CONNECTION_RETRY) != null ? this.configurationMap
+						.get(Constants.HTTP_CONNECTION_RETRY) : "2"));
+		httpConfiguration
+				.setReadTimeout(Integer.parseInt(this.configurationMap
+						.get(Constants.HTTP_CONNECTION_READ_TIMEOUT) != null ? this.configurationMap
+						.get(Constants.HTTP_CONNECTION_READ_TIMEOUT) : "30000"));
+		httpConfiguration
+				.setMaxHttpConnection(Integer.parseInt(this.configurationMap
+						.get(Constants.HTTP_CONNECTION_MAX_CONNECTION) != null ? this.configurationMap
+						.get(Constants.HTTP_CONNECTION_MAX_CONNECTION) : "100"));
 		httpConfiguration.setIpAddress(this.configurationMap
-				.get((Constants.DEVICE_IP_ADDRESS)));
+				.get(Constants.DEVICE_IP_ADDRESS) != null ? this.configurationMap
+						.get(Constants.DEVICE_IP_ADDRESS) : "127.0.0.1");
 		return httpConfiguration;
 	}
 
