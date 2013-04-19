@@ -186,7 +186,7 @@ public abstract class PayPalResource {
 			ClientActionRequiredException, PayPalRESTException,
 			URISyntaxException, IOException, InterruptedException {
 		T t = null;
-		if (!configInitialized) {
+		if (!configInitialized && configurationMap == null) {
 			initializeToDefault();
 		}
 		RESTConfiguration restConfiguration = createRESTConfiguration(
