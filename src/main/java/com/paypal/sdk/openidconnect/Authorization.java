@@ -65,15 +65,11 @@ public class Authorization {
 					.append("&response_type=").append("code").append("&scope=");
 			StringBuilder scpBuilder = new StringBuilder();
 			for (int i = 0; i < scope.size(); i++) {
-				String s = scope.get(i);
-				scpBuilder.append(s);
-				if (i != (scope.size() - 1)) {
-					scpBuilder.append(" ");
-				}
+				scpBuilder.append(scope.get(i)).append(" ");
 			}
 			stringBuilder.append(URLEncoder.encode(scpBuilder.toString(),
 					"UTF-8"));
-			stringBuilder.append("&redirect_uri").append(
+			stringBuilder.append("&redirect_uri=").append(
 					URLEncoder.encode(redirectURI, "UTF-8"));
 			redirectURL = baseURL + "?" + stringBuilder.toString();
 		} catch (UnsupportedEncodingException exe) {
