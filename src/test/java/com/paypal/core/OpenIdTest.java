@@ -94,6 +94,6 @@ public class OpenIdTest {
 		logger.info("Redirect URL: " + redirectURL);
 		Assert.assertEquals(
 				redirectURL,
-				"https://www.paypal.com/webapps/auth/protocol/openidconnect/v1/authorize?client_id=ANdfsalkoiarT&response_type=code&scope=openid+profile&redirect_uri=http%3A%2F%2Fgoogle.com");
+				"https://www.paypal.com/webapps/auth/protocol/openidconnect/v1/authorize?client_id=ANdfsalkoiarT&response_type=code&scope=openid+profile+&redirect_uri=http%3A%2F%2Fgoogle.com");
 	}
 }
