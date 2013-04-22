@@ -200,7 +200,7 @@ public class Tokeninfo {
 			throws PayPalRESTException, InvalidResponseDataException,
 			HttpErrorException, ClientActionRequiredException,
 			URISyntaxException, IOException, InterruptedException {
-		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&code={1}&redirect_uri={2}";
+		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&code={1}&redirect_uri={2}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromAuthorizationCodeParameters
 				.getContainerMap());
@@ -236,7 +236,7 @@ public class Tokeninfo {
 			throws PayPalRESTException, InvalidResponseDataException,
 			HttpErrorException, ClientActionRequiredException,
 			URISyntaxException, IOException, InterruptedException {
-		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&code={1}&redirect_uri={2}";
+		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&code={1}&redirect_uri={2}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromAuthorizationCodeParameters
 				.getContainerMap());
@@ -270,7 +270,7 @@ public class Tokeninfo {
 			InvalidResponseDataException, HttpErrorException,
 			ClientActionRequiredException, URISyntaxException, IOException,
 			InterruptedException {
-		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&code={1}&redirect_uri={2}";
+		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&code={1}&redirect_uri={2}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(containerMap);
 		Object[] parameters = new Object[] { paramsMap };
@@ -305,7 +305,7 @@ public class Tokeninfo {
 			InvalidResponseDataException, HttpErrorException,
 			ClientActionRequiredException, URISyntaxException, IOException,
 			InterruptedException {
-		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&code={1}&redirect_uri={2}";
+		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&code={1}&redirect_uri={2}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(containerMap);
 		Object[] parameters = new Object[] { paramsMap };
@@ -338,7 +338,7 @@ public class Tokeninfo {
 			throws PayPalRESTException, InvalidResponseDataException,
 			HttpErrorException, ClientActionRequiredException,
 			URISyntaxException, IOException, InterruptedException {
-		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
+		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromRefreshTokenParameters.getContainerMap());
 		paramsMap.put("refresh_token", getRefreshToken());
@@ -374,7 +374,7 @@ public class Tokeninfo {
 			throws PayPalRESTException, InvalidResponseDataException,
 			HttpErrorException, ClientActionRequiredException,
 			URISyntaxException, IOException, InterruptedException {
-		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
+		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromRefreshTokenParameters.getContainerMap());
 		paramsMap.put("refresh_token", getRefreshToken());
@@ -407,7 +407,7 @@ public class Tokeninfo {
 			throws PayPalRESTException, InvalidResponseDataException,
 			HttpErrorException, ClientActionRequiredException,
 			URISyntaxException, IOException, InterruptedException {
-		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
+		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(containerMap);
 		paramsMap.put("refresh_token", getRefreshToken());
@@ -443,7 +443,7 @@ public class Tokeninfo {
 			InvalidResponseDataException, HttpErrorException,
 			ClientActionRequiredException, URISyntaxException, IOException,
 			InterruptedException {
-		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
+		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(containerMap);
 		paramsMap.put("refresh_token", getRefreshToken());
