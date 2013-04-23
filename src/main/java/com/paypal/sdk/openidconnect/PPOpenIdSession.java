@@ -13,7 +13,7 @@ import com.paypal.core.Constants;
 public class PPOpenIdSession {
 
 	/**
-	 * Get the PayPal URL to which the user must be redirected to start the
+	 * Returns the PayPal URL to which the user must be redirected to start the
 	 * authentication / authorization process.
 	 * 
 	 * @param redirectURI

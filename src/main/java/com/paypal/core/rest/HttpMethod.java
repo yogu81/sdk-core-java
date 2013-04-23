@@ -1,4 +1,4 @@
-package com.paypal.sdk.openidconnect;
+package com.paypal.core.rest;
 
 /**
  * HttpMethod enums used for HTTP method verbs

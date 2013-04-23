@@ -1,4 +1,4 @@
-package com.paypal.sdk.openidconnect;
+package com.paypal.core.rest;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;

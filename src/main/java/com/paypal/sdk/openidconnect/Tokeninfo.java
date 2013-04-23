@@ -3,20 +3,14 @@ package com.paypal.sdk.openidconnect;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Properties;
-import com.paypal.sdk.openidconnect.JSONFormatter;
-import com.paypal.sdk.openidconnect.PayPalRESTException;
-import com.paypal.sdk.openidconnect.PayPalResource;
+import com.paypal.core.rest.JSONFormatter;
+import com.paypal.core.rest.PayPalRESTException;
 import java.util.Map;
 import java.util.HashMap;
-import com.paypal.sdk.openidconnect.CreateFromAuthorizationCodeParameters;
-import com.paypal.sdk.openidconnect.CreateFromRefreshTokenParameters;
-import com.paypal.sdk.openidconnect.RESTUtil;
-import com.paypal.sdk.openidconnect.HttpMethod;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import com.paypal.exception.ClientActionRequiredException;
-import com.paypal.exception.HttpErrorException;
-import com.paypal.exception.InvalidResponseDataException;
+import com.paypal.core.rest.PayPalResource;
+import com.paypal.core.rest.RESTUtil;
+import com.paypal.core.rest.HttpMethod;
+import com.paypal.core.rest.APIContext;
 
 public class Tokeninfo {
 
@@ -45,7 +39,6 @@ public class Tokeninfo {
 	 */
 	private Integer expiresIn;
 	
-
 	/**
 	 * Returns the last request sent to the Service
 	 * 
@@ -95,7 +88,6 @@ public class Tokeninfo {
 	public static void initConfig(Properties properties) {
 		PayPalResource.initConfig(properties);
 	}
-
 	/**
 	 * Default Constructor
 	 */
@@ -188,18 +180,10 @@ public class Tokeninfo {
 	 *            Query parameters used for API call
 	 * @return Tokeninfo
 	 * @throws PayPalRESTException
-	 * @throws InvalidResponseDataException
-	 * @throws HttpErrorException
-	 * @throws ClientActionRequiredException
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 * @throws InterruptedException
 	 */
 	public static Tokeninfo createFromAuthorizationCode(
 			CreateFromAuthorizationCodeParameters createFromAuthorizationCodeParameters)
-			throws PayPalRESTException, InvalidResponseDataException,
-			HttpErrorException, ClientActionRequiredException,
-			URISyntaxException, IOException, InterruptedException {
+			throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&code={1}&redirect_uri={2}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromAuthorizationCodeParameters
@@ -217,25 +201,17 @@ public class Tokeninfo {
 	/**
 	 * Creates an Access Token from an Authorization Code.
 	 * 
-	 * @param configurationMap
-	 *            Map used for dynamic configuration
+	 * @param apiContext
+	 *            {@link APIContext} to be used for the call.
 	 * @param createFromAuthorizationCodeParameters
 	 *            Query parameters used for API call
 	 * @return Tokeninfo
 	 * @throws PayPalRESTException
-	 * @throws InvalidResponseDataException
-	 * @throws HttpErrorException
-	 * @throws ClientActionRequiredException
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 * @throws InterruptedException
 	 */
 	public static Tokeninfo createFromAuthorizationCode(
-			Map<String, String> configurationMap,
+			APIContext apiContext,
 			CreateFromAuthorizationCodeParameters createFromAuthorizationCodeParameters)
-			throws PayPalRESTException, InvalidResponseDataException,
-			HttpErrorException, ClientActionRequiredException,
-			URISyntaxException, IOException, InterruptedException {
+			throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&code={1}&redirect_uri={2}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromAuthorizationCodeParameters
@@ -246,9 +222,8 @@ public class Tokeninfo {
 		resourcePath = resourcePath.substring(0, resourcePath.indexOf("?"));
 		Map<String, String> headersMap = new HashMap<String, String>();
 		headersMap.put("Content-Type", "application/x-www-form-urlencoded");
-		return PayPalResource.configureAndExecute(configurationMap,
-				HttpMethod.POST, resourcePath, headersMap, payLoad,
-				Tokeninfo.class);
+		return PayPalResource.configureAndExecute(apiContext, HttpMethod.POST,
+				resourcePath, headersMap, payLoad, Tokeninfo.class);
 	}
 
 	/**
@@ -258,18 +233,9 @@ public class Tokeninfo {
 	 *            Query parameters used for API call
 	 * @return Tokeninfo
 	 * @throws PayPalRESTException
-	 * @throws InvalidResponseDataException
-	 * @throws HttpErrorException
-	 * @throws ClientActionRequiredException
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 * @throws InterruptedException
 	 */
 	public static Tokeninfo createFromAuthorizationCode(
-			Map<String, String> containerMap) throws PayPalRESTException,
-			InvalidResponseDataException, HttpErrorException,
-			ClientActionRequiredException, URISyntaxException, IOException,
-			InterruptedException {
+			Map<String, String> containerMap) throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&code={1}&redirect_uri={2}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(containerMap);
@@ -286,25 +252,15 @@ public class Tokeninfo {
 	/**
 	 * Creates an Access Token from an Authorization Code.
 	 * 
-	 * @param configurationMap
-	 *            Map used for dynamic configuration
+	 * @param apiContext
+	 *            {@link APIContext} to be used for the call.
 	 * @param containerMap
 	 *            Query parameters used for API call
 	 * @return Tokeninfo
 	 * @throws PayPalRESTException
-	 * @throws InvalidResponseDataException
-	 * @throws HttpErrorException
-	 * @throws ClientActionRequiredException
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 * @throws InterruptedException
 	 */
-	public static Tokeninfo createFromAuthorizationCode(
-			Map<String, String> configurationMap,
-			Map<String, String> containerMap) throws PayPalRESTException,
-			InvalidResponseDataException, HttpErrorException,
-			ClientActionRequiredException, URISyntaxException, IOException,
-			InterruptedException {
+	public static Tokeninfo createFromAuthorizationCode(APIContext apiContext,
+			Map<String, String> containerMap) throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&code={1}&redirect_uri={2}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(containerMap);
@@ -314,7 +270,7 @@ public class Tokeninfo {
 		resourcePath = resourcePath.substring(0, resourcePath.indexOf("?"));
 		Map<String, String> headersMap = new HashMap<String, String>();
 		headersMap.put("Content-Type", "application/x-www-form-urlencoded");
-		return PayPalResource.configureAndExecute(configurationMap,
+		return PayPalResource.configureAndExecute(apiContext,
 				HttpMethod.POST, resourcePath, headersMap, payLoad,
 				Tokeninfo.class);
 	}
@@ -324,24 +280,21 @@ public class Tokeninfo {
 	 * 
 	 * @param createFromRefreshTokenParameters
 	 *            Query parameters used for API call
+	 * @param refreshToken
+	 *            Refresh Token needed for the call
 	 * @return Tokeninfo
 	 * @throws PayPalRESTException
-	 * @throws InvalidResponseDataException
-	 * @throws HttpErrorException
-	 * @throws ClientActionRequiredException
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 * @throws InterruptedException
 	 */
 	public Tokeninfo createFromRefreshToken(
-			CreateFromRefreshTokenParameters createFromRefreshTokenParameters)
-			throws PayPalRESTException, InvalidResponseDataException,
-			HttpErrorException, ClientActionRequiredException,
-			URISyntaxException, IOException, InterruptedException {
+			CreateFromRefreshTokenParameters createFromRefreshTokenParameters,
+			String refreshToken) throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromRefreshTokenParameters.getContainerMap());
-		paramsMap.put("refresh_token", getRefreshToken());
+		if (refreshToken == null || refreshToken.trim().length() <= 0) {
+			refreshToken = getRefreshToken();
+		}
+		paramsMap.put("refresh_token", refreshToken);
 		Object[] parameters = new Object[] { paramsMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);
@@ -355,36 +308,33 @@ public class Tokeninfo {
 	/**
 	 * Creates an Access Token from an Refresh Token.
 	 * 
-	 * @param configurationMap
-	 *            Map used for dynamic configuration
+	 * @param apiContext
+	 *            {@link APIContext} to be used for the call.
 	 * @param createFromRefreshTokenParameters
 	 *            Query parameters used for API call
+	 * @param refreshToken
+	 *            Refresh Token needed for the call
 	 * @return Tokeninfo
 	 * @throws PayPalRESTException
-	 * @throws InvalidResponseDataException
-	 * @throws HttpErrorException
-	 * @throws ClientActionRequiredException
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 * @throws InterruptedException
 	 */
 	public Tokeninfo createFromRefreshToken(
-			Map<String, String> configurationMap,
-			CreateFromRefreshTokenParameters createFromRefreshTokenParameters)
-			throws PayPalRESTException, InvalidResponseDataException,
-			HttpErrorException, ClientActionRequiredException,
-			URISyntaxException, IOException, InterruptedException {
+			APIContext apiContext,
+			CreateFromRefreshTokenParameters createFromRefreshTokenParameters,
+			String refreshToken) throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromRefreshTokenParameters.getContainerMap());
-		paramsMap.put("refresh_token", getRefreshToken());
+		if (refreshToken == null || refreshToken.trim().length() <= 0) {
+			refreshToken = getRefreshToken();
+		}
+		paramsMap.put("refresh_token", refreshToken);
 		Object[] parameters = new Object[] { paramsMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);
 		resourcePath = resourcePath.substring(0, resourcePath.indexOf("?"));
 		Map<String, String> headersMap = new HashMap<String, String>();
 		headersMap.put("Content-Type", "application/x-www-form-urlencoded");
-		return PayPalResource.configureAndExecute(configurationMap,
+		return PayPalResource.configureAndExecute(apiContext,
 				HttpMethod.POST, resourcePath, headersMap, payLoad,
 				Tokeninfo.class);
 	}
@@ -394,23 +344,20 @@ public class Tokeninfo {
 	 * 
 	 * @param containerMap
 	 *            Query parameters used for API call
+	 * @param refreshToken
+	 *            Refresh Token needed for the call
 	 * @return Tokeninfo
 	 * @throws PayPalRESTException
-	 * @throws InvalidResponseDataException
-	 * @throws HttpErrorException
-	 * @throws ClientActionRequiredException
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 * @throws InterruptedException
 	 */
-	public Tokeninfo createFromRefreshToken(Map<String, String> containerMap)
-			throws PayPalRESTException, InvalidResponseDataException,
-			HttpErrorException, ClientActionRequiredException,
-			URISyntaxException, IOException, InterruptedException {
+	public Tokeninfo createFromRefreshToken(Map<String, String> containerMap,
+			String refreshToken) throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(containerMap);
-		paramsMap.put("refresh_token", getRefreshToken());
+		if (refreshToken == null || refreshToken.trim().length() <= 0) {
+			refreshToken = getRefreshToken();
+		}
+		paramsMap.put("refresh_token", refreshToken);
 		Object[] parameters = new Object[] { paramsMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);
@@ -424,36 +371,33 @@ public class Tokeninfo {
 	/**
 	 * Creates an Access Token from an Refresh Token.
 	 * 
-	 * @param configurationMap
-	 *            Map used for dynamic configuration
+	 * @param apiContext
+	 *            {@link APIContext} to be used for the call.
 	 * @param containerMap
 	 *            Query parameters used for API call
+	 * @param refreshToken
+	 *            Refresh Token needed for the call
 	 * @return Tokeninfo
 	 * @throws PayPalRESTException
-	 * @throws InvalidResponseDataException
-	 * @throws HttpErrorException
-	 * @throws ClientActionRequiredException
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 * @throws InterruptedException
 	 */
 	public Tokeninfo createFromRefreshToken(
-			Map<String, String> configurationMap,
-			Map<String, String> containerMap) throws PayPalRESTException,
-			InvalidResponseDataException, HttpErrorException,
-			ClientActionRequiredException, URISyntaxException, IOException,
-			InterruptedException {
+			APIContext apiContext,
+			Map<String, String> containerMap, String refreshToken)
+			throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(containerMap);
-		paramsMap.put("refresh_token", getRefreshToken());
+		if (refreshToken == null || refreshToken.trim().length() <= 0) {
+			refreshToken = getRefreshToken();
+		}
+		paramsMap.put("refresh_token", refreshToken);
 		Object[] parameters = new Object[] { paramsMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);
 		resourcePath = resourcePath.substring(0, resourcePath.indexOf("?"));
 		Map<String, String> headersMap = new HashMap<String, String>();
 		headersMap.put("Content-Type", "application/x-www-form-urlencoded");
-		return PayPalResource.configureAndExecute(configurationMap,
+		return PayPalResource.configureAndExecute(apiContext,
 				HttpMethod.POST, resourcePath, headersMap, payLoad,
 				Tokeninfo.class);
 	}

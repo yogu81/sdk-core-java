@@ -1,4 +1,4 @@
-package com.paypal.sdk.openidconnect;
+package com.paypal.core.rest;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,6 +14,7 @@ import com.paypal.core.ConnectionManager;
 import com.paypal.core.HttpConfiguration;
 import com.paypal.core.HttpConnection;
 import com.paypal.core.LoggingManager;
+import com.paypal.core.SDKUtil;
 import com.paypal.exception.ClientActionRequiredException;
 import com.paypal.exception.HttpErrorException;
 import com.paypal.exception.InvalidResponseDataException;
@@ -32,6 +33,11 @@ public abstract class PayPalResource {
 	 * SDK Version used in User-Agent HTTP header
 	 */
 	public static final String SDK_VERSION = "0.5.2";
+
+	/**
+	 * Map used in dynamic configuration
+	 */
+	private static Map<String, String> configurationMap;
 
 	/**
 	 * Configuration enabled flag
@@ -55,9 +61,12 @@ public abstract class PayPalResource {
 	 *            InputStream
 	 * @throws PayPalRESTException
 	 */
-	public static void initConfig(InputStream is) throws PayPalRESTException {
+	public static void initConfig(InputStream inputStream)
+			throws PayPalRESTException {
 		try {
-			ConfigManager.getInstance().load(is);
+			Properties properties = new Properties();
+			properties.load(inputStream);
+			configurationMap = SDKUtil.constructMap(properties);
 			configInitialized = true;
 		} catch (IOException ioe) {
 			LoggingManager.severe(PayPalResource.class, ioe.getMessage(), ioe);
@@ -81,7 +90,6 @@ public abstract class PayPalResource {
 			}
 			FileInputStream fis = new FileInputStream(file);
 			initConfig(fis);
-			configInitialized = true;
 		} catch (IOException ioe) {
 			LoggingManager.severe(PayPalResource.class, ioe.getMessage(), ioe);
 			throw new PayPalRESTException(ioe.getMessage(), ioe);
@@ -96,7 +104,7 @@ public abstract class PayPalResource {
 	 *            Properties object
 	 */
 	public static void initConfig(Properties properties) {
-		ConfigManager.getInstance().load(properties);
+		configurationMap = SDKUtil.constructMap(properties);
 		configInitialized = true;
 	}
 
@@ -106,9 +114,8 @@ public abstract class PayPalResource {
 	 * @throws PayPalRESTException
 	 */
 	private static void initializeToDefault() throws PayPalRESTException {
-		// initConfig(PayPalResource.class.getClassLoader().getResourceAsStream(
-		// "sdk_config.properties"));
-		ConfigManager.getInstance();
+		configurationMap = SDKUtil.combineDefaultMap(ConfigManager
+				.getInstance().getConfigurationMap());
 	}
 
 	/**
@@ -132,8 +139,36 @@ public abstract class PayPalResource {
 	/**
 	 * Configures and executes REST call: Supports JSON
 	 * 
+	 * @deprecated
 	 * @param <T>
 	 *            Response Type for de-serialization
+	 * @param accessToken
+	 *            AccessToken to be used for the call.
+	 * @param httpMethod
+	 *            Http Method verb
+	 * @param resourcePath
+	 *            Resource URI path
+	 * @param payLoad
+	 *            Payload to Service
+	 * @param clazz
+	 *            {@link Class} object used in De-serialization
+	 * @return T
+	 * @throws PayPalRESTException
+	 */
+	public static <T> T configureAndExecute(String accessToken,
+			HttpMethod httpMethod, String resourcePath, String payLoad,
+			Class<T> clazz) throws PayPalRESTException {
+		return configureAndExecute(null, accessToken, httpMethod, resourcePath,
+				null, payLoad, null, clazz);
+	}
+
+	/**
+	 * Configures and executes REST call: Supports JSON
+	 * 
+	 * @param <T>
+	 *            Response Type for de-serialization
+	 * @param apiContext
+	 *            {@link APIContext} to be used for the call.
 	 * @param httpMethod
 	 *            Http Method verb
 	 * @param resource
@@ -142,56 +177,60 @@ public abstract class PayPalResource {
 	 *            Payload to Service
 	 * @param clazz
 	 *            {@link Class} object used in De-serialization
-	 * @return
-	 * @throws InterruptedException
-	 * @throws IOException
-	 * @throws URISyntaxException
-	 * @throws ClientActionRequiredException
-	 * @throws HttpErrorException
-	 * @throws InvalidResponseDataException
+	 * @return T
 	 * @throws PayPalRESTException
 	 */
-	public static <T> T configureAndExecute(HttpMethod httpMethod,
-			String resourcePath, Map<String, String> headersMap,
-			String payLoad, Class<T> clazz)
-			throws InvalidResponseDataException, HttpErrorException,
-			ClientActionRequiredException, PayPalRESTException,
-			URISyntaxException, IOException, InterruptedException {
-		return configureAndExecute(null, httpMethod, resourcePath, headersMap,
-				payLoad, clazz);
+	public static <T> T configureAndExecute(APIContext apiContext,
+			HttpMethod httpMethod, String resourcePath, String payLoad,
+			Class<T> clazz) throws PayPalRESTException {
+		return configureAndExecute(null, apiContext.getAccessToken(),
+				httpMethod, resourcePath, null, payLoad,
+				apiContext.getRequestId(), clazz);
 	}
 
 	/**
-	 * 
+	 * Configures and executes REST call: Supports JSON
 	 * @param <T>
-	 * @param configurationMap
+	 * @param apiContext
+	 *            {@link APIContext} to be used for the call.
 	 * @param httpMethod
+	 *            Http Method verb
 	 * @param resourcePath
+	 *            Resource URI path
+	 * @param headersMap
+	 *            Optional headers Map
 	 * @param payLoad
+	 *            Payload to Service
 	 * @param clazz
-	 * @return
-	 * @throws InvalidResponseDataException
-	 * @throws HttpErrorException
-	 * @throws ClientActionRequiredException
+	 *            {@link Class} object used in De-serialization
+	 * @return T
 	 * @throws PayPalRESTException
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 * @throws InterruptedException
 	 */
-	public static <T> T configureAndExecute(
-			Map<String, String> configurationMap, HttpMethod httpMethod,
+	public static <T> T configureAndExecute(APIContext apiContext, HttpMethod httpMethod,
 			String resourcePath, Map<String, String> headersMap,
-			String payLoad, Class<T> clazz)
-			throws InvalidResponseDataException, HttpErrorException,
-			ClientActionRequiredException, PayPalRESTException,
-			URISyntaxException, IOException, InterruptedException {
+			String payLoad, Class<T> clazz) throws PayPalRESTException {
+		Map<String, String> configurationMap = apiContext.getConfigurationMap();
+		return configureAndExecute(configurationMap, null, httpMethod,
+				resourcePath, headersMap, payLoad, null, clazz);
+	}
+
+	private static <T> T configureAndExecute(
+			Map<String, String> configurationMap, String accessToken,
+			HttpMethod httpMethod, String resourcePath,
+			Map<String, String> headersMap, String payLoad, String requestId,
+			Class<T> clazz) throws PayPalRESTException {
 		T t = null;
-		if (!configInitialized && configurationMap == null) {
-			initializeToDefault();
+		if (configurationMap != null) {
+			configurationMap = SDKUtil.combineDefaultMap(configurationMap);
+		} else {
+			if (!configInitialized) {
+				initializeToDefault();
+			}
+			configurationMap = PayPalResource.configurationMap;
 		}
 		RESTConfiguration restConfiguration = createRESTConfiguration(
-				configurationMap, httpMethod, resourcePath, headersMap, null,
-				null);
+				configurationMap, httpMethod, resourcePath, headersMap,
+				accessToken, requestId);
 		t = execute(restConfiguration, payLoad, resourcePath, clazz);
 		return t;
 	}
@@ -246,34 +285,35 @@ public abstract class PayPalResource {
 	 */
 	private static <T> T execute(RESTConfiguration restConfiguration,
 			String payLoad, String resourcePath, Class<T> clazz)
-			throws PayPalRESTException, URISyntaxException, IOException,
-			InvalidResponseDataException, HttpErrorException,
-			ClientActionRequiredException, InterruptedException {
+			throws PayPalRESTException {
 		T t = null;
 		ConnectionManager connectionManager;
 		HttpConnection httpConnection;
 		HttpConfiguration httpConfig;
 		Map<String, String> headers;
 		String responseString;
+		try {
 
-		// REST Headers
-		headers = restConfiguration.getHeaders();
+			// REST Headers
+			headers = restConfiguration.getHeaders();
 
-		// HTTPConfiguration Object
-		httpConfig = restConfiguration.getHttpConfigurations();
+			// HTTPConfiguration Object
+			httpConfig = restConfiguration.getHttpConfigurations();
 
-		System.out.println(httpConfig.getEndPointUrl());
+			// HttpConnection Initialization
+			connectionManager = ConnectionManager.getInstance();
+			httpConnection = connectionManager.getConnection(httpConfig);
+			httpConnection.createAndconfigureHttpConnection(httpConfig);
 
-		// HttpConnection Initialization
-		connectionManager = ConnectionManager.getInstance();
-		httpConnection = connectionManager.getConnection(httpConfig);
-		httpConnection.createAndconfigureHttpConnection(httpConfig);
-
-		LASTREQUEST.set(payLoad);
-		responseString = httpConnection.execute(restConfiguration.getBaseURL()
-				.toURI().resolve(resourcePath).toString(), payLoad, headers);
-		LASTRESPONSE.set(responseString);
-		t = JSONFormatter.fromJSON(responseString, clazz);
+			LASTREQUEST.set(payLoad);
+			responseString = httpConnection.execute(restConfiguration
+					.getBaseURL().toURI().resolve(resourcePath).toString(),
+					payLoad, headers);
+			LASTRESPONSE.set(responseString);
+			t = JSONFormatter.fromJSON(responseString, clazz);
+		} catch (Exception e) {
+			throw new PayPalRESTException(e.getMessage(), e);
+		}
 		return t;
 	}
 

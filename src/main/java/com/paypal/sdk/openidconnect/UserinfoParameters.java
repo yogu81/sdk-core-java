@@ -27,7 +27,7 @@ public class UserinfoParameters {
 	/**
 	 * @return the containerMap
 	 */
-	Map<String, String> getContainerMap() {
+	public Map<String, String> getContainerMap() {
 		return containerMap;
 	}
 

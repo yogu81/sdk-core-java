@@ -38,49 +38,51 @@ public class DefaultSOAPAPICallHandlerTest {
 				defaultHandler.getEndPoint());
 	}
 
-	@Test
+	@Test(dependsOnMethods = {"getEndPointTest"})
 	public void getCredentialTest() {
-		Assert.assertEquals(defaultHandler.getCredential(), null);
+		Assert.assertEquals(null, defaultHandler.getCredential());
 	}
 
-	@Test
+	@Test(dependsOnMethods = {"getCredentialTest"})
 	public void getHeaderMapTest() {
-		Assert.assertEquals(defaultHandler.getHeaderMap().getClass(),
-				HashMap.class);
+		Assert.assertEquals(HashMap.class, defaultHandler.getHeaderMap()
+				.getClass());
 	}
 
-	@Test
+	@Test(dependsOnMethods = {"getHeaderMapTest"})
 	public void getHeaderStringTest() {
-		Assert.assertEquals(defaultHandler.getHeaderString(), "");
+		Assert.assertEquals("", defaultHandler.getHeaderString());
 	}
 
-	@Test
+	@Test(dependsOnMethods = {"getHeaderStringTest"})
 	public void getNamespacesTest() {
-		Assert.assertEquals(defaultHandler.getNamespaces(), "");
+		Assert.assertEquals("", defaultHandler.getNamespaces());
 	}
 
-	@Test
+	@Test(dependsOnMethods = {"getNamespacesTest"})
 	public void getPayLoadTest() {
 		Assert.assertEquals(
-				defaultHandler.getPayLoad(),
-				"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ><soapenv:Header></soapenv:Header><soapenv:Body>requestEnvelope.errorLanguage=en_US&baseAmountList.currency(0).code=USD&baseAmountList.currency(0).amount=2.0&convertToCurrencyList.currencyCode(0)=GBP</soapenv:Body></soapenv:Envelope>");
+				"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ><soapenv:Header></soapenv:Header><soapenv:Body>requestEnvelope.errorLanguage=en_US&baseAmountList.currency(0).code=USD&baseAmountList.currency(0).amount=2.0&convertToCurrencyList.currencyCode(0)=GBP</soapenv:Body></soapenv:Envelope>",
+				defaultHandler.getPayLoad());
 	}
 
-	@Test
+	@Test(dependsOnMethods = {"getPayLoadTest"})
 	public void setHeaderStringTest() {
 		defaultHandler.setHeaderString("headerString");
-		Assert.assertEquals(defaultHandler.getHeaderString(), "headerString");
+		Assert.assertEquals("headerString", defaultHandler.getHeaderString());
 	}
 
-	@Test
+	@Test(dependsOnMethods = {"setHeaderStringTest"})
 	public void setNamespacesTest() {
 		defaultHandler.setNamespaces("namespaces");
-		Assert.assertEquals(defaultHandler.getNamespaces(), "namespaces");
+		Assert.assertEquals("namespaces", defaultHandler.getNamespaces());
 	}
 
-	@Test
+	@Test(dependsOnMethods = {"setNamespacesTest"})
 	public void getPayloadForEmptyRawPayloadTest() {
 		defaultHandler = new DefaultSOAPAPICallHandler("", "", "", null);
-		Assert.assertEquals("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ><soapenv:Header></soapenv:Header><soapenv:Body></soapenv:Body></soapenv:Envelope>", defaultHandler.getPayLoad());
+		Assert.assertEquals(
+				"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" ><soapenv:Header></soapenv:Header><soapenv:Body></soapenv:Body></soapenv:Envelope>",
+				defaultHandler.getPayLoad());
 	}
 }

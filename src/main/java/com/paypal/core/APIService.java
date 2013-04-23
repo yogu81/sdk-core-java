@@ -2,7 +2,6 @@ package com.paypal.core;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Properties;
 
 import com.paypal.core.credential.CertificateCredential;
 import com.paypal.exception.ClientActionRequiredException;

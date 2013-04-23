@@ -1,4 +1,4 @@
-package com.paypal.sdk.openidconnect;
+package com.paypal.core.rest;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -13,6 +13,7 @@ import org.apache.commons.codec.binary.Base64;
 import com.paypal.core.ConfigManager;
 import com.paypal.core.Constants;
 import com.paypal.core.HttpConfiguration;
+import com.paypal.core.SDKUtil;
 
 /**
  * RESTConfiguration helps {@link PayPalResource} with state dependent utility
@@ -30,6 +31,9 @@ public class RESTConfiguration {
 	 */
 	private static final String OSHEADER;
 
+	/**
+	 * Configuration Map used for dynamic configuration
+	 */
 	private Map<String, String> configurationMap = null;
 
 	static {
@@ -94,18 +98,32 @@ public class RESTConfiguration {
 	 */
 	private String requestId;
 
+	/**
+	 * Custom headers Map
+	 */
 	private Map<String, String> headersMap;
 
 	/**
-	 * Default Constructor
+	 * Constructor using configurations dynamically
+	 * 
+	 * @param configurationMap
+	 *            Map used for dynamic configuration
 	 */
-	public RESTConfiguration() {
+	public RESTConfiguration(Map<String, String> configurationMap) {
+		this.configurationMap = SDKUtil.combineDefaultMap(configurationMap);
 	}
 
+	/**
+	 * Constructor using a Map of headers for forming custom headers
+	 * 
+	 * @param configurationMap
+	 *            Map used for dynamic configuration
+	 * @param headersMap
+	 *            Headers Map
+	 */
 	public RESTConfiguration(Map<String, String> configurationMap,
 			Map<String, String> headersMap) {
-		this.configurationMap = configurationMap == null ? ConfigManager
-				.getInstance().getConfigurationMap() : configurationMap;
+		this(configurationMap);
 		this.headersMap = (headersMap == null) ? Collections
 				.<String, String> emptyMap() : headersMap;
 	}
@@ -149,11 +167,21 @@ public class RESTConfiguration {
 	 */
 	public Map<String, String> getHeaders() {
 		Map<String, String> headers = new HashMap<String, String>();
-		try {
-			headers.put("Authorization",
-					"Basic " + encodeToBase64(getClientID(), getClientSecret()));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+		if (authorizationToken != null
+				&& authorizationToken.trim().length() > 0) {
+			headers.put("Authorization", authorizationToken);
+		} else if (getClientID() != null && getClientID().trim().length() > 0
+				&& getClientSecret() != null
+				&& getClientSecret().trim().length() > 0) {
+			try {
+				headers.put(
+						"Authorization",
+						"Basic "
+								+ encodeToBase64(getClientID(),
+										getClientSecret()));
+			} catch (UnsupportedEncodingException e) {
+				//
+			}
 		}
 		headers.put("User-Agent", formUserAgentHeader());
 		if (requestId != null && requestId.length() > 0) {
@@ -175,9 +203,10 @@ public class RESTConfiguration {
 		httpConfiguration.setHttpMethod(httpMethod.toString());
 		httpConfiguration.setEndPointUrl(getBaseURL().toURI()
 				.resolve(resourcePath).toString());
-		httpConfiguration
-				.setContentType(headersMap.get("Content-Type") != null ? headersMap
-						.get("Content-Type") : "application/json");
+		httpConfiguration.setContentType((headersMap != null) ? ((headersMap
+				.get(Constants.HTTP_CONTENT_TYPE_HEADER) != null) ? headersMap
+				.get("Content-Type") : Constants.HTTP_CONTENT_TYPE_JSON)
+				: Constants.HTTP_CONTENT_TYPE_JSON);
 		httpConfiguration.setGoogleAppEngine(Boolean
 				.parseBoolean(this.configurationMap
 						.get(Constants.GOOGLE_APP_ENGINE)));
@@ -193,25 +222,18 @@ public class RESTConfiguration {
 			httpConfiguration.setProxyPassword(this.configurationMap
 					.get((Constants.HTTP_PROXY_PASSWORD)));
 		}
-		httpConfiguration
-				.setConnectionTimeout(Integer.parseInt(this.configurationMap
-						.get(Constants.HTTP_CONNECTION_TIMEOUT) != null ? this.configurationMap
-						.get(Constants.HTTP_CONNECTION_TIMEOUT) : "5000"));
-		httpConfiguration
-				.setMaxRetry(Integer.parseInt(this.configurationMap
-						.get(Constants.HTTP_CONNECTION_RETRY) != null ? this.configurationMap
-						.get(Constants.HTTP_CONNECTION_RETRY) : "2"));
-		httpConfiguration
-				.setReadTimeout(Integer.parseInt(this.configurationMap
-						.get(Constants.HTTP_CONNECTION_READ_TIMEOUT) != null ? this.configurationMap
-						.get(Constants.HTTP_CONNECTION_READ_TIMEOUT) : "30000"));
-		httpConfiguration
-				.setMaxHttpConnection(Integer.parseInt(this.configurationMap
-						.get(Constants.HTTP_CONNECTION_MAX_CONNECTION) != null ? this.configurationMap
-						.get(Constants.HTTP_CONNECTION_MAX_CONNECTION) : "100"));
+		httpConfiguration.setConnectionTimeout(Integer
+				.parseInt(this.configurationMap
+						.get(Constants.HTTP_CONNECTION_TIMEOUT)));
+		httpConfiguration.setMaxRetry(Integer.parseInt(this.configurationMap
+				.get(Constants.HTTP_CONNECTION_RETRY)));
+		httpConfiguration.setReadTimeout(Integer.parseInt(this.configurationMap
+				.get(Constants.HTTP_CONNECTION_READ_TIMEOUT)));
+		httpConfiguration.setMaxHttpConnection(Integer
+				.parseInt(this.configurationMap
+						.get(Constants.HTTP_CONNECTION_MAX_CONNECTION)));
 		httpConfiguration.setIpAddress(this.configurationMap
-				.get(Constants.DEVICE_IP_ADDRESS) != null ? this.configurationMap
-						.get(Constants.DEVICE_IP_ADDRESS) : "127.0.0.1");
+				.get(Constants.DEVICE_IP_ADDRESS));
 		return httpConfiguration;
 	}
 
@@ -276,14 +298,23 @@ public class RESTConfiguration {
 		return header;
 	}
 
+	/*
+	 * Return Client ID from configuration Map
+	 */
 	private String getClientID() {
-		return this.configurationMap.get("clientId");
+		return this.configurationMap.get(Constants.CLIENT_ID);
 	}
 
+	/*
+	 * Returns Client Secret from configuration Map
+	 */
 	private String getClientSecret() {
-		return this.configurationMap.get("clientSecret");
+		return this.configurationMap.get(Constants.CLIENT_SECRET);
 	}
 
+	/*
+	 * Encodes Client ID and Client Secret in Base 64
+	 */
 	private String encodeToBase64(String clientID, String clientSecret)
 			throws UnsupportedEncodingException {
 		String base64ClientID = generateBase64String(clientID + ":"

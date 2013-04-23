@@ -1,4 +1,4 @@
-package com.paypal.sdk.openidconnect;
+package com.paypal.core.rest;
 
 /**
  * PayPalException handles all exceptions related to REST services

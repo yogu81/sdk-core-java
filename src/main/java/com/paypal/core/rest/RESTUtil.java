@@ -1,9 +1,14 @@
-package com.paypal.sdk.openidconnect;
+package com.paypal.core.rest;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.paypal.sdk.openidconnect.CreateFromAuthorizationCodeParameters;
+import com.paypal.sdk.openidconnect.CreateFromRefreshTokenParameters;
+import com.paypal.sdk.openidconnect.UserinfoParameters;
+
 
 public class RESTUtil {
 

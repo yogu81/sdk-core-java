@@ -1,7 +1,6 @@
 package com.paypal.core;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,13 +11,11 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
 
-import com.paypal.exception.ClientActionRequiredException;
-import com.paypal.exception.HttpErrorException;
-import com.paypal.exception.InvalidResponseDataException;
-import com.paypal.sdk.openidconnect.PPOpenIdSession;
+import com.paypal.core.rest.APIContext;
+import com.paypal.core.rest.PayPalRESTException;
 import com.paypal.sdk.openidconnect.CreateFromAuthorizationCodeParameters;
 import com.paypal.sdk.openidconnect.CreateFromRefreshTokenParameters;
-import com.paypal.sdk.openidconnect.PayPalRESTException;
+import com.paypal.sdk.openidconnect.PPOpenIdSession;
 import com.paypal.sdk.openidconnect.Tokeninfo;
 import com.paypal.sdk.openidconnect.Userinfo;
 import com.paypal.sdk.openidconnect.UserinfoParameters;
@@ -34,17 +31,17 @@ public class OpenIdTest {
 	public OpenIdTest() {
 //		configurationMap.put("clientId", "");
 //		configurationMap.put("clientSecret", "");
-		configurationMap.put("mode", "live");
+//		configurationMap.put("mode", "live");
 	}
 
 	@Test(enabled = false)
 	public void testCreateFromAuthorizationCodeDynamic()
-			throws InvalidResponseDataException, HttpErrorException,
-			ClientActionRequiredException, PayPalRESTException,
-			URISyntaxException, IOException, InterruptedException {
+			throws PayPalRESTException, UnsupportedEncodingException {
 		CreateFromAuthorizationCodeParameters param = new CreateFromAuthorizationCodeParameters();
-		param.setCode("vmqgP0cyIeoL2t1rZu9m_0OpT59zSRpvEugsxdOOOlS5ewbYQ0EPWYwshIQ78MnOFKhytav0QkwM_yEpf2mZv5r5r_yhjlo-j7ct8jxj34LT4o0k");
-		info = Tokeninfo.createFromAuthorizationCode(configurationMap, param);
+		param.setCode("AtvoGGAptSiVoaxFv3hWoD60F1QCd4erMhhwVJT6MXoFgTtoMCLrv8u1EB1OyLQbLy7SgB3q1TeAqIV3OtUeC3CITxg0FHKcy4Pd1jI3l8cwZX7O");
+		APIContext apiContext = new APIContext();
+		apiContext.setConfigurationMap(configurationMap);
+		info = Tokeninfo.createFromAuthorizationCode(apiContext, param);
 		logger.info("Generated Access Token : " + info.getAccessToken());
 		logger.info("Generated Refrest Token: " + info.getRefreshToken());
 		String enc = URLEncoder.encode(info.getRefreshToken(), "UTF-8");
@@ -53,23 +50,22 @@ public class OpenIdTest {
 
 	@Test(dependsOnMethods = { "testCreateFromAuthorizationCodeDynamic" }, enabled = false)
 	public void testCreateFromRefreshTokenDynamic()
-			throws InvalidResponseDataException, HttpErrorException,
-			ClientActionRequiredException, PayPalRESTException,
-			URISyntaxException, IOException, InterruptedException {
+			throws PayPalRESTException {
 		CreateFromRefreshTokenParameters param = new CreateFromRefreshTokenParameters();
-		info = info.createFromRefreshToken(configurationMap, param);
+		APIContext apiContext = new APIContext();
+		apiContext.setConfigurationMap(configurationMap);
+		info = info.createFromRefreshToken(apiContext, param, null);
 		logger.info("Regenerated Access Token: " + info.getAccessToken());
 		logger.info("Refresh Token: " + info.getRefreshToken());
 	}
 
 	@Test(dependsOnMethods = { "testCreateFromRefreshTokenDynamic" }, enabled = false)
-	public void testUserinfoDynamic() throws InvalidResponseDataException,
-			HttpErrorException, ClientActionRequiredException,
-			PayPalRESTException, URISyntaxException, IOException,
-			InterruptedException {
+	public void testUserinfoDynamic() throws PayPalRESTException {
 		UserinfoParameters param = new UserinfoParameters();
 		param.setAccessToken(info.getAccessToken());
-		Userinfo userInfo = Userinfo.userinfo(configurationMap, param);
+		APIContext apiContext = new APIContext();
+		apiContext.setConfigurationMap(configurationMap);
+		Userinfo userInfo = Userinfo.userinfo(apiContext, param);
 		logger.info("User Info Email: " + userInfo.getEmail());
 		logger.info("User Info Account Type: " + userInfo.getAccountType());
 		logger.info("User Info Name: " + userInfo.getGivenName());

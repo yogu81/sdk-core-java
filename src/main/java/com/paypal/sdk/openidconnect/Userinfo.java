@@ -4,18 +4,13 @@ import com.paypal.sdk.openidconnect.Address;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Properties;
-import com.paypal.sdk.openidconnect.JSONFormatter;
-import com.paypal.sdk.openidconnect.PayPalRESTException;
-import com.paypal.sdk.openidconnect.PayPalResource;
+import com.paypal.core.rest.JSONFormatter;
+import com.paypal.core.rest.PayPalRESTException;
 import java.util.Map;
-import com.paypal.sdk.openidconnect.UserinfoParameters;
-import com.paypal.sdk.openidconnect.RESTUtil;
-import com.paypal.sdk.openidconnect.HttpMethod;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import com.paypal.exception.ClientActionRequiredException;
-import com.paypal.exception.HttpErrorException;
-import com.paypal.exception.InvalidResponseDataException;
+import com.paypal.core.rest.PayPalResource;
+import com.paypal.core.rest.RESTUtil;
+import com.paypal.core.rest.HttpMethod;
+import com.paypal.core.rest.APIContext;
 
 public class Userinfo {
 
@@ -114,57 +109,6 @@ public class Userinfo {
 	 */
 	private String payerId;
 	
-
-	/**
-	 * Returns the last request sent to the Service
-	 * 
-	 * @return Last request sent to the server
-	 */
-	public static String getLastRequest() {
-		return PayPalResource.getLastRequest();
-	}
-
-	/**
-	 * Returns the last response returned by the Service
-	 * 
-	 * @return Last response got from the Service
-	 */
-	public static String getLastResponse() {
-		return PayPalResource.getLastResponse();
-	}
-
-	/**
-	 * Initialize using InputStream(of a Properties file)
-	 * 
-	 * @param is
-	 *            InputStream
-	 * @throws PayPalRESTException
-	 */
-	public static void initConfig(InputStream is) throws PayPalRESTException {
-		PayPalResource.initConfig(is);
-	}
-
-	/**
-	 * Initialize using a File(Properties file)
-	 * 
-	 * @param file
-	 *            File object of a properties entity
-	 * @throws PayPalRESTException
-	 */
-	public static void initConfig(File file) throws PayPalRESTException {
-		PayPalResource.initConfig(file);
-	}
-
-	/**
-	 * Initialize using Properties
-	 * 
-	 * @param properties
-	 *            Properties object
-	 */
-	public static void initConfig(Properties properties) {
-		PayPalResource.initConfig(properties);
-	}
-
 	/**
 	 * Default Constructor
 	 */
@@ -445,17 +389,9 @@ public class Userinfo {
 	 *            Query parameters used for API call
 	 * @return Userinfo
 	 * @throws PayPalRESTException
-	 * @throws InvalidResponseDataException
-	 * @throws HttpErrorException
-	 * @throws ClientActionRequiredException
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 * @throws InterruptedException
 	 */
 	public static Userinfo userinfo(UserinfoParameters userinfoParameters)
-			throws PayPalRESTException, InvalidResponseDataException,
-			HttpErrorException, ClientActionRequiredException,
-			URISyntaxException, IOException, InterruptedException {
+			throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/userinfo?schema={0}&access_token={1}";
 		Object[] parameters = new Object[] { userinfoParameters };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
@@ -467,29 +403,20 @@ public class Userinfo {
 	/**
 	 * Returns user details
 	 * 
-	 * @param configurationMap
-	 *            Map used for dynamic configurations
+	 * @param apiContext
+	 *            {@link APIContext} to be used for the call.
 	 * @param userinfoParameters
 	 *            Query parameters used for API call
 	 * @return Userinfo
 	 * @throws PayPalRESTException
-	 * @throws InvalidResponseDataException
-	 * @throws HttpErrorException
-	 * @throws ClientActionRequiredException
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 * @throws InterruptedException
 	 */
-	public static Userinfo userinfo(Map<String, String> configurationMap,
-			UserinfoParameters userinfoParameters) throws PayPalRESTException,
-			InvalidResponseDataException, HttpErrorException,
-			ClientActionRequiredException, URISyntaxException, IOException,
-			InterruptedException {
+	public static Userinfo userinfo(APIContext apiContext,
+			UserinfoParameters userinfoParameters) throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/userinfo?schema={0}&access_token={1}";
 		Object[] parameters = new Object[] { userinfoParameters };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = "";
-		return PayPalResource.configureAndExecute(configurationMap,
+		return PayPalResource.configureAndExecute(apiContext,
 				HttpMethod.GET, resourcePath, null, payLoad, Userinfo.class);
 	}
 
@@ -500,17 +427,9 @@ public class Userinfo {
 	 *            Query parameters used for API call
 	 * @return Userinfo
 	 * @throws PayPalRESTException
-	 * @throws InvalidResponseDataException
-	 * @throws HttpErrorException
-	 * @throws ClientActionRequiredException
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 * @throws InterruptedException
 	 */
 	public static Userinfo userinfo(Map<String, String> containerMap)
-			throws PayPalRESTException, InvalidResponseDataException,
-			HttpErrorException, ClientActionRequiredException,
-			URISyntaxException, IOException, InterruptedException {
+			throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/userinfo?schema={0}&access_token={1}";
 		Object[] parameters = new Object[] { containerMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
@@ -522,29 +441,20 @@ public class Userinfo {
 	/**
 	 * Returns user details
 	 * 
-	 * @param configurationMap
-	 *            Map used for dynamic configurations
+	 * @param apiContext
+	 *            {@link APIContext} to be used for the call.
 	 * @param containerMap
 	 *            Query parameters used for API call
 	 * @return Userinfo
 	 * @throws PayPalRESTException
-	 * @throws InvalidResponseDataException
-	 * @throws HttpErrorException
-	 * @throws ClientActionRequiredException
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 * @throws InterruptedException
 	 */
-	public static Userinfo userinfo(Map<String, String> configurationMap,
-			Map<String, String> containerMap) throws PayPalRESTException,
-			InvalidResponseDataException, HttpErrorException,
-			ClientActionRequiredException, URISyntaxException, IOException,
-			InterruptedException {
+	public static Userinfo userinfo(APIContext apiContext,
+			Map<String, String> containerMap) throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/userinfo?schema={0}&access_token={1}";
 		Object[] parameters = new Object[] { containerMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = "";
-		return PayPalResource.configureAndExecute(configurationMap,
+		return PayPalResource.configureAndExecute(apiContext,
 				HttpMethod.GET, resourcePath, null, payLoad, Userinfo.class);
 	}
 
