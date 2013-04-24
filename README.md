@@ -50,7 +50,8 @@ The core uses .properties format configuration file. Sample of this file is at '
     configurationMap.put("clientSecret", "...");
     configurationMap.put("service.EndPoint", "https://api.paypal.com/");
     ...
-    Tokeninfo info = ...
+    Tokeninfo info = new Tokeninfo();
+    info.setRefreshToken("refreshToken");
     UserinfoParameters param = new UserinfoParameters();
     param.setAccessToken(info.getAccessToken());
     Userinfo userInfo = Userinfo.userinfo(configurationMap, param);
