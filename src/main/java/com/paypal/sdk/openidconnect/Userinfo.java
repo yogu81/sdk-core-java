@@ -110,6 +110,55 @@ public class Userinfo {
 	private String payerId;
 	
 	/**
+	 * Returns the last request sent to the Service
+	 * 
+	 * @return Last request sent to the server
+	 */
+	public static String getLastRequest() {
+		return PayPalResource.getLastRequest();
+	}
+
+	/**
+	 * Returns the last response returned by the Service
+	 * 
+	 * @return Last response got from the Service
+	 */
+	public static String getLastResponse() {
+		return PayPalResource.getLastResponse();
+	}
+
+	/**
+	 * Initialize using InputStream(of a Properties file)
+	 * 
+	 * @param is
+	 *            InputStream
+	 * @throws PayPalRESTException
+	 */
+	public static void initConfig(InputStream is) throws PayPalRESTException {
+		PayPalResource.initConfig(is);
+	}
+
+	/**
+	 * Initialize using a File(Properties file)
+	 * 
+	 * @param file
+	 *            File object of a properties entity
+	 * @throws PayPalRESTException
+	 */
+	public static void initConfig(File file) throws PayPalRESTException {
+		PayPalResource.initConfig(file);
+	}
+
+	/**
+	 * Initialize using Properties
+	 * 
+	 * @param properties
+	 *            Properties object
+	 */
+	public static void initConfig(Properties properties) {
+		PayPalResource.initConfig(properties);
+	}
+	/**
 	 * Default Constructor
 	 */
 	public Userinfo() {
@@ -390,7 +439,7 @@ public class Userinfo {
 	 * @return Userinfo
 	 * @throws PayPalRESTException
 	 */
-	public static Userinfo userinfo(UserinfoParameters userinfoParameters)
+	public static Userinfo getUserinfo(UserinfoParameters userinfoParameters)
 			throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/userinfo?schema={0}&access_token={1}";
 		Object[] parameters = new Object[] { userinfoParameters };
@@ -410,7 +459,7 @@ public class Userinfo {
 	 * @return Userinfo
 	 * @throws PayPalRESTException
 	 */
-	public static Userinfo userinfo(APIContext apiContext,
+	public static Userinfo getUserinfo(APIContext apiContext,
 			UserinfoParameters userinfoParameters) throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/userinfo?schema={0}&access_token={1}";
 		Object[] parameters = new Object[] { userinfoParameters };
@@ -428,7 +477,7 @@ public class Userinfo {
 	 * @return Userinfo
 	 * @throws PayPalRESTException
 	 */
-	public static Userinfo userinfo(Map<String, String> containerMap)
+	public static Userinfo getUserinfo(Map<String, String> containerMap)
 			throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/userinfo?schema={0}&access_token={1}";
 		Object[] parameters = new Object[] { containerMap };
@@ -448,7 +497,7 @@ public class Userinfo {
 	 * @return Userinfo
 	 * @throws PayPalRESTException
 	 */
-	public static Userinfo userinfo(APIContext apiContext,
+	public static Userinfo getUserinfo(APIContext apiContext,
 			Map<String, String> containerMap) throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/userinfo?schema={0}&access_token={1}";
 		Object[] parameters = new Object[] { containerMap };

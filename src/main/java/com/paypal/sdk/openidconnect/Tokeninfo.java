@@ -184,7 +184,7 @@ public class Tokeninfo {
 	public static Tokeninfo createFromAuthorizationCode(
 			CreateFromAuthorizationCodeParameters createFromAuthorizationCodeParameters)
 			throws PayPalRESTException {
-		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&code={1}&redirect_uri={2}";
+		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&code={1}&redirect_uri={2}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromAuthorizationCodeParameters
 				.getContainerMap());
@@ -212,7 +212,7 @@ public class Tokeninfo {
 			APIContext apiContext,
 			CreateFromAuthorizationCodeParameters createFromAuthorizationCodeParameters)
 			throws PayPalRESTException {
-		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&code={1}&redirect_uri={2}";
+		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&code={1}&redirect_uri={2}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromAuthorizationCodeParameters
 				.getContainerMap());
@@ -236,7 +236,7 @@ public class Tokeninfo {
 	 */
 	public static Tokeninfo createFromAuthorizationCode(
 			Map<String, String> containerMap) throws PayPalRESTException {
-		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&code={1}&redirect_uri={2}";
+		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&code={1}&redirect_uri={2}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(containerMap);
 		Object[] parameters = new Object[] { paramsMap };
@@ -261,7 +261,7 @@ public class Tokeninfo {
 	 */
 	public static Tokeninfo createFromAuthorizationCode(APIContext apiContext,
 			Map<String, String> containerMap) throws PayPalRESTException {
-		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&code={1}&redirect_uri={2}";
+		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&code={1}&redirect_uri={2}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(containerMap);
 		Object[] parameters = new Object[] { paramsMap };
@@ -288,7 +288,7 @@ public class Tokeninfo {
 	public Tokeninfo createFromRefreshToken(
 			CreateFromRefreshTokenParameters createFromRefreshTokenParameters,
 			String refreshToken) throws PayPalRESTException {
-		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
+		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromRefreshTokenParameters.getContainerMap());
 		if (refreshToken == null || refreshToken.trim().length() <= 0) {
@@ -321,7 +321,7 @@ public class Tokeninfo {
 			APIContext apiContext,
 			CreateFromRefreshTokenParameters createFromRefreshTokenParameters,
 			String refreshToken) throws PayPalRESTException {
-		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
+		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromRefreshTokenParameters.getContainerMap());
 		if (refreshToken == null || refreshToken.trim().length() <= 0) {
@@ -351,7 +351,7 @@ public class Tokeninfo {
 	 */
 	public Tokeninfo createFromRefreshToken(Map<String, String> containerMap,
 			String refreshToken) throws PayPalRESTException {
-		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
+		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(containerMap);
 		if (refreshToken == null || refreshToken.trim().length() <= 0) {
@@ -384,7 +384,7 @@ public class Tokeninfo {
 			APIContext apiContext,
 			Map<String, String> containerMap, String refreshToken)
 			throws PayPalRESTException {
-		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
+		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(containerMap);
 		if (refreshToken == null || refreshToken.trim().length() <= 0) {

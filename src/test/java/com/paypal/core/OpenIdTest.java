@@ -15,7 +15,7 @@ import com.paypal.core.rest.APIContext;
 import com.paypal.core.rest.PayPalRESTException;
 import com.paypal.sdk.openidconnect.CreateFromAuthorizationCodeParameters;
 import com.paypal.sdk.openidconnect.CreateFromRefreshTokenParameters;
-import com.paypal.sdk.openidconnect.PPOpenIdSession;
+import com.paypal.sdk.openidconnect.Session;
 import com.paypal.sdk.openidconnect.Tokeninfo;
 import com.paypal.sdk.openidconnect.Userinfo;
 import com.paypal.sdk.openidconnect.UserinfoParameters;
@@ -65,7 +65,7 @@ public class OpenIdTest {
 		param.setAccessToken(info.getAccessToken());
 		APIContext apiContext = new APIContext();
 		apiContext.setConfigurationMap(configurationMap);
-		Userinfo userInfo = Userinfo.userinfo(apiContext, param);
+		Userinfo userInfo = Userinfo.getUserinfo(apiContext, param);
 		logger.info("User Info Email: " + userInfo.getEmail());
 		logger.info("User Info Account Type: " + userInfo.getAccountType());
 		logger.info("User Info Name: " + userInfo.getGivenName());
@@ -80,7 +80,7 @@ public class OpenIdTest {
 		List<String> l = new ArrayList<String>();
 		l.add("openid");
 		l.add("profile");
-		String redirectURL = PPOpenIdSession.getRedirectURL("http://google.com",
+		String redirectURL = Session.getRedirectURL("http://google.com",
 				l, m);
 		logger.info("Redirect URL: " + redirectURL);
 		Assert.assertEquals(
@@ -93,7 +93,7 @@ public class OpenIdTest {
 		Map<String, String> m = new HashMap<String, String>();
 		m.put("openid.RedirectUri",
 				"https://www.paypal.com/webapps/auth/protocol/openidconnect");
-		String logoutURL = PPOpenIdSession.getLogoutUrl("http://google.com",
+		String logoutURL = Session.getLogoutUrl("http://google.com",
 				"tokenId", m);
 		logger.info("Redirect URL: " + logoutURL);
 		Assert.assertEquals(

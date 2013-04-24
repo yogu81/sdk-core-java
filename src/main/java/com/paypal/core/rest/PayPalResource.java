@@ -183,13 +183,14 @@ public abstract class PayPalResource {
 	public static <T> T configureAndExecute(APIContext apiContext,
 			HttpMethod httpMethod, String resourcePath, String payLoad,
 			Class<T> clazz) throws PayPalRESTException {
-		return configureAndExecute(null, apiContext.getAccessToken(),
-				httpMethod, resourcePath, null, payLoad,
-				apiContext.getRequestId(), clazz);
+		return configureAndExecute(apiContext.getConfigurationMap(),
+				apiContext.getAccessToken(), httpMethod, resourcePath, null,
+				payLoad, apiContext.getRequestId(), clazz);
 	}
 
 	/**
 	 * Configures and executes REST call: Supports JSON
+	 * 
 	 * @param <T>
 	 * @param apiContext
 	 *            {@link APIContext} to be used for the call.
@@ -206,9 +207,10 @@ public abstract class PayPalResource {
 	 * @return T
 	 * @throws PayPalRESTException
 	 */
-	public static <T> T configureAndExecute(APIContext apiContext, HttpMethod httpMethod,
-			String resourcePath, Map<String, String> headersMap,
-			String payLoad, Class<T> clazz) throws PayPalRESTException {
+	public static <T> T configureAndExecute(APIContext apiContext,
+			HttpMethod httpMethod, String resourcePath,
+			Map<String, String> headersMap, String payLoad, Class<T> clazz)
+			throws PayPalRESTException {
 		Map<String, String> configurationMap = apiContext.getConfigurationMap();
 		return configureAndExecute(configurationMap, null, httpMethod,
 				resourcePath, headersMap, payLoad, null, clazz);

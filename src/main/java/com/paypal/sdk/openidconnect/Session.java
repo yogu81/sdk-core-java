@@ -10,7 +10,7 @@ import java.util.Map;
 import com.paypal.core.ConfigManager;
 import com.paypal.core.Constants;
 
-public class PPOpenIdSession {
+public class Session {
 
 	/**
 	 * Returns the PayPal URL to which the user must be redirected to start the
