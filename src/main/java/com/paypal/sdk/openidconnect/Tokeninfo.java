@@ -190,10 +190,7 @@ public class Tokeninfo {
 			CreateFromAuthorizationCodeParameters createFromAuthorizationCodeParameters)
 			throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&code={1}&redirect_uri={2}";
-		Map<String, String> paramsMap = new HashMap<String, String>();
-		paramsMap.putAll(createFromAuthorizationCodeParameters
-				.getContainerMap());
-		Object[] parameters = new Object[] { paramsMap };
+		Object[] parameters = new Object[] { createFromAuthorizationCodeParameters };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);
 		resourcePath = resourcePath.substring(0, resourcePath.indexOf("?"));
@@ -218,10 +215,7 @@ public class Tokeninfo {
 			CreateFromAuthorizationCodeParameters createFromAuthorizationCodeParameters)
 			throws PayPalRESTException {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&code={1}&redirect_uri={2}";
-		Map<String, String> paramsMap = new HashMap<String, String>();
-		paramsMap.putAll(createFromAuthorizationCodeParameters
-				.getContainerMap());
-		Object[] parameters = new Object[] { paramsMap };
+		Object[] parameters = new Object[] { createFromAuthorizationCodeParameters };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);
 		resourcePath = resourcePath.substring(0, resourcePath.indexOf("?"));
