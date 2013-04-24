@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.util.Properties;
 import com.paypal.core.rest.JSONFormatter;
 import com.paypal.core.rest.PayPalRESTException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.HashMap;
 import com.paypal.core.rest.PayPalResource;
@@ -15,34 +17,30 @@ import com.paypal.core.rest.APIContext;
 public class Tokeninfo {
 
 	/**
-	 * OPTIONAL, if identical to the scope requested by the client; otherwise,
-	 * REQUIRED.
+	 * OPTIONAL, if identical to the scope requested by the client; otherwise, REQUIRED.
 	 */
 	private String scope;
-
+	
 	/**
 	 * The access token issued by the authorization server.
 	 */
 	private String accessToken;
-
+	
 	/**
-	 * The refresh token, which can be used to obtain new access tokens using
-	 * the same authorization grant as described in OAuth2.0 RFC6749 in Section
-	 * 6.
+	 * The refresh token, which can be used to obtain new access tokens using the same authorization grant as described in OAuth2.0 RFC6749 in Section 6.
 	 */
 	private String refreshToken;
-
+	
 	/**
-	 * The type of the token issued as described in OAuth2.0 RFC6749 (Section
-	 * 7.1). Value is case insensitive.
+	 * The type of the token issued as described in OAuth2.0 RFC6749 (Section 7.1).  Value is case insensitive.
 	 */
 	private String tokenType;
-
+	
 	/**
 	 * The lifetime in seconds of the access token.
 	 */
 	private Integer expiresIn;
-
+	
 	/**
 	 * Returns the last request sent to the Service
 	 * 
@@ -92,7 +90,6 @@ public class Tokeninfo {
 	public static void initConfig(Properties properties) {
 		PayPalResource.initConfig(properties);
 	}
-
 	/**
 	 * Default Constructor
 	 */
@@ -107,77 +104,77 @@ public class Tokeninfo {
 		this.tokenType = tokenType;
 		this.expiresIn = expiresIn;
 	}
-
+	
 	/**
 	 * Setter for scope
 	 */
 	public void setScope(String scope) {
 		this.scope = scope;
-	}
-
-	/**
+ 	}
+ 	
+ 	/**
 	 * Getter for scope
 	 */
 	public String getScope() {
 		return this.scope;
 	}
-
+	
 	/**
 	 * Setter for accessToken
 	 */
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
-	}
-
-	/**
+ 	}
+ 	
+ 	/**
 	 * Getter for accessToken
 	 */
 	public String getAccessToken() {
 		return this.accessToken;
 	}
-
+	
 	/**
 	 * Setter for refreshToken
 	 */
 	public void setRefreshToken(String refreshToken) {
 		this.refreshToken = refreshToken;
-	}
-
-	/**
+ 	}
+ 	
+ 	/**
 	 * Getter for refreshToken
 	 */
 	public String getRefreshToken() {
 		return this.refreshToken;
 	}
-
+	
 	/**
 	 * Setter for tokenType
 	 */
 	public void setTokenType(String tokenType) {
 		this.tokenType = tokenType;
-	}
-
-	/**
+ 	}
+ 	
+ 	/**
 	 * Getter for tokenType
 	 */
 	public String getTokenType() {
 		return this.tokenType;
 	}
-
+	
 	/**
 	 * Setter for expiresIn
 	 */
 	public void setExpiresIn(Integer expiresIn) {
 		this.expiresIn = expiresIn;
-	}
-
-	/**
+ 	}
+ 	
+ 	/**
 	 * Getter for expiresIn
 	 */
 	public Integer getExpiresIn() {
 		return this.expiresIn;
 	}
-
+	
 	/**
 	 * Creates an Access Token from an Authorization Code.
 	 * 
@@ -239,7 +236,11 @@ public class Tokeninfo {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromRefreshTokenParameters.getContainerMap());
-		paramsMap.put("refresh_token", getRefreshToken());
+		try {
+			paramsMap.put("refresh_token", URLEncoder.encode(getRefreshToken(), "UTF-8"));
+		} catch (UnsupportedEncodingException ex) {
+			// Ignore
+		}
 		Object[] parameters = new Object[] { paramsMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);
@@ -266,7 +267,11 @@ public class Tokeninfo {
 		String pattern = "v1/identity/openidconnect/tokenservice ?grant_type={0}&refresh_token={1}&scope={2}&client_id={3}&client_secret={4}";
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		paramsMap.putAll(createFromRefreshTokenParameters.getContainerMap());
-		paramsMap.put("refresh_token", getRefreshToken());
+		try {
+			paramsMap.put("refresh_token", URLEncoder.encode(getRefreshToken(), "UTF-8"));
+		} catch (UnsupportedEncodingException ex) {
+			// Ignore
+		}
 		Object[] parameters = new Object[] { paramsMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);

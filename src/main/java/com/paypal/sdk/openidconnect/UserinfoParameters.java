@@ -1,5 +1,7 @@
 package com.paypal.sdk.openidconnect;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +11,7 @@ public class UserinfoParameters {
 	 * Schema
 	 */
 	private static final String SCHEMA = "schema";
-	
+
 	/**
 	 * Access Token
 	 */
@@ -39,14 +41,17 @@ public class UserinfoParameters {
 	public void setSchema(String schema) {
 		containerMap.put(SCHEMA, schema);
 	}
-	
+
 	/**
 	 * Set the accessToken
 	 * 
 	 * @param accessToken
 	 */
 	public void setAccessToken(String accessToken) {
-		containerMap.put(ACCESSTOKEN, accessToken);
+		try {
+			containerMap.put(ACCESSTOKEN, URLEncoder.encode(accessToken, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+		}
 	}
 
 }
