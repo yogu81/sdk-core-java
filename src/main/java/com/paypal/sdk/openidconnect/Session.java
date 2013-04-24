@@ -3,12 +3,13 @@ package com.paypal.sdk.openidconnect;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.paypal.core.ConfigManager;
 import com.paypal.core.Constants;
+import com.paypal.core.SDKUtil;
+import com.paypal.core.rest.APIContext;
 
 public class Session {
 
@@ -27,17 +28,21 @@ public class Session {
 	 *            .com/webapps/developer/docs/classic/loginwithpaypal
 	 *            /ht_OpenIDConnect/#parameters for more information
 	 * 
-	 * @param configurationMap
-	 *            dynamic configuration map
+	 * @param apiContext
+	 *            {@link APIContext} to be used for the call.
 	 * @return Redirect URL
 	 */
 	public static String getRedirectURL(String redirectURI, List<String> scope,
-			Map<String, String> configurationMap) {
+			APIContext apiContext) {
 		String redirectURL = null;
+		Map<String, String> configurationMap = null;
 		try {
-			if (configurationMap == null) {
-				configurationMap = ConfigManager.getInstance()
-						.getConfigurationMap();
+			if (apiContext.getConfigurationMap() == null) {
+				configurationMap = SDKUtil.combineDefaultMap(ConfigManager
+						.getInstance().getConfigurationMap());
+			} else {
+				configurationMap = SDKUtil.combineDefaultMap(apiContext
+						.getConfigurationMap());
 			}
 			String baseURL = configurationMap
 					.get(Constants.OPENID_REDIRECT_URI);
@@ -66,7 +71,7 @@ public class Session {
 			StringBuilder scpBuilder = new StringBuilder();
 			for (String str : scope) {
 				scpBuilder.append(str).append(" ");
-				
+
 			}
 			stringBuilder.append(URLEncoder.encode(scpBuilder.toString(),
 					"UTF-8"));
@@ -88,17 +93,21 @@ public class Session {
 	 *            to post logout
 	 * @param idToken
 	 *            id_token from the TokenInfo object
-	 * @param configurationMap
-	 *            dynamic configuration map
+	 * @param apiContext
+	 *            {@link APIContext} to be used for the call.
 	 * @return Logout URL
 	 */
 	public static String getLogoutUrl(String redirectURI, String idToken,
-			Map<String, String> configurationMap) {
+			APIContext apiContext) {
 		String logoutURL = null;
+		Map<String, String> configurationMap = null;
 		try {
-			if (configurationMap == null) {
-				configurationMap = ConfigManager.getInstance()
-						.getConfigurationMap();
+			if (apiContext.getConfigurationMap() == null) {
+				configurationMap = SDKUtil.combineDefaultMap(ConfigManager
+						.getInstance().getConfigurationMap());
+			} else {
+				configurationMap = SDKUtil.combineDefaultMap(apiContext
+						.getConfigurationMap());
 			}
 			String baseURL = configurationMap
 					.get(Constants.OPENID_REDIRECT_URI);

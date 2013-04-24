@@ -29,9 +29,9 @@ public class OpenIdTest {
 	Map<String, String> configurationMap = new HashMap<String, String>();
 
 	public OpenIdTest() {
-//		configurationMap.put("clientId", "");
-//		configurationMap.put("clientSecret", "");
-//		configurationMap.put("mode", "live");
+		// configurationMap.put("clientId", "");
+		// configurationMap.put("clientSecret", "");
+		// configurationMap.put("mode", "live");
 	}
 
 	@Test(enabled = false)
@@ -49,12 +49,11 @@ public class OpenIdTest {
 	}
 
 	@Test(dependsOnMethods = { "testCreateFromAuthorizationCodeDynamic" }, enabled = false)
-	public void testCreateFromRefreshTokenDynamic()
-			throws PayPalRESTException {
+	public void testCreateFromRefreshTokenDynamic() throws PayPalRESTException {
 		CreateFromRefreshTokenParameters param = new CreateFromRefreshTokenParameters();
 		APIContext apiContext = new APIContext();
 		apiContext.setConfigurationMap(configurationMap);
-		info = info.createFromRefreshToken(apiContext, param, null);
+		info = info.createFromRefreshToken(apiContext, param);
 		logger.info("Regenerated Access Token: " + info.getAccessToken());
 		logger.info("Refresh Token: " + info.getRefreshToken());
 	}
@@ -80,21 +79,25 @@ public class OpenIdTest {
 		List<String> l = new ArrayList<String>();
 		l.add("openid");
 		l.add("profile");
-		String redirectURL = Session.getRedirectURL("http://google.com",
-				l, m);
+		APIContext apiContext = new APIContext();
+		apiContext.setConfigurationMap(m);
+		String redirectURL = Session.getRedirectURL("http://google.com", l,
+				apiContext);
 		logger.info("Redirect URL: " + redirectURL);
 		Assert.assertEquals(
 				redirectURL,
 				"https://www.paypal.com/webapps/auth/protocol/openidconnect/v1/authorize?client_id=ANdfsalkoiarT&response_type=code&scope=openid+profile+&redirect_uri=http%3A%2F%2Fgoogle.com");
 	}
-	
+
 	@Test()
 	public void testLogoutURL() {
 		Map<String, String> m = new HashMap<String, String>();
 		m.put("openid.RedirectUri",
 				"https://www.paypal.com/webapps/auth/protocol/openidconnect");
-		String logoutURL = Session.getLogoutUrl("http://google.com",
-				"tokenId", m);
+		APIContext apiContext = new APIContext();
+		apiContext.setConfigurationMap(m);
+		String logoutURL = Session.getLogoutUrl("http://google.com", "tokenId",
+				apiContext);
 		logger.info("Redirect URL: " + logoutURL);
 		Assert.assertEquals(
 				logoutURL,

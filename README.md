@@ -64,7 +64,7 @@ The core uses .properties format configuration file. Sample of this file is at '
     configurationMap.put("service.EndPoint", "https://api.paypal.com/");
     ...
     CreateFromRefreshTokenParameters param = new CreateFromRefreshTokenParameters();
-    param.setCode(code);
+    param.setScope("openid"); // Optional
     Tokeninfo info = ... // Create Access Token; URLEncode Access and Refresh token inside info object
     info.createFromRefreshToken(configurationMap, param);
 ```
