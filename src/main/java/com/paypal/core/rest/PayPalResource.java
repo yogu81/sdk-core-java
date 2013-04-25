@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -32,7 +33,7 @@ public abstract class PayPalResource {
 	/**
 	 * SDK Version used in User-Agent HTTP header
 	 */
-	public static final String SDK_VERSION = "0.5.2";
+	public static final String SDK_VERSION = "0.6.0";
 
 	/**
 	 * Map used in dynamic configuration
@@ -228,13 +229,15 @@ public abstract class PayPalResource {
 			if (!configInitialized) {
 				initializeToDefault();
 			}
-			configurationMap = PayPalResource.configurationMap;
+			configurationMap = new HashMap<String, String>(
+					PayPalResource.configurationMap);
 		}
 		RESTConfiguration restConfiguration = createRESTConfiguration(
 				configurationMap, httpMethod, resourcePath, headersMap,
 				accessToken, requestId);
 		t = execute(restConfiguration, payLoad, resourcePath, clazz);
 		return t;
+
 	}
 
 	/**
