@@ -43,6 +43,12 @@ public class RESTUtil {
 				// Form a object array using the passed UserinfoParameters
 				parameters = splitParameters(pattern,
 						((UserinfoParameters) parameters[0]).getContainerMap());
+			} if (parameters != null && parameters.length == 1
+					&& parameters[0] instanceof QueryParameters) {
+
+				// Form a object array using the passed UserinfoParameters
+				parameters = splitParameters(pattern,
+						((QueryParameters) parameters[0]).getContainerMap());
 			} else if (parameters != null && parameters.length == 1
 					&& parameters[0] instanceof Map<?, ?>) {
 				
