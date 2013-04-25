@@ -21,7 +21,6 @@ public class IPNListenerTest {
 	
 	@BeforeClass
 	public void initialization() throws IOException {
-		
 		ipnMap = new HashMap<String,String[]>();
 		for(String element : ipnSample.split("&")){
 			String[] params = element.split("=");
@@ -41,18 +40,18 @@ public class IPNListenerTest {
 		Assert.assertNotNull(map);
 	}
 	
-	@Test
+	@Test(dependsOnMethods = {"getIpnMapTest"})
 	public void getIpnValueTest(){
 		String feesPayer = ipnmsg.getIpnValue("fees_payer");
 		Assert.assertEquals("EACHRECEIVER", feesPayer);
 	}
 	
-	@Test
+	@Test(dependsOnMethods = {"getIpnValueTest"})
 	public void validateTest(){
 		Assert.assertEquals(false, ipnmsg.validate());
 	}
 	
-	@Test
+	@Test(dependsOnMethods = {"validateTest"})
 	public void getTransactionTypeTest(){
 		String transactionType = ipnmsg.getTransactionType();
 		Assert.assertEquals("Adaptive Payment PAY", transactionType);

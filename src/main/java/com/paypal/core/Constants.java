@@ -19,7 +19,7 @@ public class Constants {
 
 	// HTTP Content-Type Header
 	public static final String HTTP_CONTENT_TYPE_HEADER = "Content-Type";
-	
+
 	// HTTP Accept Header
 	public static final String HTTP_ACCEPT_HEADER = "Accept";
 
@@ -59,10 +59,10 @@ public class Constants {
 	// Constants key defined for configuration options in application properties
 	// End point
 	public static final String ENDPOINT = "service.EndPoint";
-	
+
 	// Service Redirect Endpoint
 	public static final String SERVICE_REDIRECT_ENDPOINT = "service.RedirectURL";
-	
+
 	// Service DevCentral Endpoint
 	public static final String SERVICE_DEVCENTRAL_ENDPOINT = "service.DevCentralURL";
 
@@ -130,40 +130,61 @@ public class Constants {
 	// HTTP Content Type Default
 	public static final String HTTP_CONFIG_DEFAULT_CONTENT_TYPE = "application/x-www-form-urlencoded";
 
+	// HTTP Content Type JSON
+	public static final String HTTP_CONTENT_TYPE_JSON = "application/json";
+
 	// IPN endpoint property name
 	public static final String IPN_ENDPOINT = "service.IPNEndpoint";
-	
+
 	// Platform Sandbox Endpoint
 	public static final String PLATFORM_SANDBOX_ENDPOINT = "https://svcs.sandbox.paypal.com/";
-	
+
 	// Platform Live Endpoint
 	public static final String PLATFORM_LIVE_ENDPOINT = "https://svcs.paypal.com/";
-	
+
 	// IPN Sandbox Endpoint
 	public static final String IPN_SANDBOX_ENDPOINT = "https://www.sandbox.paypal.com/cgi-bin/webscr";
-	
+
 	// IPN Live Endpoint
 	public static final String IPN_LIVE_ENDPOINT = "https://ipnpb.paypal.com/cgi-bin/websc";
-	
+
 	// Merchant Sandbox Endpoint Signature
 	public static final String MERCHANT_SANDBOX_SIGNATURE_ENDPOINT = "https://api-3t.sandbox.paypal.com/2.0";
-	
+
 	// Merchant Live Endpoint Signature
 	public static final String MERCHANT_LIVE_SIGNATURE_ENDPOINT = "https://api-3t.paypal.com/2.0";
-	
+
 	// Merchant Sandbox Endpoint Certificate
 	public static final String MERCHANT_SANDBOX_CERTIFICATE_ENDPOINT = "https://api.sandbox.paypal.com/2.0";
-	
+
 	// Merchant Live Endpoint Certificate
 	public static final String MERCHANT_LIVE_CERTIFICATE_ENDPOINT = "https://api.paypal.com/2.0";
-	
+
+	// REST Sandbox Endpoint
+	public static final String REST_SANDBOX_ENDPOINT = "https://api.sandbox.paypal.com/";
+
+	// REST Live Endpoint
+	public static final String REST_LIVE_ENDPOINT = "https://api.paypal.com/";
+
 	// Mode(sandbox/live)
 	public static final String MODE = "mode";
-	
+
 	// SANDBOX Mode
 	public static final String SANDBOX = "sandbox";
-	
-	// LIVE Mode 
+
+	// LIVE Mode
 	public static final String LIVE = "live";
+
+	// Open Id redirect URI
+	public static final String OPENID_REDIRECT_URI = "openid.RedirectUri";
+
+	// Open Id redirect URI Constant
+	public static final String OPENID_REDIRECT_URI_CONSTANT = "https://www.paypal.com/webapps/auth/protocol/openidconnect";
+
+	// Client ID
+	public static final String CLIENT_ID = "clientId";
+
+	// Client Secret
+	public static final String CLIENT_SECRET = "clientSecret";
 
 }
