@@ -1,7 +1,6 @@
 package com.paypal.core;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,23 +28,21 @@ public class OpenIdTest {
 	Map<String, String> configurationMap = new HashMap<String, String>();
 
 	public OpenIdTest() {
-		// configurationMap.put("clientId", "");
-		// configurationMap.put("clientSecret", "");
-		// configurationMap.put("mode", "live");
+//		 configurationMap.put("clientId", "");
+//		 configurationMap.put("clientSecret", "");
+//		 configurationMap.put("mode", "live");
 	}
 
 	@Test(enabled = false)
 	public void testCreateFromAuthorizationCodeDynamic()
 			throws PayPalRESTException, UnsupportedEncodingException {
 		CreateFromAuthorizationCodeParameters param = new CreateFromAuthorizationCodeParameters();
-		param.setCode("AtvoGGAptSiVoaxFv3hWoD60F1QCd4erMhhwVJT6MXoFgTtoMCLrv8u1EB1OyLQbLy7SgB3q1TeAqIV3OtUeC3CITxg0FHKcy4Pd1jI3l8cwZX7O");
+		param.setCode("74N5JOwI_TDXuP6ZyhQhyw3tCk6i0B6q3ztOlMWQuNHptgQ41dQfgapu_eZ1k77U6XuHhYSwdxUXjXkagmEjr8j24AUzQa2GJPqHOh273PSmPcXO");
 		APIContext apiContext = new APIContext();
 		apiContext.setConfigurationMap(configurationMap);
 		info = Tokeninfo.createFromAuthorizationCode(apiContext, param);
 		logger.info("Generated Access Token : " + info.getAccessToken());
 		logger.info("Generated Refrest Token: " + info.getRefreshToken());
-		String enc = URLEncoder.encode(info.getRefreshToken(), "UTF-8");
-		info.setRefreshToken(enc);
 	}
 
 	@Test(dependsOnMethods = { "testCreateFromAuthorizationCodeDynamic" }, enabled = false)

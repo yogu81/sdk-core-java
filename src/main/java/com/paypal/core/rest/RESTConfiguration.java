@@ -161,6 +161,20 @@ public class RESTConfiguration {
 	}
 
 	/**
+	 * @return the javaheader
+	 */
+	public static String getJavaheader() {
+		return JAVAHEADER;
+	}
+
+	/**
+	 * @return the osheader
+	 */
+	public static String getOsheader() {
+		return OSHEADER;
+	}
+
+	/**
 	 * Returns HTTP headers as a {@link Map}
 	 * 
 	 * @return {@link Map} of Http headers
@@ -280,10 +294,11 @@ public class RESTConfiguration {
 		}
 	}
 
-	/*
-	 * Form User-Agent HTTP header
+	/**
+	 * Returns User-Agent header
+	 * @return
 	 */
-	private String formUserAgentHeader() {
+	public static String formUserAgentHeader() {
 		String header = null;
 		StringBuilder stringBuilder = new StringBuilder("PayPalSDK/"
 				+ PayPalResource.SDK_ID + " " + PayPalResource.SDK_VERSION

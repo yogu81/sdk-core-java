@@ -34,15 +34,6 @@ public class UserinfoParameters {
 	}
 
 	/**
-	 * Set the schema
-	 * 
-	 * @param schema
-	 */
-	public void setSchema(String schema) {
-		containerMap.put(SCHEMA, schema);
-	}
-
-	/**
 	 * Set the accessToken
 	 * 
 	 * @param accessToken
