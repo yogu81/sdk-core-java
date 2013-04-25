@@ -28,9 +28,9 @@ public class OpenIdTest {
 	Map<String, String> configurationMap = new HashMap<String, String>();
 
 	public OpenIdTest() {
-		 configurationMap.put("clientId", "LiveTest-01");
-		 configurationMap.put("clientSecret", "ECQX7VShmz6ydqa-gS7E1jyQe4Ebd24dqIpQoDcXJQ3h");
-		 configurationMap.put("mode", "live");
+//		 configurationMap.put("clientId", "");
+//		 configurationMap.put("clientSecret", "");
+//		 configurationMap.put("mode", "live");
 	}
 
 	@Test(enabled = false)

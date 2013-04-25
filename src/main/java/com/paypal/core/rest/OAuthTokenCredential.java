@@ -132,6 +132,7 @@ public final class OAuthTokenCredential implements ICredential {
 			Map<String, String> headers = new HashMap<String, String>();
 			headers.put("Authorization", "Basic " + base64ClientID);
 			headers.put(Constants.HTTP_ACCEPT_HEADER, "*/*");
+			headers.put("User-Agent", RESTConfiguration.formUserAgentHeader());
 			String postRequest = "grant_type=client_credentials";
 			String jsonResponse = connection.execute("", postRequest, headers);
 			JsonParser parser = new JsonParser();
