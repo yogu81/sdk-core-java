@@ -72,6 +72,8 @@ The core uses .properties format configuration file. Sample of this file is at '
     ...
     CreateFromRefreshTokenParameters param = new CreateFromRefreshTokenParameters();
     param.setScope("openid"); // Optional
-    Tokeninfo info = ... // Create Access Token
+    Tokeninfo info = new Tokeninfo // Create Token info object; setting the refresh token
+    info.setRefreshToken("refreshToken");
+
     info.createFromRefreshToken(apiContext, param);
 ```
