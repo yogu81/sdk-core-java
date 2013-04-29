@@ -36,10 +36,12 @@ The core uses .properties format configuration file. Sample of this file is at '
     configurationMap.put("clientId", "...");
     configurationMap.put("clientSecret", "...");
     configurationMap.put("service.EndPoint", "https://api.paypal.com/");
+    APIContext apiContext = new APIContext();
+    apiContext.setConfigurationMap(configurationMap);
     ...
     CreateFromAuthorizationCodeParameters param = new CreateFromAuthorizationCodeParameters();
     param.setCode(code);
-    Tokeninfo info = Tokeninfo.createFromAuthorizationCode(configurationMap, param);
+    Tokeninfo info = Tokeninfo.createFromAuthorizationCode(apiContext, param);
     String accessToken = info.getAccessToken();
 ```
    * The access token is valid for a predefined duration and can be used for seamless XO or for retrieving user information
@@ -49,12 +51,14 @@ The core uses .properties format configuration file. Sample of this file is at '
     configurationMap.put("clientId", "...");
     configurationMap.put("clientSecret", "...");
     configurationMap.put("service.EndPoint", "https://api.paypal.com/");
+    APIContext apiContext = new APIContext();
+    apiContext.setConfigurationMap(configurationMap);
     ...
     Tokeninfo info = new Tokeninfo();
     info.setRefreshToken("refreshToken");
     UserinfoParameters param = new UserinfoParameters();
     param.setAccessToken(info.getAccessToken());
-    Userinfo userInfo = Userinfo.userinfo(configurationMap, param);
+    Userinfo userInfo = Userinfo.userinfo(apiContext, param);
 ```
    * If the access token has expired, you can obtain a new access token using the refresh token from the 3'rd step.
 
@@ -63,9 +67,11 @@ The core uses .properties format configuration file. Sample of this file is at '
     configurationMap.put("clientId", "...");
     configurationMap.put("clientSecret", "...");
     configurationMap.put("service.EndPoint", "https://api.paypal.com/");
+    APIContext apiContext = new APIContext();
+    apiContext.setConfigurationMap(configurationMap);
     ...
     CreateFromRefreshTokenParameters param = new CreateFromRefreshTokenParameters();
     param.setScope("openid"); // Optional
     Tokeninfo info = ... // Create Access Token; URLEncode Access and Refresh token inside info object
-    info.createFromRefreshToken(configurationMap, param);
+    info.createFromRefreshToken(apiContext, param);
 ```
