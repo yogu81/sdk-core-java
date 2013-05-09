@@ -16,6 +16,11 @@ public class OAuthException extends PayPalException{
     	this.message = message;
     }
     
+    public OAuthException(String message, Throwable throwable) {
+    	super(message, throwable);
+    	this.message = message;
+    }
+    
     public String getError() {
     	return message;
     }

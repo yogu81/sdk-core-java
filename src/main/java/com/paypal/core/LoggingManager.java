@@ -10,6 +10,9 @@ import java.util.logging.Logger;
  * 
  */
 public final class LoggingManager {
+	
+	private LoggingManager() {}
+	
 	private static Map<Class<?>, Logger> loggerMap = new HashMap<Class<?>, Logger>();
 
 	private static Logger getLogger(Class<?> thisClass) {

@@ -2,9 +2,6 @@ package com.paypal.core;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import com.paypal.core.credential.CertificateCredential;
-import com.paypal.core.credential.ICredential;
 import com.paypal.core.credential.SignatureCredential;
 import com.paypal.core.credential.TokenAuthorization;
 import com.paypal.sdk.exceptions.OAuthException;

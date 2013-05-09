@@ -5,10 +5,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class ReflectionUtil {
+public final class ReflectionUtil {
+	
+	private ReflectionUtil() {}
 
 	public static Map<String, String> decodeResponseObject(Object responseType,
 			String prefix) {
@@ -49,11 +52,11 @@ public class ReflectionUtil {
 					try {
 						if (prefix != null && prefix.length() != 0) {
 							propertyName = prefix + "."
-									+ m.getName().substring(3, 4).toLowerCase()
+									+ m.getName().substring(3, 4).toLowerCase(Locale.US)
 									+ m.getName().substring(4);
 						} else {
 							propertyName = m.getName().substring(3, 4)
-									.toLowerCase()
+									.toLowerCase(Locale.US)
 									+ m.getName().substring(4);
 
 						}

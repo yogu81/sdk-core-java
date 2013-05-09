@@ -58,6 +58,13 @@ public final class ConfigManager {
 		DEFAULT_PROPERTIES.put(Constants.HTTP_CONNECTION_MAX_CONNECTION, "100");
 		DEFAULT_PROPERTIES.put(Constants.DEVICE_IP_ADDRESS, "127.0.0.1");
 		DEFAULT_PROPERTIES.put(Constants.GOOGLE_APP_ENGINE, "false");
+		defaultMapView = new HashMap<String, String>();
+		for (Object object : DEFAULT_PROPERTIES.keySet()) {
+			defaultMapView.put(
+					object.toString().trim(),
+					DEFAULT_PROPERTIES.getProperty(
+							object.toString()).trim());
+		}
 	}
 
 	/**
@@ -105,19 +112,6 @@ public final class ConfigManager {
 	 * @return {@link Map} view of Default {@link Properties}
 	 */
 	public static Map<String, String> getDefaultSDKMap() {
-		if (defaultMapView == null) {
-			synchronized (DEFAULT_PROPERTIES) {
-				if (defaultMapView == null) {
-					defaultMapView = new HashMap<String, String>();
-					for (Object object : DEFAULT_PROPERTIES.keySet()) {
-						defaultMapView.put(
-								object.toString().trim(),
-								DEFAULT_PROPERTIES.getProperty(
-										object.toString()).trim());
-					}
-				}
-			}
-		}
 		return new HashMap<String, String>(defaultMapView);
 	}
 

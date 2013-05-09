@@ -11,7 +11,10 @@ import com.paypal.core.Constants;
 import com.paypal.core.SDKUtil;
 import com.paypal.core.rest.APIContext;
 
-public class Session {
+public final class Session {
+
+	private Session() {
+	}
 
 	/**
 	 * Returns the PayPal URL to which the user must be redirected to start the
@@ -66,17 +69,18 @@ public class Session {
 					.append("client_id=")
 					.append(URLEncoder.encode(
 							configurationMap.get(Constants.CLIENT_ID) != null ? configurationMap
-									.get(Constants.CLIENT_ID) : "", Constants.UTF_8))
-					.append("&response_type=").append("code").append("&scope=");
+									.get(Constants.CLIENT_ID) : "",
+							Constants.ENCODING_FORMAT)).append("&response_type=")
+					.append("code").append("&scope=");
 			StringBuilder scpBuilder = new StringBuilder();
 			for (String str : scope) {
 				scpBuilder.append(str).append(" ");
 
 			}
 			stringBuilder.append(URLEncoder.encode(scpBuilder.toString(),
-					Constants.UTF_8));
+					Constants.ENCODING_FORMAT));
 			stringBuilder.append("&redirect_uri=").append(
-					URLEncoder.encode(redirectURI, Constants.UTF_8));
+					URLEncoder.encode(redirectURI, Constants.ENCODING_FORMAT));
 			redirectURL = baseURL + "/v1/authorize?" + stringBuilder.toString();
 		} catch (UnsupportedEncodingException exe) {
 			// Ignore
@@ -115,11 +119,13 @@ public class Session {
 				baseURL = Constants.OPENID_REDIRECT_URI_CONSTANT;
 			}
 			StringBuilder stringBuilder = new StringBuilder();
-			stringBuilder.append("id_token=")
-					.append(URLEncoder.encode(idToken, Constants.UTF_8))
+			stringBuilder
+					.append("id_token=")
+					.append(URLEncoder.encode(idToken,
+							Constants.ENCODING_FORMAT))
 					.append("&redirect_uri=")
-					.append(URLEncoder.encode(redirectURI, Constants.UTF_8))
-					.append("&logout=true");
+					.append(URLEncoder.encode(redirectURI,
+							Constants.ENCODING_FORMAT)).append("&logout=true");
 			logoutURL = baseURL + "/v1/endsession?" + stringBuilder.toString();
 		} catch (UnsupportedEncodingException exe) {
 			// Ignore

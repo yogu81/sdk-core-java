@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.crypto.Mac;
@@ -203,11 +204,11 @@ public class OAuthSignature {
 			signature = new String(b64Encoder.encode(digest), ENCODING);
 
 		} catch (NoSuchAlgorithmException algoe) {
-			throw new OAuthException(algoe.getMessage());
+			throw new OAuthException(algoe.getMessage(), algoe);
 		} catch (InvalidKeyException ke) {
-			throw new OAuthException(ke.getMessage());
+			throw new OAuthException(ke.getMessage(), ke);
 		} catch (UnsupportedEncodingException ee) {
-			throw new OAuthException(ee.getMessage());
+			throw new OAuthException(ee.getMessage(), ee);
 		}
 
 		return signature;
@@ -284,9 +285,9 @@ public class OAuthSignature {
 			if (k != -1) {
 				path = uri.substring(k);
 			}
-			normalizedURI = scheme.toLowerCase();
+			normalizedURI = scheme.toLowerCase(Locale.US);
 			normalizedURI += "://";
-			normalizedURI += authority.toLowerCase();
+			normalizedURI += authority.toLowerCase(Locale.US);
 
 			if (scheme != null && port.length() > 0) {
 				if (scheme.equalsIgnoreCase("http")
@@ -301,7 +302,7 @@ public class OAuthSignature {
 			}
 
 		} catch (NumberFormatException nfe) {
-			throw new OAuthException("Invalid URI.");
+			throw new OAuthException("Invalid URI.", nfe);
 		}
 
 		normalizedURI += path;

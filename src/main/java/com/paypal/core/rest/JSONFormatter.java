@@ -10,7 +10,9 @@ import com.google.gson.GsonBuilder;
  * @author kjayakumar
  * 
  */
-public class JSONFormatter {
+public final class JSONFormatter {
+	
+	private JSONFormatter() {}
 
 	/**
 	 * Gson

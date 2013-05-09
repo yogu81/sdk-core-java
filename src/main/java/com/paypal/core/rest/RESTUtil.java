@@ -10,7 +10,9 @@ import com.paypal.sdk.openidconnect.CreateFromRefreshTokenParameters;
 import com.paypal.sdk.openidconnect.UserinfoParameters;
 
 
-public class RESTUtil {
+public final class RESTUtil {
+	
+	private RESTUtil() {}
 
 	/**
 	 * Formats the URI path for REST calls.

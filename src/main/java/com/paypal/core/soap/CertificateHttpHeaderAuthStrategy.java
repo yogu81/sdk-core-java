@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.paypal.core.AbstractCertificateHttpHeaderAuthStrategy;
-import com.paypal.core.AuthenticationStrategy;
 import com.paypal.core.Constants;
 import com.paypal.core.credential.CertificateCredential;
 import com.paypal.core.credential.TokenAuthorization;

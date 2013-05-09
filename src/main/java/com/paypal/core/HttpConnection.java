@@ -3,9 +3,9 @@ package com.paypal.core;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Map;
@@ -56,7 +56,8 @@ public abstract class HttpConnection {
 			ClientActionRequiredException {
 
 		String successResponse = Constants.EMPTY_STRING, errorResponse = Constants.EMPTY_STRING;
-		InputStreamReader iSR = null;
+		InputStreamReader isr = null;
+		OutputStream os = null;
 		BufferedReader reader = null;
 		OutputStreamWriter writer = null;
 		connection.setRequestProperty("Content-Length", ""
@@ -70,16 +71,16 @@ public abstract class HttpConnection {
 			do {
 				try {
 					if ("POST".equalsIgnoreCase(connection.getRequestMethod())) {
-						writer = new OutputStreamWriter(
-								this.connection.getOutputStream(),
+						os = this.connection.getOutputStream();
+						writer = new OutputStreamWriter(os,
 								Charset.forName(Constants.ENCODING_FORMAT));
 						writer.write(payload);
 						writer.flush();
 					}
 					int responsecode = connection.getResponseCode();
-					iSR = new InputStreamReader(connection.getInputStream(),
+					isr = new InputStreamReader(connection.getInputStream(),
 							Constants.ENCODING_FORMAT);
-					reader = new BufferedReader(iSR);
+					reader = new BufferedReader(isr);
 					if (responsecode >= 200 && responsecode < 300) {
 						successResponse = read(reader);
 						LoggingManager.debug(HttpConnection.class,
@@ -136,13 +137,17 @@ public abstract class HttpConnection {
 				if (writer != null) {
 					writer.close();
 				}
-				if (iSR != null) {
-					iSR.close();
+				if (isr != null) {
+					isr.close();
+				}
+				if (os != null) {
+					os.close();
 				}
 			} finally {
 				reader = null;
 				writer = null;
-				iSR = null;
+				isr = null;
+				os = null;
 			}
 		}
 		return successResponse;

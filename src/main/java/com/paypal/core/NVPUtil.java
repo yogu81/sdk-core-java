@@ -6,7 +6,9 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NVPUtil {
+public final class NVPUtil {
+	
+	private NVPUtil() {}
 
 	/**
 	 * Utility method used to decode the nvp response String

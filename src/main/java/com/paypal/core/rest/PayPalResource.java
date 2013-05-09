@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -16,9 +15,6 @@ import com.paypal.core.HttpConfiguration;
 import com.paypal.core.HttpConnection;
 import com.paypal.core.LoggingManager;
 import com.paypal.core.SDKUtil;
-import com.paypal.exception.ClientActionRequiredException;
-import com.paypal.exception.HttpErrorException;
-import com.paypal.exception.InvalidResponseDataException;
 
 /**
  * PayPalResource acts as a base class for REST enabled resources

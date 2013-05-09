@@ -1,6 +1,5 @@
 package com.paypal.core;
 
-import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +10,9 @@ import java.util.regex.Pattern;
  * SDKUtil class holds utility methods for processing data transformation
  * 
  */
-public class SDKUtil {
+public final class SDKUtil {
+	
+	private SDKUtil() {}
 
 	/**
 	 * Pattern for replacing Ampersand '&' character
