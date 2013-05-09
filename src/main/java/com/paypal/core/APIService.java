@@ -20,6 +20,7 @@ public class APIService {
 
 	/**
 	 * Service Endpoint
+	 * @deprecated
 	 */
 	private String endPoint;
 

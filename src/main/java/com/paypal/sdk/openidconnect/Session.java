@@ -65,8 +65,8 @@ public class Session {
 			stringBuilder
 					.append("client_id=")
 					.append(URLEncoder.encode(
-							configurationMap.get("clientId") != null ? configurationMap
-									.get("clientId") : "", "UTF-8"))
+							configurationMap.get(Constants.CLIENT_ID) != null ? configurationMap
+									.get(Constants.CLIENT_ID) : "", Constants.UTF_8))
 					.append("&response_type=").append("code").append("&scope=");
 			StringBuilder scpBuilder = new StringBuilder();
 			for (String str : scope) {
@@ -74,9 +74,9 @@ public class Session {
 
 			}
 			stringBuilder.append(URLEncoder.encode(scpBuilder.toString(),
-					"UTF-8"));
+					Constants.UTF_8));
 			stringBuilder.append("&redirect_uri=").append(
-					URLEncoder.encode(redirectURI, "UTF-8"));
+					URLEncoder.encode(redirectURI, Constants.UTF_8));
 			redirectURL = baseURL + "/v1/authorize?" + stringBuilder.toString();
 		} catch (UnsupportedEncodingException exe) {
 			// Ignore
@@ -116,9 +116,9 @@ public class Session {
 			}
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.append("id_token=")
-					.append(URLEncoder.encode(idToken, "UTF-8"))
+					.append(URLEncoder.encode(idToken, Constants.UTF_8))
 					.append("&redirect_uri=")
-					.append(URLEncoder.encode(redirectURI, "UTF-8"))
+					.append(URLEncoder.encode(redirectURI, Constants.UTF_8))
 					.append("&logout=true");
 			logoutURL = baseURL + "/v1/endsession?" + stringBuilder.toString();
 		} catch (UnsupportedEncodingException exe) {

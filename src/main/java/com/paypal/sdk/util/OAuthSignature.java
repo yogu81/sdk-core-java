@@ -4,6 +4,7 @@
 
 package com.paypal.sdk.util;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -12,6 +13,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.crypto.Mac;
@@ -36,7 +38,7 @@ public class OAuthSignature {
 	private String requestURI;
 	private String timestamp;
 	private String httpMethod;
-	private ArrayList queryParams;
+	private List queryParams;
 
 	public enum HTTPMethod {
 		GET, HEAD, POST, PUT, UPDATE
@@ -157,12 +159,11 @@ public class OAuthSignature {
 
 		String signature = "";
 		try {
-			String key = PayPalURLEncoder.encode(new String(consumerSecret),
-					ENCODING);
+			String key = PayPalURLEncoder.encode(consumerSecret, ENCODING);
 			key += PARAM_DELIMETER;
-			key += PayPalURLEncoder.encode(new String(tokenSecret), ENCODING);
+			key += PayPalURLEncoder.encode(tokenSecret, ENCODING);
 
-			ArrayList params = queryParams;
+			List params = queryParams;
 
 			params.add(new Parameter("oauth_consumer_key", this.consumerKey));
 			params.add(new Parameter("oauth_version", OAUTH_VERSION));
@@ -181,13 +182,13 @@ public class OAuthSignature {
 			Iterator it = params.iterator();
 			while (it.hasNext()) {
 				Parameter current = (Parameter) it.next();
-
-				String ps = current.getName();
-				ps += PARAM_SEPERATOR;
-				ps += current.getValue();
-				if (it.hasNext())
-					ps += PARAM_DELIMETER;
-				paramString += ps;
+				StringBuilder strBuilder = new StringBuilder(current.getName());
+				strBuilder.append(PARAM_SEPERATOR);
+				strBuilder.append(current.getValue());
+				if (it.hasNext()) {
+					strBuilder.append(PARAM_DELIMETER);
+				}
+				paramString = strBuilder.toString();
 			}
 
 			signatureBase += PayPalURLEncoder.encode(paramString, ENCODING);
@@ -253,34 +254,36 @@ public class OAuthSignature {
 		int i, j, k;
 
 		try {
-			i = uri.indexOf(":");
-			if (i == -1)
+			i = uri.indexOf(':');
+			if (i == -1) {
 				throw new OAuthException("Invalid URI.");
-			else
+			} else {
 				scheme = uri.substring(0, i);
-
+			}
 			// find next : in URL
 			j = uri.indexOf(":", i + 2);
 			if (j != -1) {
 				// port has specified in URI
 				authority = uri.substring(scheme.length() + 3, j);
 				k = uri.indexOf("/", j);
-				if (k != -1)
+				if (k != -1) {
 					port = uri.substring(j + 1, k);
-				else
+				} else {
 					port = uri.substring(j + 1);
+				}
 			} else {
 				// no port specified in uri
 				k = uri.indexOf("/", scheme.length() + 3);
-				if (k != -1)
+				if (k != -1) {
 					authority = uri.substring(scheme.length() + 3, k);
-				else
+				} else {
 					authority = uri.substring(scheme.length() + 3);
+				}
 			}
 
-			if (k != -1)
+			if (k != -1) {
 				path = uri.substring(k);
-
+			}
 			normalizedURI = scheme.toLowerCase();
 			normalizedURI += "://";
 			normalizedURI += authority.toLowerCase();
@@ -310,16 +313,20 @@ public class OAuthSignature {
 	 * Inner class for sorting Collection
 	 * 
 	 */
-	private static class ParamComparator implements Comparator {
+	private static class ParamComparator implements Comparator, Serializable {
+
+		private static final long serialVersionUID = 8587372068875833370L;
+
 		public int compare(Object x, Object y) {
 			int retval = 0;
 			if (x != null && y != null) {
 				retval = ((Parameter) x).getName().compareTo(
 						((Parameter) y).getName());
 				// if parameter names are equal then compare parameter values.
-				if (retval == 0)
+				if (retval == 0) {
 					retval = ((Parameter) x).getValue().compareTo(
 							((Parameter) y).getValue());
+				}
 			}
 			return retval;
 		}
@@ -332,28 +339,28 @@ public class OAuthSignature {
 	private static class Parameter {
 
 		public Parameter(String name, String value) {
-			this.m_name = name;
-			this.m_value = value;
+			this.mName = name;
+			this.mValue = value;
 		}
 
 		public void setName(String name) {
-			this.m_name = name;
+			this.mName = name;
 		}
 
 		public void setValue(String val) {
-			this.m_value = val;
+			this.mValue = val;
 		}
 
 		public String getName() {
-			return this.m_name;
+			return this.mName;
 		}
 
 		public String getValue() {
-			return this.m_value;
+			return this.mValue;
 		}
 
-		private String m_name;
-		private String m_value;
+		private String mName;
+		private String mValue;
 	}
 
 	/**

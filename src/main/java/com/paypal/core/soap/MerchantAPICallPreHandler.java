@@ -322,16 +322,15 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	public String getEndPoint() {
 		String endPoint = searchEndpoint();
 		if (endPoint == null) {
-			if ((Constants.SANDBOX
-							.equalsIgnoreCase(this.configurationMap.get(
-									Constants.MODE).trim()))) {
+			if ((Constants.SANDBOX.equalsIgnoreCase(this.configurationMap.get(
+					Constants.MODE).trim()))) {
 				if (getCredential() instanceof CertificateCredential) {
 					endPoint = Constants.MERCHANT_SANDBOX_CERTIFICATE_ENDPOINT;
 				} else {
 					endPoint = Constants.MERCHANT_SANDBOX_SIGNATURE_ENDPOINT;
 				}
 			} else if ((Constants.LIVE.equalsIgnoreCase(this.configurationMap
-							.get(Constants.MODE).trim()))) {
+					.get(Constants.MODE).trim()))) {
 				if (getCredential() instanceof CertificateCredential) {
 					endPoint = Constants.MERCHANT_LIVE_CERTIFICATE_ENDPOINT;
 				} else {
@@ -348,11 +347,14 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 
 	public void validate() throws ClientActionRequiredException {
 		String mode = configurationMap.get(Constants.MODE);
-		if ((mode == null && searchEndpoint() == null)
-				|| ((mode != null) && (!mode.trim().equalsIgnoreCase(
-						Constants.LIVE) && !mode.trim().equalsIgnoreCase(
-						Constants.SANDBOX)))) {
-
+		if (mode == null && searchEndpoint() == null) {
+			// Mandatory Mode not specified.
+			throw new ClientActionRequiredException(
+					"mode[production/live] OR endpoint not specified");
+		}
+		if ((mode != null)
+				&& (!mode.trim().equalsIgnoreCase(Constants.LIVE) && !mode
+						.trim().equalsIgnoreCase(Constants.SANDBOX))) {
 			// Mandatory Mode not specified.
 			throw new ClientActionRequiredException(
 					"mode[production/live] OR endpoint not specified");
@@ -363,13 +365,11 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 	 * Search a valid endpoint in the configuration, returning null if not found
 	 */
 	private String searchEndpoint() {
-		String endPoint = null;
-		endPoint = this.configurationMap.get(Constants.ENDPOINT + "."
-				+ getPortName());
-		if (endPoint == null
-				|| (endPoint != null && endPoint.trim().length() == 0)) {
-			endPoint = apiCallHandler.getEndPoint();
-		}
+		String endPoint = this.configurationMap.get(Constants.ENDPOINT + "."
+				+ getPortName()) != null ? this.configurationMap
+				.get(Constants.ENDPOINT + "." + getPortName())
+				: (apiCallHandler.getEndPoint() != null ? apiCallHandler
+						.getEndPoint() : null);
 		if (endPoint != null && endPoint.trim().length() <= 0) {
 			endPoint = null;
 		}
@@ -416,7 +416,7 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 		return returnMap;
 	}
 
-	/*
+	/**
 	 * Initialize {@link ICredential}
 	 */
 	private void initCredential() throws InvalidCredentialException,
@@ -426,15 +426,14 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 		}
 	}
 
-	/*
+	/**
 	 * Gets Namespace specific to PayPal APIs
 	 */
 	private String getNamespaces() {
-		String namespace = "xmlns:ns=\"urn:ebay:api:PayPalAPI\" xmlns:ebl=\"urn:ebay:apis:eBLBaseComponents\" xmlns:cc=\"urn:ebay:apis:CoreComponentTypes\" xmlns:ed=\"urn:ebay:apis:EnhancedDataTypes\"";
-		return namespace;
+		return "xmlns:ns=\"urn:ebay:api:PayPalAPI\" xmlns:ebl=\"urn:ebay:apis:eBLBaseComponents\" xmlns:cc=\"urn:ebay:apis:CoreComponentTypes\" xmlns:ed=\"urn:ebay:apis:EnhancedDataTypes\"";
 	}
 
-	/*
+	/**
 	 * Returns Payload after decoration
 	 */
 	private String getPayLoadUsingSOAPHeader(String payLoad, String namespace,
@@ -446,7 +445,7 @@ public class MerchantAPICallPreHandler implements APICallPreHandler {
 		return returnPayLoad;
 	}
 
-	/*
+	/**
 	 * Process the payload before using message formatting
 	 */
 	private String processPayLoadForFormatting(String payLoad) {

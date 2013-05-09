@@ -186,5 +186,8 @@ public class Constants {
 
 	// Client Secret
 	public static final String CLIENT_SECRET = "clientSecret";
+	
+	// UTF-8 encoding String
+	public static final String UTF_8 = "UTF-8";
 
 }

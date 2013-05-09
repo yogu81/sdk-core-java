@@ -2,8 +2,8 @@ package com.paypal.sdk.util;
 import java.io.UnsupportedEncodingException;
 
 
-public class PayPalURLEncoder {
-	static final String digits = "0123456789abcdef";
+public final class PayPalURLEncoder {
+	static final String DIGITS = "0123456789abcdef";
 
 	 /**
 	 * Prevents this class from being instantiated.
@@ -67,8 +67,8 @@ public class PayPalURLEncoder {
 	  	byte[] bytes = s.getBytes(enc);
 			for (int j = 0; j < bytes.length; j++) {
 				buf.append('%');
-				buf.append(digits.charAt((bytes[j] & 0xf0) >> 4));
-				buf.append(digits.charAt(bytes[j] & 0xf));
+				buf.append(DIGITS.charAt((bytes[j] & 0xf0) >> 4));
+				buf.append(DIGITS.charAt(bytes[j] & 0xf));
 			}
 		}
 }

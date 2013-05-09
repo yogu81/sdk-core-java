@@ -1,6 +1,7 @@
 package com.paypal.core;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -23,19 +24,19 @@ public abstract class SSLUtil {
 	/**
 	 * KeyManagerFactory used for {@link SSLContext} {@link KeyManager}
 	 */
-	private static final KeyManagerFactory kmf;
+	private static final KeyManagerFactory KMF;
 
 	/**
 	 * Private {@link Map} used for caching {@link KeyStore}s
 	 */
-	private static final Map<String, KeyStore> storeMap;
+	private static final Map<String, KeyStore> STOREMAP;
 
 	static {
 		try {
 			
 			// Initialize KeyManagerFactory and local KeyStore cache
-			kmf = KeyManagerFactory.getInstance("SunX509");
-			storeMap = new HashMap<String, KeyStore>();
+			KMF = KeyManagerFactory.getInstance("SunX509");
+			STOREMAP = new HashMap<String, KeyStore>();
 		} catch (NoSuchAlgorithmException e) {
 			throw new ExceptionInInitializerError(e);
 		}
@@ -83,14 +84,14 @@ public abstract class SSLUtil {
 	private static KeyStore p12ToKeyStore(String p12Path, String password)
 			throws NoSuchProviderException, KeyStoreException,
 			CertificateException, NoSuchAlgorithmException, IOException {
-		KeyStore keyStore = storeMap.get(p12Path);
+		KeyStore keyStore = STOREMAP.get(p12Path);
 		if (keyStore == null) {
 			keyStore = KeyStore.getInstance("PKCS12", "SunJSSE");
 			FileInputStream in = null;
 			try {
 				in = new FileInputStream(p12Path);
 				keyStore.load(in, password.toCharArray());
-				storeMap.put(p12Path, keyStore);
+				STOREMAP.put(p12Path, keyStore);
 			} finally {
 				if (in != null) {
 					in.close();
@@ -113,8 +114,8 @@ public abstract class SSLUtil {
 		SSLContext sslContext = null;
 		try {
 			KeyStore ks = p12ToKeyStore(certPath, certPassword);
-			kmf.init(ks, certPassword.toCharArray());
-			sslContext = getSSLContext(kmf.getKeyManagers());
+			KMF.init(ks, certPassword.toCharArray());
+			sslContext = getSSLContext(KMF.getKeyManagers());
 		} catch (NoSuchAlgorithmException e) {
 			throw new SSLConfigurationException(e.getMessage(), e);
 		} catch (KeyStoreException e) {

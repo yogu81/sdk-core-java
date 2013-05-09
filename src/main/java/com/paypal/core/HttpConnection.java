@@ -4,11 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Map;
-
-import java.net.HttpURLConnection;
-import java.nio.charset.Charset;
 
 import com.paypal.exception.ClientActionRequiredException;
 import com.paypal.exception.HttpErrorException;
@@ -20,12 +20,6 @@ import com.paypal.exception.SSLConfigurationException;
  * 
  */
 public abstract class HttpConnection {
-
-	/**
-	 * Subclasses must override the default value of true to use strict hostname
-	 * verification
-	 */
-	protected boolean defaultSSL;
 
 	/**
 	 * Subclasses must set the http configuration in the
@@ -40,7 +34,7 @@ public abstract class HttpConnection {
 	protected HttpURLConnection connection;
 
 	public HttpConnection() {
-		defaultSSL = true;
+		
 	}
 
 	/**
@@ -61,8 +55,8 @@ public abstract class HttpConnection {
 			IOException, InterruptedException, HttpErrorException,
 			ClientActionRequiredException {
 
-		String successResponse = Constants.EMPTY_STRING;
-		String errorResponse = Constants.EMPTY_STRING;
+		String successResponse = Constants.EMPTY_STRING, errorResponse = Constants.EMPTY_STRING;
+		InputStreamReader iSR = null;
 		BufferedReader reader = null;
 		OutputStreamWriter writer = null;
 		connection.setRequestProperty("Content-Length", ""
@@ -71,8 +65,7 @@ public abstract class HttpConnection {
 			setHttpHeaders(headers);
 		}
 		try {
-			
-			// Changed retry logic from for loop to do while (1-29-2013)
+
 			int retry = 0;
 			do {
 				try {
@@ -84,12 +77,9 @@ public abstract class HttpConnection {
 						writer.flush();
 					}
 					int responsecode = connection.getResponseCode();
-					
-					// Response code of 500 will throw IOException at
-					// this point
-					reader = new BufferedReader(new InputStreamReader(
-							connection.getInputStream(),
-							Constants.ENCODING_FORMAT));
+					iSR = new InputStreamReader(connection.getInputStream(),
+							Constants.ENCODING_FORMAT);
+					reader = new BufferedReader(iSR);
 					if (responsecode >= 200 && responsecode < 300) {
 						successResponse = read(reader);
 						LoggingManager.debug(HttpConnection.class,
@@ -116,20 +106,18 @@ public abstract class HttpConnection {
 								"Error code : " + responsecode
 										+ " with response : " + errorResponse);
 					}
-					if ((errorResponse == null) || (errorResponse.length() == 0)) {
+					if ((errorResponse == null)
+							|| (errorResponse.length() == 0)) {
 						errorResponse = e.getMessage();
 					}
-					// Throw HttpErrorException for HTTPError code 500
-					// (2-26-2013)
 					if (responsecode <= 500) {
 						throw new HttpErrorException("Error code : "
 								+ responsecode + " with response : "
-								+ errorResponse);
+								+ errorResponse, e);
 					}
 				}
-				
-				// Retry logic
-				retry ++;
+
+				retry++;
 				if (retry > 0) {
 					LoggingManager.debug(HttpConnection.class, " Retry  No : "
 							+ retry + "...");
@@ -148,9 +136,13 @@ public abstract class HttpConnection {
 				if (writer != null) {
 					writer.close();
 				}
+				if (iSR != null) {
+					iSR.close();
+				}
 			} finally {
 				reader = null;
 				writer = null;
+				iSR = null;
 			}
 		}
 		return successResponse;

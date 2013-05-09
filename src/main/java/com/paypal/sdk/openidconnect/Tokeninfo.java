@@ -2,17 +2,19 @@ package com.paypal.sdk.openidconnect;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Properties;
-import com.paypal.core.rest.JSONFormatter;
-import com.paypal.core.rest.PayPalRESTException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import com.paypal.core.Constants;
+import com.paypal.core.rest.APIContext;
+import com.paypal.core.rest.HttpMethod;
+import com.paypal.core.rest.JSONFormatter;
+import com.paypal.core.rest.PayPalRESTException;
 import com.paypal.core.rest.PayPalResource;
 import com.paypal.core.rest.RESTUtil;
-import com.paypal.core.rest.HttpMethod;
-import com.paypal.core.rest.APIContext;
 
 public class Tokeninfo {
 
@@ -190,9 +192,9 @@ public class Tokeninfo {
 		Object[] parameters = new Object[] { createFromAuthorizationCodeParameters };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);
-		resourcePath = resourcePath.substring(0, resourcePath.indexOf("?"));
+		resourcePath = resourcePath.substring(0, resourcePath.indexOf('?'));
 		Map<String, String> headersMap = new HashMap<String, String>();
-		headersMap.put("Content-Type", "application/x-www-form-urlencoded");
+		headersMap.put(Constants.HTTP_CONTENT_TYPE_HEADER, Constants.HTTP_CONFIG_DEFAULT_CONTENT_TYPE);
 		return PayPalResource.configureAndExecute(null, HttpMethod.POST,
 				resourcePath, headersMap, payLoad, Tokeninfo.class);
 	}
@@ -215,9 +217,9 @@ public class Tokeninfo {
 		Object[] parameters = new Object[] { createFromAuthorizationCodeParameters };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);
-		resourcePath = resourcePath.substring(0, resourcePath.indexOf("?"));
+		resourcePath = resourcePath.substring(0, resourcePath.indexOf('?'));
 		Map<String, String> headersMap = new HashMap<String, String>();
-		headersMap.put("Content-Type", "application/x-www-form-urlencoded");
+		headersMap.put(Constants.HTTP_CONTENT_TYPE_HEADER, Constants.HTTP_CONFIG_DEFAULT_CONTENT_TYPE);
 		return PayPalResource.configureAndExecute(apiContext, HttpMethod.POST,
 				resourcePath, headersMap, payLoad, Tokeninfo.class);
 	}
@@ -244,9 +246,9 @@ public class Tokeninfo {
 		Object[] parameters = new Object[] { paramsMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);
-		resourcePath = resourcePath.substring(0, resourcePath.indexOf("?"));
+		resourcePath = resourcePath.substring(0, resourcePath.indexOf('?'));
 		Map<String, String> headersMap = new HashMap<String, String>();
-		headersMap.put("Content-Type", "application/x-www-form-urlencoded");
+		headersMap.put(Constants.HTTP_CONTENT_TYPE_HEADER, Constants.HTTP_CONFIG_DEFAULT_CONTENT_TYPE);
 		return PayPalResource.configureAndExecute(null, HttpMethod.POST,
 				resourcePath, headersMap, payLoad, Tokeninfo.class);
 	}
@@ -275,9 +277,9 @@ public class Tokeninfo {
 		Object[] parameters = new Object[] { paramsMap };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);
-		resourcePath = resourcePath.substring(0, resourcePath.indexOf("?"));
+		resourcePath = resourcePath.substring(0, resourcePath.indexOf('?'));
 		Map<String, String> headersMap = new HashMap<String, String>();
-		headersMap.put("Content-Type", "application/x-www-form-urlencoded");
+		headersMap.put(Constants.HTTP_CONTENT_TYPE_HEADER, Constants.HTTP_CONFIG_DEFAULT_CONTENT_TYPE);
 		return PayPalResource.configureAndExecute(apiContext, HttpMethod.POST,
 				resourcePath, headersMap, payLoad, Tokeninfo.class);
 	}

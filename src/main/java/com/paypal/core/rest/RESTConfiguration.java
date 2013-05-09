@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 
-import com.paypal.core.ConfigManager;
 import com.paypal.core.Constants;
 import com.paypal.core.HttpConfiguration;
 import com.paypal.core.SDKUtil;
@@ -285,10 +284,9 @@ public class RESTConfiguration {
 	 */
 	public void setUrl(String urlString) throws MalformedURLException {
 		if (urlString != null && urlString.length() > 0) {
-			if (!urlString.endsWith("/")) {
-				urlString += "/";
-			}
-			this.url = new URL(urlString);
+			String uString = urlString.endsWith("/") ? urlString : urlString
+					+ "/";
+			this.url = new URL(uString);
 		} else {
 			this.url = getBaseURL();
 		}
@@ -296,6 +294,7 @@ public class RESTConfiguration {
 
 	/**
 	 * Returns User-Agent header
+	 * 
 	 * @return
 	 */
 	public static String formUserAgentHeader() {

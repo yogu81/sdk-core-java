@@ -184,9 +184,16 @@ public abstract class PayPalResource {
 	public static <T> T configureAndExecute(APIContext apiContext,
 			HttpMethod httpMethod, String resourcePath, String payLoad,
 			Class<T> clazz) throws PayPalRESTException {
-		return configureAndExecute(apiContext.getConfigurationMap(),
-				apiContext.getAccessToken(), httpMethod, resourcePath, null,
-				payLoad, apiContext.getRequestId(), clazz);
+		Map<String, String> cMap = null;
+		String accessToken = null;
+		String requestId = null;
+		if (apiContext != null) {
+			cMap = apiContext.getConfigurationMap();
+			accessToken = apiContext.getAccessToken();
+			requestId = apiContext.getRequestId();
+		}
+		return configureAndExecute(cMap, accessToken, httpMethod,
+				resourcePath, null, payLoad, requestId, clazz);
 	}
 
 	/**
@@ -212,8 +219,11 @@ public abstract class PayPalResource {
 			HttpMethod httpMethod, String resourcePath,
 			Map<String, String> headersMap, String payLoad, Class<T> clazz)
 			throws PayPalRESTException {
-		Map<String, String> configurationMap = apiContext.getConfigurationMap();
-		return configureAndExecute(configurationMap, null, httpMethod,
+		Map<String, String> cMap = null;
+		if (apiContext != null) {
+			cMap = apiContext.getConfigurationMap();
+		}
+		return configureAndExecute(cMap, null, httpMethod,
 				resourcePath, headersMap, payLoad, null, clazz);
 	}
 
@@ -223,17 +233,18 @@ public abstract class PayPalResource {
 			Map<String, String> headersMap, String payLoad, String requestId,
 			Class<T> clazz) throws PayPalRESTException {
 		T t = null;
+		Map<String, String> cMap = null;
 		if (configurationMap != null) {
-			configurationMap = SDKUtil.combineDefaultMap(configurationMap);
+			cMap = SDKUtil.combineDefaultMap(configurationMap);
 		} else {
 			if (!configInitialized) {
 				initializeToDefault();
 			}
-			configurationMap = new HashMap<String, String>(
+			cMap = new HashMap<String, String>(
 					PayPalResource.configurationMap);
 		}
 		RESTConfiguration restConfiguration = createRESTConfiguration(
-				configurationMap, httpMethod, resourcePath, headersMap,
+				cMap, httpMethod, resourcePath, headersMap,
 				accessToken, requestId);
 		t = execute(restConfiguration, payLoad, resourcePath, clazz);
 		return t;

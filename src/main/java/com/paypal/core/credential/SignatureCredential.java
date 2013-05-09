@@ -45,11 +45,17 @@ public class SignatureCredential implements ICredential {
 	public SignatureCredential(String userName, String password,
 			String signature) {
 		super();
-		if (userName == null || userName.trim().length() == 0
-				|| password == null || password.trim().length() == 0
-				|| signature == null || signature.trim().length() == 0) {
+		if (userName == null || userName.trim().length() == 0) {
 			throw new IllegalArgumentException(
-					"SignatureCredential arguments cannot be empty or null");
+					"userName cannot be empty or null");
+		}
+		if (password == null || password.trim().length() == 0) {
+			throw new IllegalArgumentException(
+					"password cannot be empty or null");
+		}
+		if (signature == null || signature.trim().length() == 0) {
+			throw new IllegalArgumentException(
+					"signature cannot be empty or null");
 		}
 		this.userName = userName;
 		this.password = password;

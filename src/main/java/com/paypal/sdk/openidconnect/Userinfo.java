@@ -1,15 +1,15 @@
 package com.paypal.sdk.openidconnect;
 
-import com.paypal.sdk.openidconnect.Address;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Properties;
+
+import com.paypal.core.rest.APIContext;
+import com.paypal.core.rest.HttpMethod;
 import com.paypal.core.rest.JSONFormatter;
 import com.paypal.core.rest.PayPalRESTException;
 import com.paypal.core.rest.PayPalResource;
 import com.paypal.core.rest.RESTUtil;
-import com.paypal.core.rest.HttpMethod;
-import com.paypal.core.rest.APIContext;
 
 public class Userinfo {
 

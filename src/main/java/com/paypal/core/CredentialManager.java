@@ -3,9 +3,8 @@ package com.paypal.core;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
-import java.util.Properties;
+import java.util.Set;
 
 import com.paypal.core.credential.CertificateCredential;
 import com.paypal.core.credential.ICredential;
@@ -35,7 +34,8 @@ public final class CredentialManager {
 	 */
 	public CredentialManager(Map<String, String> configurationMap) {
 		if (configurationMap == null) {
-			throw new IllegalArgumentException("ConfigurationMap cannot be null");
+			throw new IllegalArgumentException(
+					"ConfigurationMap cannot be null");
 		}
 		this.configurationMap = configurationMap;
 	}
@@ -53,13 +53,11 @@ public final class CredentialManager {
 		if (userId != null && userId.trim().length() != 0) {
 			for (Entry<String, String> entry : credMap.entrySet()) {
 				if (entry.getKey().endsWith(
-						Constants.CREDENTIAL_USERNAME_SUFFIX)) {
-					if (entry.getValue().equalsIgnoreCase(userId)) {
-						String acctKey = entry.getKey().substring(0,
-								entry.getKey().indexOf('.'));
-						credential = returnCredential(credMap, acctKey);
-					}
-
+						Constants.CREDENTIAL_USERNAME_SUFFIX)
+						&& entry.getValue().equalsIgnoreCase(userId)) {
+					String acctKey = entry.getKey().substring(0,
+							entry.getKey().indexOf('.'));
+					credential = returnCredential(credMap, acctKey);
 				}
 			}
 			if (credential == null) {

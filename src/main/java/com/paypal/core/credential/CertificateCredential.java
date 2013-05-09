@@ -52,14 +52,21 @@ public class CertificateCredential implements ICredential {
 	public CertificateCredential(String userName, String password,
 			String certificatePath, String certificateKey) {
 		super();
-		if (userName == null || userName.trim().length() == 0
-				|| password == null || password.trim().length() == 0
-				|| certificatePath == null
-				|| certificatePath.trim().length() == 0
-				|| certificateKey == null
-				|| certificateKey.trim().length() == 0) {
+		if (userName == null || userName.trim().length() == 0) {
 			throw new IllegalArgumentException(
-					"CertificateCredential arguments cannot be empty or null");
+					"userName cannot be empty or null");
+		}
+		if (password == null || password.trim().length() == 0) {
+			throw new IllegalArgumentException(
+					"password cannot be empty or null");
+		}
+		if (certificatePath == null || certificatePath.trim().length() == 0) {
+			throw new IllegalArgumentException(
+					"certificatePath cannot be empty or null");
+		}
+		if (certificateKey == null || certificateKey.trim().length() == 0) {
+			throw new IllegalArgumentException(
+					"certificateKey cannot be empty or null");
 		}
 		this.userName = userName;
 		this.password = password;

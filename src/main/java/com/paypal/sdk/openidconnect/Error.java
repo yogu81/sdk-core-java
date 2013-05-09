@@ -1,10 +1,6 @@
 package com.paypal.sdk.openidconnect;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.Properties;
 import com.paypal.core.rest.JSONFormatter;
-import com.paypal.core.rest.PayPalRESTException;
 
 public class Error {
 

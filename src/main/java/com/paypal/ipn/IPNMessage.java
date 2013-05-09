@@ -174,21 +174,21 @@ public class IPNMessage {
 	}
 
 	private String getIPNEndpoint() {
-		String ipnEndpoint = null;
-		ipnEndpoint = configurationMap.get(Constants.IPN_ENDPOINT);
-		if (ipnEndpoint == null) {
+		String ipnEPoint = null;
+		ipnEPoint = configurationMap.get(Constants.IPN_ENDPOINT);
+		if (ipnEPoint == null) {
 			String mode = configurationMap.get(Constants.MODE);
 			if (mode != null
 					&& (Constants.SANDBOX.equalsIgnoreCase(configurationMap
 							.get(Constants.MODE).trim()))) {
-				ipnEndpoint = Constants.IPN_SANDBOX_ENDPOINT;
+				ipnEPoint = Constants.IPN_SANDBOX_ENDPOINT;
 			} else if (mode != null
 					&& (Constants.LIVE.equalsIgnoreCase(configurationMap.get(
 							Constants.MODE).trim()))) {
-				ipnEndpoint = Constants.IPN_LIVE_ENDPOINT;
+				ipnEPoint = Constants.IPN_LIVE_ENDPOINT;
 			}
 		}
-		return ipnEndpoint;
+		return ipnEPoint;
 	}
 
 }

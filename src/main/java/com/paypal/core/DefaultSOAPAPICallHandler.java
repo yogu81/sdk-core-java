@@ -3,7 +3,6 @@ package com.paypal.core;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import com.paypal.core.credential.ICredential;
 import com.paypal.exception.ClientActionRequiredException;

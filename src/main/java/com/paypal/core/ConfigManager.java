@@ -4,9 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -98,7 +95,7 @@ public final class ConfigManager {
 	 * 
 	 * @return Default {@link Properties}
 	 */
-	public static final Properties getDefaultProperties() {
+	public static Properties getDefaultProperties() {
 		return DEFAULT_PROPERTIES;
 	}
 
@@ -109,15 +106,21 @@ public final class ConfigManager {
 	 */
 	public static Map<String, String> getDefaultSDKMap() {
 		if (defaultMapView == null) {
-			defaultMapView = new HashMap<String, String>();
-			for (Object object : DEFAULT_PROPERTIES.keySet()) {
-				defaultMapView.put(object.toString().trim(), DEFAULT_PROPERTIES
-						.getProperty(object.toString()).trim());
+			synchronized (DEFAULT_PROPERTIES) {
+				if (defaultMapView == null) {
+					defaultMapView = new HashMap<String, String>();
+					for (Object object : DEFAULT_PROPERTIES.keySet()) {
+						defaultMapView.put(
+								object.toString().trim(),
+								DEFAULT_PROPERTIES.getProperty(
+										object.toString()).trim());
+					}
+				}
 			}
 		}
 		return new HashMap<String, String>(defaultMapView);
 	}
-	
+
 	/**
 	 * Combines some {@link Properties} with Default {@link Properties}
 	 * 
@@ -186,11 +189,13 @@ public final class ConfigManager {
 	 */
 	public Map<String, String> getConfigurationMap() {
 		if (mapView == null) {
-			mapView = new HashMap<String, String>();
-			if (properties != null) {
-				for (Object object : properties.keySet()) {
-					mapView.put(object.toString().trim(), properties
-							.getProperty(object.toString()).trim());
+			synchronized (DEFAULT_PROPERTIES) {
+				mapView = new HashMap<String, String>();
+				if (properties != null) {
+					for (Object object : properties.keySet()) {
+						mapView.put(object.toString().trim(), properties
+								.getProperty(object.toString()).trim());
+					}
 				}
 			}
 		}

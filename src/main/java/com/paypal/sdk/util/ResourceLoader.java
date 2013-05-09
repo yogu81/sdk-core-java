@@ -80,8 +80,8 @@ public class ResourceLoader {
 
 	// Returns true if found
 	private boolean searchResourcepath(String name) {
-		name = "/" + name;
-		URL res = ResourceLoader.class.getResource(name);
+		String rootName = "/" + name;
+		URL res = ResourceLoader.class.getResource(rootName);
 		if (res == null) {
 			return false;
 		}

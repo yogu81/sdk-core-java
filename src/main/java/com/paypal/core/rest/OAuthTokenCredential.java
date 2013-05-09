@@ -39,11 +39,6 @@ public final class OAuthTokenCredential implements ICredential {
 	private String accessToken;
 
 	/**
-	 * Application ID returned by OAuth servers
-	 */
-	private transient String appId;
-
-	/**
 	 * Map used for dynamic configuration
 	 */
 	private Map<String, String> configurationMap;
@@ -142,7 +137,6 @@ public final class OAuthTokenCredential implements ICredential {
 					+ " "
 					+ jsonElement.getAsJsonObject().get("access_token")
 							.getAsString();
-			appId = jsonElement.getAsJsonObject().get("app_id").getAsString();
 		} catch (Exception e) {
 			throw new PayPalRESTException(e.getMessage(), e);
 		}

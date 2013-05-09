@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class ReflectionUtil {
 
@@ -15,8 +16,8 @@ public class ReflectionUtil {
 		Map<String, Object> rMap = ReflectionUtil.generateMapFromResponse(
 				responseType, "");
 		if (rMap != null && rMap.size() > 0) {
-			for (String key : rMap.keySet()) {
-				returnMap.put(key, rMap.get(key).toString());
+			for (Entry<String, Object> entry : rMap.entrySet()) {
+				returnMap.put(entry.getKey(), entry.toString());
 			}
 		}
 		return returnMap;

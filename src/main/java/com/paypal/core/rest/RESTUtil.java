@@ -23,42 +23,44 @@ public class RESTUtil {
 	 */
 	public static String formatURIPath(String pattern, Object[] parameters) {
 		String formattedPath = null;
-
+		Object[] finalParameters = null;
 		if (pattern != null) {
 			if (parameters != null && parameters.length == 1
 					&& parameters[0] instanceof CreateFromAuthorizationCodeParameters) {
 
 				// Form a object array using the passed CreateFromAuthorizationCodeParameters
-				parameters = splitParameters(pattern,
+				finalParameters = splitParameters(pattern,
 						((CreateFromAuthorizationCodeParameters) parameters[0]).getContainerMap());
 			} if (parameters != null && parameters.length == 1
 					&& parameters[0] instanceof CreateFromRefreshTokenParameters) {
 
 				// Form a object array using the passed CreateFromRefreshTokenParameters
-				parameters = splitParameters(pattern,
+				finalParameters = splitParameters(pattern,
 						((CreateFromRefreshTokenParameters) parameters[0]).getContainerMap());
 			} if (parameters != null && parameters.length == 1
 					&& parameters[0] instanceof UserinfoParameters) {
 
 				// Form a object array using the passed UserinfoParameters
-				parameters = splitParameters(pattern,
+				finalParameters = splitParameters(pattern,
 						((UserinfoParameters) parameters[0]).getContainerMap());
 			} if (parameters != null && parameters.length == 1
 					&& parameters[0] instanceof QueryParameters) {
 
 				// Form a object array using the passed UserinfoParameters
-				parameters = splitParameters(pattern,
+				finalParameters = splitParameters(pattern,
 						((QueryParameters) parameters[0]).getContainerMap());
 			} else if (parameters != null && parameters.length == 1
 					&& parameters[0] instanceof Map<?, ?>) {
 				
 				// Form a object array using the passed Map
-				parameters = splitParameters(pattern,
+				finalParameters = splitParameters(pattern,
 						((Map<?, ?>) parameters[0]));
+			} else {
+				finalParameters = parameters;
 			}
 			
 			// Perform a simple message formatting
-			String fString = MessageFormat.format(pattern, parameters);
+			String fString = MessageFormat.format(pattern, finalParameters);
 
 			// Process the resultant string for removing nulls
 			formattedPath = removeNullsInQS(fString);
@@ -74,6 +76,7 @@ public class RESTUtil {
 	 * @return Nulls removed query string
 	 */
 	private static String removeNullsInQS(String fString) {
+		String formatedString = fString;
 		if (fString != null && fString.length() != 0) {
 			String[] parts = fString.split("\\?");
 
@@ -97,16 +100,16 @@ public class RESTUtil {
 							continue;
 						}
 					}
-					fString = (!strBuilder.toString().endsWith("&")) ? strBuilder
+					formatedString = (!strBuilder.toString().endsWith("&")) ? strBuilder
 							.toString() : strBuilder.toString().substring(0,
 							strBuilder.toString().length() - 1);
 				}
 
 				// append the query string delimiter
-				fString = (parts[0].trim() + "?") + fString;
+				formatedString = (parts[0].trim() + "?") + formatedString;
 			}
 		}
-		return fString;
+		return formatedString;
 	}
 
 	/**
