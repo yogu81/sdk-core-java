@@ -39,7 +39,7 @@ public class OAuthSignature {
 	private String requestURI;
 	private String timestamp;
 	private String httpMethod;
-	private List queryParams;
+	private List<Parameter> queryParams;
 
 	public enum HTTPMethod {
 		GET, HEAD, POST, PUT, UPDATE
@@ -55,7 +55,7 @@ public class OAuthSignature {
 	 *            - Secret shared between PayPal and Consumer (OAuth consumer)
 	 */
 	public OAuthSignature(String consumerKey, String consumerSecret) {
-		this.queryParams = new ArrayList();
+		this.queryParams = new ArrayList<Parameter>();
 		this.consumerKey = consumerKey;
 		this.consumerSecret = consumerSecret;
 		this.httpMethod = "POST";
@@ -164,7 +164,7 @@ public class OAuthSignature {
 			key += PARAM_DELIMETER;
 			key += PayPalURLEncoder.encode(tokenSecret, ENCODING);
 
-			List params = queryParams;
+			List<Parameter> params = queryParams;
 
 			params.add(new Parameter("oauth_consumer_key", this.consumerKey));
 			params.add(new Parameter("oauth_version", OAUTH_VERSION));
@@ -180,26 +180,24 @@ public class OAuthSignature {
 			signatureBase += PARAM_DELIMETER;
 
 			String paramString = "";
-			Iterator it = params.iterator();
+			StringBuilder paramStringBuilder = new StringBuilder();
+			Iterator<Parameter> it = params.iterator();
 			while (it.hasNext()) {
 				Parameter current = (Parameter) it.next();
-				StringBuilder strBuilder = new StringBuilder(current.getName());
-				strBuilder.append(PARAM_SEPERATOR);
-				strBuilder.append(current.getValue());
-				if (it.hasNext()) {
-					strBuilder.append(PARAM_DELIMETER);
-				}
-				paramString = strBuilder.toString();
+
+				StringBuilder ps = new StringBuilder(current.getName());
+				ps.append(PARAM_SEPERATOR).append(current.getValue());
+				if (it.hasNext())
+					ps.append(PARAM_DELIMETER);
+				paramStringBuilder.append(ps.toString());
 			}
-
+			paramString = paramStringBuilder.toString();
 			signatureBase += PayPalURLEncoder.encode(paramString, ENCODING);
-
 			Mac hmac = Mac.getInstance(SIGNATURE_ALGORITHM);
 			hmac.init(new SecretKeySpec(key.getBytes(ENCODING), hmac
 					.getAlgorithm()));
 			hmac.update(signatureBase.getBytes(ENCODING));
 			byte[] digest = hmac.doFinal();
-
 			Base64 b64Encoder = new Base64();
 			signature = new String(b64Encoder.encode(digest), ENCODING);
 
@@ -210,7 +208,6 @@ public class OAuthSignature {
 		} catch (UnsupportedEncodingException ee) {
 			throw new OAuthException(ee.getMessage(), ee);
 		}
-
 		return signature;
 	}
 
@@ -304,9 +301,7 @@ public class OAuthSignature {
 		} catch (NumberFormatException nfe) {
 			throw new OAuthException("Invalid URI.", nfe);
 		}
-
 		normalizedURI += path;
-
 		return normalizedURI;
 	}
 
@@ -314,11 +309,14 @@ public class OAuthSignature {
 	 * Inner class for sorting Collection
 	 * 
 	 */
-	private static class ParamComparator implements Comparator, Serializable {
-
+	private static class ParamComparator implements Comparator<Parameter>,
+			Serializable {
+		/**
+		 * 
+		 */
 		private static final long serialVersionUID = 8587372068875833370L;
 
-		public int compare(Object x, Object y) {
+		public int compare(Parameter x, Parameter y) {
 			int retval = 0;
 			if (x != null && y != null) {
 				retval = ((Parameter) x).getName().compareTo(
@@ -340,28 +338,28 @@ public class OAuthSignature {
 	private static class Parameter {
 
 		public Parameter(String name, String value) {
-			this.mName = name;
-			this.mValue = value;
+			this.m_name = name;
+			this.m_value = value;
 		}
 
 		public void setName(String name) {
-			this.mName = name;
+			this.m_name = name;
 		}
 
 		public void setValue(String val) {
-			this.mValue = val;
+			this.m_value = val;
 		}
 
 		public String getName() {
-			return this.mName;
+			return this.m_name;
 		}
 
 		public String getValue() {
-			return this.mValue;
+			return this.m_value;
 		}
 
-		private String mName;
-		private String mValue;
+		private String m_name;
+		private String m_value;
 	}
 
 	/**
