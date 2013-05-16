@@ -181,15 +181,16 @@ public class OAuthSignature {
 
 			String paramString = "";
 			StringBuilder paramStringBuilder = new StringBuilder();
+			StringBuilder ps = new StringBuilder();
 			Iterator<Parameter> it = params.iterator();
 			while (it.hasNext()) {
 				Parameter current = (Parameter) it.next();
-
-				StringBuilder ps = new StringBuilder(current.getName());
+				ps.append(current.getName());
 				ps.append(PARAM_SEPERATOR).append(current.getValue());
 				if (it.hasNext())
 					ps.append(PARAM_DELIMETER);
 				paramStringBuilder.append(ps.toString());
+				ps.setLength(0);
 			}
 			paramString = paramStringBuilder.toString();
 			signatureBase += PayPalURLEncoder.encode(paramString, ENCODING);
