@@ -3,9 +3,9 @@ package com.paypal.core;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Map;
@@ -34,7 +34,7 @@ public abstract class HttpConnection {
 	protected HttpURLConnection connection;
 
 	public HttpConnection() {
-		
+
 	}
 
 	/**
@@ -54,10 +54,7 @@ public abstract class HttpConnection {
 			Map<String, String> headers) throws InvalidResponseDataException,
 			IOException, InterruptedException, HttpErrorException,
 			ClientActionRequiredException {
-
 		String successResponse = Constants.EMPTY_STRING, errorResponse = Constants.EMPTY_STRING;
-		InputStreamReader isr = null;
-		OutputStream os = null;
 		BufferedReader reader = null;
 		OutputStreamWriter writer = null;
 		connection.setRequestProperty("Content-Length", ""
@@ -66,21 +63,20 @@ public abstract class HttpConnection {
 			setHttpHeaders(headers);
 		}
 		try {
-
 			int retry = 0;
 			do {
 				try {
 					if ("POST".equalsIgnoreCase(connection.getRequestMethod())) {
-						os = this.connection.getOutputStream();
-						writer = new OutputStreamWriter(os,
+						writer = new OutputStreamWriter(
+								this.connection.getOutputStream(),
 								Charset.forName(Constants.ENCODING_FORMAT));
 						writer.write(payload);
 						writer.flush();
 					}
 					int responsecode = connection.getResponseCode();
-					isr = new InputStreamReader(connection.getInputStream(),
-							Constants.ENCODING_FORMAT);
-					reader = new BufferedReader(isr);
+					reader = new BufferedReader(new InputStreamReader(
+							connection.getInputStream(),
+							Constants.ENCODING_FORMAT));
 					if (responsecode >= 200 && responsecode < 300) {
 						successResponse = read(reader);
 						LoggingManager.debug(HttpConnection.class,
@@ -117,7 +113,6 @@ public abstract class HttpConnection {
 								+ errorResponse, e);
 					}
 				}
-
 				retry++;
 				if (retry > 0) {
 					LoggingManager.debug(HttpConnection.class, " Retry  No : "
@@ -137,17 +132,9 @@ public abstract class HttpConnection {
 				if (writer != null) {
 					writer.close();
 				}
-				if (isr != null) {
-					isr.close();
-				}
-				if (os != null) {
-					os.close();
-				}
 			} finally {
 				reader = null;
 				writer = null;
-				isr = null;
-				os = null;
 			}
 		}
 		return successResponse;

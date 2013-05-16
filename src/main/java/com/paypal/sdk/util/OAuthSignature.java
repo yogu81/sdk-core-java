@@ -184,9 +184,9 @@ public class OAuthSignature {
 			Iterator<Parameter> it = params.iterator();
 			while (it.hasNext()) {
 				Parameter current = (Parameter) it.next();
-				paramStringBuilder.append(current.getName());
-				paramStringBuilder.append(PARAM_SEPERATOR).append(current.getValue());
-				if (it.hasNext()){
+				paramStringBuilder.append(current.getName())
+						.append(PARAM_SEPERATOR).append(current.getValue());
+				if (it.hasNext()) {
 					paramStringBuilder.append(PARAM_DELIMETER);
 				}
 			}
@@ -337,28 +337,28 @@ public class OAuthSignature {
 	private static class Parameter {
 
 		public Parameter(String name, String value) {
-			this.m_name = name;
-			this.m_value = value;
+			this.mName = name;
+			this.mValue = value;
 		}
 
 		public void setName(String name) {
-			this.m_name = name;
+			this.mName = name;
 		}
 
 		public void setValue(String val) {
-			this.m_value = val;
+			this.mValue = val;
 		}
 
 		public String getName() {
-			return this.m_name;
+			return this.mName;
 		}
 
 		public String getValue() {
-			return this.m_value;
+			return this.mValue;
 		}
 
-		private String m_name;
-		private String m_value;
+		private String mName;
+		private String mValue;
 	}
 
 	/**

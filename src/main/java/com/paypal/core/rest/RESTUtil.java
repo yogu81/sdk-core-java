@@ -78,7 +78,7 @@ public final class RESTUtil {
 	 * @return Nulls removed query string
 	 */
 	private static String removeNullsInQS(String fString) {
-		String formatedString = fString;
+		String formattedString = fString;
 		if (fString != null && fString.length() != 0) {
 			String[] parts = fString.split("\\?");
 
@@ -102,16 +102,16 @@ public final class RESTUtil {
 							continue;
 						}
 					}
-					formatedString = (!strBuilder.toString().endsWith("&")) ? strBuilder
+					formattedString = (!strBuilder.toString().endsWith("&")) ? strBuilder
 							.toString() : strBuilder.toString().substring(0,
 							strBuilder.toString().length() - 1);
 				}
 
 				// append the query string delimiter
-				formatedString = (parts[0].trim() + "?") + formatedString;
+				formattedString = (parts[0].trim() + "?") + formattedString;
 			}
 		}
-		return formatedString;
+		return formattedString;
 	}
 
 	/**
