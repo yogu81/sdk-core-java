@@ -8,11 +8,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.codec.binary.Base64;
 
 import com.paypal.core.Constants;
 import com.paypal.core.HttpConfiguration;
 import com.paypal.core.SDKUtil;
+import com.paypal.core.codec.binary.Base64;
 
 /**
  * RESTConfiguration helps {@link PayPalResource} with state dependent utility
