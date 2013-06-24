@@ -8,69 +8,24 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-
+import com.paypal.core.APICallPreHandler;
 import com.paypal.core.Constants;
-import com.paypal.core.HttpConfiguration;
 import com.paypal.core.SDKUtil;
 import com.paypal.core.codec.binary.Base64;
+import com.paypal.core.credential.ICredential;
+import com.paypal.exception.ClientActionRequiredException;
+import com.paypal.sdk.util.UserAgentHeader;
 
 /**
  * RESTConfiguration helps {@link PayPalResource} with state dependent utility
  * methods
  */
-public class RESTConfiguration {
-
-	/**
-	 * Java Version and bit header computed during construction
-	 */
-	private static final String JAVAHEADER;
-
-	/**
-	 * OS Version and bit header computed during construction
-	 */
-	private static final String OSHEADER;
+public class RESTConfiguration implements APICallPreHandler {
 
 	/**
 	 * Configuration Map used for dynamic configuration
 	 */
 	private Map<String, String> configurationMap = null;
-
-	static {
-
-		// Java Version computed statically
-		StringBuilder javaVersion = new StringBuilder("lang=Java");
-		if (System.getProperty("java.version") != null
-				&& System.getProperty("java.version").length() > 0) {
-			javaVersion.append(";v=")
-					.append(System.getProperty("java.version"));
-		}
-		if (System.getProperty("java.vm.name") != null
-				&& System.getProperty("java.vm.name").length() > 0) {
-			javaVersion.append(";bit=");
-			if (System.getProperty("java.vm.name").contains("Client")) {
-				javaVersion.append("32");
-			} else {
-				javaVersion.append("64");
-			}
-		}
-		JAVAHEADER = javaVersion.toString();
-
-		// OS Version Header
-		StringBuilder osVersion = new StringBuilder();
-		if (System.getProperty("os.name") != null
-				&& System.getProperty("os.name").length() > 0) {
-			osVersion.append("os=");
-			osVersion.append(System.getProperty("os.name").replace(' ', '_'));
-		} else {
-			osVersion.append("os=");
-		}
-		if (System.getProperty("os.version") != null
-				&& System.getProperty("os.version").length() > 0) {
-			osVersion.append(" "
-					+ System.getProperty("os.version").replace(' ', '_'));
-		}
-		OSHEADER = osVersion.toString();
-	}
 
 	/**
 	 * Base URL for the service
@@ -81,11 +36,6 @@ public class RESTConfiguration {
 	 * Authorization token
 	 */
 	private String authorizationToken;
-
-	/**
-	 * {@link HttpMethod}
-	 */
-	private HttpMethod httpMethod;
 
 	/**
 	 * Resource URI as defined in the WSDL
@@ -101,6 +51,11 @@ public class RESTConfiguration {
 	 * Custom headers Map
 	 */
 	private Map<String, String> headersMap;
+
+	/**
+	 * Request Payload
+	 */
+	private String payLoad;
 
 	/**
 	 * Constructor using configurations dynamically
@@ -136,14 +91,6 @@ public class RESTConfiguration {
 	}
 
 	/**
-	 * @param httpMethod
-	 *            the httpMethod to set
-	 */
-	public void setHttpMethod(HttpMethod httpMethod) {
-		this.httpMethod = httpMethod;
-	}
-
-	/**
 	 * @param resourcePath
 	 *            the resourcePath to set
 	 */
@@ -160,17 +107,11 @@ public class RESTConfiguration {
 	}
 
 	/**
-	 * @return the javaheader
+	 * @param payLoad
+	 *            the payLoad to set
 	 */
-	public static String getJavaheader() {
-		return JAVAHEADER;
-	}
-
-	/**
-	 * @return the osheader
-	 */
-	public static String getOsheader() {
-		return OSHEADER;
+	public void setPayLoad(String payLoad) {
+		this.payLoad = payLoad;
 	}
 
 	/**
@@ -178,76 +119,8 @@ public class RESTConfiguration {
 	 * 
 	 * @return {@link Map} of Http headers
 	 */
-	public Map<String, String> getHeaders() {
-		Map<String, String> headers = new HashMap<String, String>();
-		if (authorizationToken != null
-				&& authorizationToken.trim().length() > 0) {
-			headers.put("Authorization", authorizationToken);
-		} else if (getClientID() != null && getClientID().trim().length() > 0
-				&& getClientSecret() != null
-				&& getClientSecret().trim().length() > 0) {
-			try {
-				headers.put(
-						"Authorization",
-						"Basic "
-								+ encodeToBase64(getClientID(),
-										getClientSecret()));
-			} catch (UnsupportedEncodingException e) {
-				//
-			}
-		}
-		headers.put("User-Agent", formUserAgentHeader());
-		if (requestId != null && requestId.length() > 0) {
-			headers.put("PayPal-Request-Id", requestId);
-		}
-		return headers;
-	}
-
-	/**
-	 * Returns a {@link HttpConfiguration} based on configuration
-	 * 
-	 * @return {@link HttpConfiguration}
-	 * @throws MalformedURLException
-	 * @throws URISyntaxException
-	 */
-	public HttpConfiguration getHttpConfigurations()
-			throws MalformedURLException, URISyntaxException {
-		HttpConfiguration httpConfiguration = new HttpConfiguration();
-		httpConfiguration.setHttpMethod(httpMethod.toString());
-		httpConfiguration.setEndPointUrl(getBaseURL().toURI()
-				.resolve(resourcePath).toString());
-		httpConfiguration.setContentType((headersMap != null) ? ((headersMap
-				.get(Constants.HTTP_CONTENT_TYPE_HEADER) != null) ? headersMap
-				.get("Content-Type") : Constants.HTTP_CONTENT_TYPE_JSON)
-				: Constants.HTTP_CONTENT_TYPE_JSON);
-		httpConfiguration.setGoogleAppEngine(Boolean
-				.parseBoolean(this.configurationMap
-						.get(Constants.GOOGLE_APP_ENGINE)));
-		if (Boolean.parseBoolean(this.configurationMap
-				.get((Constants.USE_HTTP_PROXY)))) {
-			httpConfiguration.setProxyPort(Integer
-					.parseInt(this.configurationMap
-							.get((Constants.HTTP_PROXY_PORT))));
-			httpConfiguration.setProxyHost(this.configurationMap
-					.get((Constants.HTTP_PROXY_HOST)));
-			httpConfiguration.setProxyUserName(this.configurationMap
-					.get((Constants.HTTP_PROXY_USERNAME)));
-			httpConfiguration.setProxyPassword(this.configurationMap
-					.get((Constants.HTTP_PROXY_PASSWORD)));
-		}
-		httpConfiguration.setConnectionTimeout(Integer
-				.parseInt(this.configurationMap
-						.get(Constants.HTTP_CONNECTION_TIMEOUT)));
-		httpConfiguration.setMaxRetry(Integer.parseInt(this.configurationMap
-				.get(Constants.HTTP_CONNECTION_RETRY)));
-		httpConfiguration.setReadTimeout(Integer.parseInt(this.configurationMap
-				.get(Constants.HTTP_CONNECTION_READ_TIMEOUT)));
-		httpConfiguration.setMaxHttpConnection(Integer
-				.parseInt(this.configurationMap
-						.get(Constants.HTTP_CONNECTION_MAX_CONNECTION)));
-		httpConfiguration.setIpAddress(this.configurationMap
-				.get(Constants.DEVICE_IP_ADDRESS));
-		return httpConfiguration;
+	public Map<String, String> getHeaderMap() {
+		return getProcessedHeaderMap();
 	}
 
 	/**
@@ -258,12 +131,12 @@ public class RESTConfiguration {
 	 */
 	public URL getBaseURL() throws MalformedURLException {
 		if (url == null) {
-			String urlString = this.configurationMap.get("service.EndPoint");
+			String urlString = this.configurationMap.get(Constants.ENDPOINT);
 			if (urlString == null || urlString.length() <= 0) {
-				String mode = this.configurationMap.get("mode");
-				if ("sandbox".equalsIgnoreCase(mode)) {
+				String mode = this.configurationMap.get(Constants.MODE);
+				if (Constants.SANDBOX.equalsIgnoreCase(mode)) {
 					urlString = Constants.REST_SANDBOX_ENDPOINT;
-				} else if ("live".equalsIgnoreCase(mode)) {
+				} else if (Constants.LIVE.equalsIgnoreCase(mode)) {
 					urlString = Constants.REST_LIVE_ENDPOINT;
 				} else {
 					throw new MalformedURLException(
@@ -297,19 +170,10 @@ public class RESTConfiguration {
 	 * 
 	 * @return
 	 */
-	public static String formUserAgentHeader() {
-		String header = null;
-		StringBuilder stringBuilder = new StringBuilder("PayPalSDK/"
-				+ PayPalResource.SDK_ID + " " + PayPalResource.SDK_VERSION
-				+ " ");
-		stringBuilder.append("(").append(JAVAHEADER);
-		String osVersion = OSHEADER;
-		if (osVersion.length() > 0) {
-			stringBuilder.append(";").append(osVersion);
-		}
-		stringBuilder.append(")");
-		header = stringBuilder.toString();
-		return header;
+	protected Map<String, String> formUserAgentHeader() {
+		UserAgentHeader userAgentHeader = new UserAgentHeader(
+				PayPalResource.SDK_ID, PayPalResource.SDK_VERSION);
+		return userAgentHeader.getHeader();
 	}
 
 	/*
@@ -346,6 +210,65 @@ public class RESTConfiguration {
 		encoded = Base64.encodeBase64(clientID.getBytes("UTF-8"));
 		base64ClientID = new String(encoded, "UTF-8");
 		return base64ClientID;
+	}
+
+	public String getPayLoad() {
+		return getProcessedPayLoad();
+	}
+
+	public String getEndPoint() {
+		return getProcessedEndPoint();
+	}
+
+	public ICredential getCredential() {
+		return null;
+	}
+
+	public void validate() throws ClientActionRequiredException {
+		// TODO
+	}
+
+	protected String getProcessedEndPoint() {
+		String endPoint = null;
+		try {
+			endPoint = getBaseURL().toURI().resolve(resourcePath).toString();
+		} catch (MalformedURLException e) {
+			//
+		} catch (URISyntaxException e) {
+			//
+		}
+		return endPoint;
+	}
+
+	protected Map<String, String> getProcessedHeaderMap() {
+		Map<String, String> headers = new HashMap<String, String>();
+		if (authorizationToken != null
+				&& authorizationToken.trim().length() > 0) {
+			headers.put(Constants.AUTHORIZATION_HEADER, authorizationToken);
+		} else if (getClientID() != null && getClientID().trim().length() > 0
+				&& getClientSecret() != null
+				&& getClientSecret().trim().length() > 0) {
+			try {
+				headers.put(Constants.AUTHORIZATION_HEADER, "Basic "
+						+ encodeToBase64(getClientID(), getClientSecret()));
+			} catch (UnsupportedEncodingException e) {
+				// TODO
+			}
+		}
+		if (requestId != null && requestId.length() > 0) {
+			headers.put(Constants.PAYPAL_REQUEST_ID_HEADER, requestId);
+		}
+		headers.putAll(formUserAgentHeader());
+		
+		// Add any custom headers
+		if (headersMap != null && headersMap.size() > 0) {
+			headers.putAll(headersMap);
+		}
+		return headers;
+	}
+
+	protected String getProcessedPayLoad() {
+		return payLoad;
 	}
 
 }

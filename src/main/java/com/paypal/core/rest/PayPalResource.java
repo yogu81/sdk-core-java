@@ -9,8 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import com.paypal.core.APICallPreHandler;
 import com.paypal.core.ConfigManager;
 import com.paypal.core.ConnectionManager;
+import com.paypal.core.Constants;
 import com.paypal.core.HttpConfiguration;
 import com.paypal.core.HttpConnection;
 import com.paypal.core.LoggingManager;
@@ -188,8 +190,8 @@ public abstract class PayPalResource {
 			accessToken = apiContext.getAccessToken();
 			requestId = apiContext.getRequestId();
 		}
-		return configureAndExecute(cMap, accessToken, httpMethod,
-				resourcePath, null, payLoad, requestId, clazz);
+		return configureAndExecute(cMap, accessToken, httpMethod, resourcePath,
+				null, payLoad, requestId, clazz);
 	}
 
 	/**
@@ -219,8 +221,8 @@ public abstract class PayPalResource {
 		if (apiContext != null) {
 			cMap = apiContext.getConfigurationMap();
 		}
-		return configureAndExecute(cMap, null, httpMethod,
-				resourcePath, headersMap, payLoad, null, clazz);
+		return configureAndExecute(cMap, null, httpMethod, resourcePath,
+				headersMap, payLoad, null, clazz);
 	}
 
 	private static <T> T configureAndExecute(
@@ -236,41 +238,35 @@ public abstract class PayPalResource {
 			if (!configInitialized) {
 				initializeToDefault();
 			}
-			cMap = new HashMap<String, String>(
-					PayPalResource.configurationMap);
+			cMap = new HashMap<String, String>(PayPalResource.configurationMap);
 		}
-		RESTConfiguration restConfiguration = createRESTConfiguration(
-				cMap, httpMethod, resourcePath, headersMap,
+		String contentType = (headersMap != null && headersMap
+				.containsKey(Constants.HTTP_CONTENT_TYPE_HEADER)) ? headersMap
+				.remove(Constants.HTTP_CONTENT_TYPE_HEADER) : null;
+
+		APICallPreHandler apiCallPreHandler = createAPICallPreHandler(
+				cMap, payLoad, resourcePath, headersMap,
 				accessToken, requestId);
-		t = execute(restConfiguration, payLoad, resourcePath, clazz);
+		HttpConfiguration httpConfiguration = createHttpConfiguration(
+				cMap, httpMethod, contentType, apiCallPreHandler);
+		t = execute(apiCallPreHandler, httpConfiguration, clazz);
 		return t;
 
 	}
 
-	/**
-	 * Creates a {@link RESTConfiguration} based on configuration
-	 * 
-	 * @param httpMethod
-	 *            {@link HttpMethod}
-	 * @param resourcePath
-	 *            Resource URI
-	 * @param accessToken
-	 *            Access Token
-	 * @param requestId
-	 *            Request Id
-	 * @return
-	 */
-	private static RESTConfiguration createRESTConfiguration(
-			Map<String, String> configurationMap, HttpMethod httpMethod,
+	private static APICallPreHandler createAPICallPreHandler(
+			Map<String, String> configurationMap, String payLoad,
 			String resourcePath, Map<String, String> headersMap,
 			String accessToken, String requestId) {
+		APICallPreHandler apiCallPreHandler = null;
 		RESTConfiguration restConfiguration = new RESTConfiguration(
 				configurationMap, headersMap);
-		restConfiguration.setHttpMethod(httpMethod);
 		restConfiguration.setResourcePath(resourcePath);
 		restConfiguration.setRequestId(requestId);
 		restConfiguration.setAuthorizationToken(accessToken);
-		return restConfiguration;
+		restConfiguration.setPayLoad(payLoad);
+		apiCallPreHandler = restConfiguration;
+		return apiCallPreHandler;
 	}
 
 	/**
@@ -295,32 +291,27 @@ public abstract class PayPalResource {
 	 * @throws HttpErrorException
 	 * @throws InvalidResponseDataException
 	 */
-	private static <T> T execute(RESTConfiguration restConfiguration,
-			String payLoad, String resourcePath, Class<T> clazz)
+	private static <T> T execute(APICallPreHandler apiCallPreHandler,
+			HttpConfiguration httpConfiguration, Class<T> clazz)
 			throws PayPalRESTException {
 		T t = null;
 		ConnectionManager connectionManager;
 		HttpConnection httpConnection;
-		HttpConfiguration httpConfig;
 		Map<String, String> headers;
 		String responseString;
 		try {
 
 			// REST Headers
-			headers = restConfiguration.getHeaders();
-
-			// HTTPConfiguration Object
-			httpConfig = restConfiguration.getHttpConfigurations();
+			headers = apiCallPreHandler.getHeaderMap();
 
 			// HttpConnection Initialization
 			connectionManager = ConnectionManager.getInstance();
-			httpConnection = connectionManager.getConnection(httpConfig);
-			httpConnection.createAndconfigureHttpConnection(httpConfig);
+			httpConnection = connectionManager.getConnection(httpConfiguration);
+			httpConnection.createAndconfigureHttpConnection(httpConfiguration);
 
-			LASTREQUEST.set(payLoad);
-			responseString = httpConnection.execute(restConfiguration
-					.getBaseURL().toURI().resolve(resourcePath).toString(),
-					payLoad, headers);
+			LASTREQUEST.set(apiCallPreHandler.getPayLoad());
+			responseString = httpConnection.execute(null,
+					apiCallPreHandler.getPayLoad(), headers);
 			LASTRESPONSE.set(responseString);
 			if (clazz != null) {
 				t = JSONFormatter.fromJSON(responseString, clazz);
@@ -329,6 +320,44 @@ public abstract class PayPalResource {
 			throw new PayPalRESTException(e.getMessage(), e);
 		}
 		return t;
+	}
+
+	private static HttpConfiguration createHttpConfiguration(
+			Map<String, String> configurationMap, HttpMethod httpMethod,
+			String contentType, APICallPreHandler apiCallPreHandler) {
+		HttpConfiguration httpConfiguration = new HttpConfiguration();
+		httpConfiguration.setHttpMethod(httpMethod.toString());
+		httpConfiguration.setEndPointUrl(apiCallPreHandler.getEndPoint());
+		httpConfiguration.setContentType((contentType != null && contentType
+				.trim().length() > 0) ? (contentType)
+				: Constants.HTTP_CONTENT_TYPE_JSON);
+		httpConfiguration
+				.setGoogleAppEngine(Boolean.parseBoolean(configurationMap
+						.get(Constants.GOOGLE_APP_ENGINE)));
+		if (Boolean.parseBoolean(configurationMap
+				.get((Constants.USE_HTTP_PROXY)))) {
+			httpConfiguration.setProxyPort(Integer.parseInt(configurationMap
+					.get((Constants.HTTP_PROXY_PORT))));
+			httpConfiguration.setProxyHost(configurationMap
+					.get((Constants.HTTP_PROXY_HOST)));
+			httpConfiguration.setProxyUserName(configurationMap
+					.get((Constants.HTTP_PROXY_USERNAME)));
+			httpConfiguration.setProxyPassword(configurationMap
+					.get((Constants.HTTP_PROXY_PASSWORD)));
+		}
+		httpConfiguration.setConnectionTimeout(Integer
+				.parseInt(configurationMap
+						.get(Constants.HTTP_CONNECTION_TIMEOUT)));
+		httpConfiguration.setMaxRetry(Integer.parseInt(configurationMap
+				.get(Constants.HTTP_CONNECTION_RETRY)));
+		httpConfiguration.setReadTimeout(Integer.parseInt(configurationMap
+				.get(Constants.HTTP_CONNECTION_READ_TIMEOUT)));
+		httpConfiguration.setMaxHttpConnection(Integer
+				.parseInt(configurationMap
+						.get(Constants.HTTP_CONNECTION_MAX_CONNECTION)));
+		httpConfiguration.setIpAddress(configurationMap
+				.get(Constants.DEVICE_IP_ADDRESS));
+		return httpConfiguration;
 	}
 
 }
