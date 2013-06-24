@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.codec.binary.Base64;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -14,6 +13,7 @@ import com.paypal.core.Constants;
 import com.paypal.core.HttpConfiguration;
 import com.paypal.core.HttpConnection;
 import com.paypal.core.SDKUtil;
+import com.paypal.core.codec.binary.Base64;
 import com.paypal.core.credential.ICredential;
 
 public final class OAuthTokenCredential implements ICredential {
