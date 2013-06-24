@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.paypal.core.ConfigManager;
@@ -15,6 +14,7 @@ import com.paypal.core.HttpConnection;
 import com.paypal.core.SDKUtil;
 import com.paypal.core.codec.binary.Base64;
 import com.paypal.core.credential.ICredential;
+import com.paypal.sdk.util.UserAgentHeader;
 
 public final class OAuthTokenCredential implements ICredential {
 
@@ -138,9 +138,11 @@ public final class OAuthTokenCredential implements ICredential {
 			httpConfiguration = getOAuthHttpConfiguration();
 			connection.createAndconfigureHttpConnection(httpConfiguration);
 			Map<String, String> headers = new HashMap<String, String>();
-			headers.put("Authorization", "Basic " + base64ClientID);
+			headers.put(Constants.AUTHORIZATION_HEADER, "Basic " + base64ClientID);
 			headers.put(Constants.HTTP_ACCEPT_HEADER, "*/*");
-			headers.put("User-Agent", RESTConfiguration.formUserAgentHeader());
+			UserAgentHeader userAgentHeader = new UserAgentHeader(
+					PayPalResource.SDK_ID, PayPalResource.SDK_VERSION);
+			headers.putAll(userAgentHeader.getHeader());
 			String postRequest = "grant_type=client_credentials";
 			String jsonResponse = connection.execute("", postRequest, headers);
 			JsonParser parser = new JsonParser();
