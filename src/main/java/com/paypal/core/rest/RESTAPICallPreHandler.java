@@ -17,11 +17,23 @@ import com.paypal.exception.ClientActionRequiredException;
 import com.paypal.sdk.util.UserAgentHeader;
 
 /**
- * RESTConfiguration helps {@link PayPalResource} with state dependent utility
- * methods
+ * RESTApiCallPreHandler acts as a {@link APICallPreHandler} for REST API calls. The implementation
+ * is PayPal specific, To do custom implementation override the protected methods 
  */
-public class RESTConfiguration implements APICallPreHandler {
-
+public class RESTAPICallPreHandler implements APICallPreHandler {
+	
+	/*
+	 * RESTApiCallPreHandler requires a configuration system to function properly. The configuration
+	 * is initialized to default in PayPalResource class if no configuration methods initConfig(..)
+	 * was attempted before making the API call. The users can override this default file 'sdk_config.properties'
+	 * by choosing different version of PayPalResource.initConfi(...) and passing their custom configuration. 
+	 * Initializing to default means the system looks for a
+	 * file specifically named 'sdk_config.properties' in the classpath and reads the configuration
+	 * from there. 'Dynamic Configuration' enables the users to pass custom configuration (per call basis)
+	 * as a Map object to override the default behavior for the system to function. For Dynamic configuration
+	 * to take effect create a Map of custom configuration and set it in APIContext object, choose the overloaded
+	 * method of the Resource class that takes APIContext object as a parameter and pass the APIContext object. 
+	 */
 	/**
 	 * Configuration Map used for dynamic configuration
 	 */
@@ -63,7 +75,7 @@ public class RESTConfiguration implements APICallPreHandler {
 	 * @param configurationMap
 	 *            Map used for dynamic configuration
 	 */
-	public RESTConfiguration(Map<String, String> configurationMap) {
+	public RESTAPICallPreHandler(Map<String, String> configurationMap) {
 		this.configurationMap = SDKUtil.combineDefaultMap(configurationMap);
 	}
 
@@ -75,7 +87,7 @@ public class RESTConfiguration implements APICallPreHandler {
 	 * @param headersMap
 	 *            Headers Map
 	 */
-	public RESTConfiguration(Map<String, String> configurationMap,
+	public RESTAPICallPreHandler(Map<String, String> configurationMap,
 			Map<String, String> headersMap) {
 		this(configurationMap);
 		this.headersMap = (headersMap == null) ? Collections
@@ -125,11 +137,19 @@ public class RESTConfiguration implements APICallPreHandler {
 
 	/**
 	 * Returns the base URL configured in application resources
+	 * or {@link Map} passed for dynamic configuration
 	 * 
-	 * @return Base {@link URL}
-	 * @throws MalformedURLException
+	 * @return BaseUrl ending with a '/' character {@link URL}
+	 * @throws MalformedURLException if endpoint cannot be found or formed
 	 */
 	public URL getBaseURL() throws MalformedURLException {
+		
+		/*
+		 * Check for property 'service.EndPoint' in the configuration,
+		 * if not found, check for 'mode' property in the configuration
+		 * and default endpoint to PayPal sandbox or live endpoints.
+		 * Throw exception if the above rules fail
+		 */
 		if (url == null) {
 			String urlString = this.configurationMap.get(Constants.ENDPOINT);
 			if (urlString == null || urlString.length() <= 0) {
@@ -168,7 +188,7 @@ public class RESTConfiguration implements APICallPreHandler {
 	/**
 	 * Returns User-Agent header
 	 * 
-	 * @return
+	 * @return {@link Map} storing the User-Agent header
 	 */
 	protected Map<String, String> formUserAgentHeader() {
 		UserAgentHeader userAgentHeader = new UserAgentHeader(
@@ -228,7 +248,17 @@ public class RESTConfiguration implements APICallPreHandler {
 		// TODO
 	}
 
+	/**
+	 * Override this method to process EndPoint
+	 * @return Endpoint as String
+	 */
 	protected String getProcessedEndPoint() {
+		
+		/*
+		 * Process the EndPoint to append the resourcePath sent as 
+		 * a part of the method call with the base endPoint retrieved
+		 * from configuration system
+		 */
 		String endPoint = null;
 		try {
 			endPoint = getBaseURL().toURI().resolve(resourcePath).toString();
@@ -240,7 +270,19 @@ public class RESTConfiguration implements APICallPreHandler {
 		return endPoint;
 	}
 
+	/**
+	 * Override this method to return a {@link Map} of HTTP headers 
+	 * @return {@link Map} of HTTP headers
+	 */
 	protected Map<String, String> getProcessedHeaderMap() {
+		
+		/*
+		 * The implementation is PayPal specific. The Authorization header is
+		 * formed for OAuth or Basic, for OAuth system the authorization token
+		 * passed as a parameter is used in creation of HTTP header, for Basic
+		 * Authorization the ClientID and ClientSecret passed as parameters are
+		 * used after a Base64 encoding.
+		 */
 		Map<String, String> headers = new HashMap<String, String>();
 		if (authorizationToken != null
 				&& authorizationToken.trim().length() > 0) {
@@ -255,9 +297,18 @@ public class RESTConfiguration implements APICallPreHandler {
 				// TODO
 			}
 		}
+		
+		/*
+		 * Appends request Id which is used by PayPal API service for
+		 * Idempotency 
+		 */
 		if (requestId != null && requestId.length() > 0) {
 			headers.put(Constants.PAYPAL_REQUEST_ID_HEADER, requestId);
 		}
+		
+		/*
+		 * Add User-Agent header for tracking in PayPal system
+		 */
 		headers.putAll(formUserAgentHeader());
 		
 		// Add any custom headers
@@ -267,7 +318,15 @@ public class RESTConfiguration implements APICallPreHandler {
 		return headers;
 	}
 
+	/**
+	 * Override this method to process payload for processing 
+	 * @return PayLoad as String
+	 */
 	protected String getProcessedPayLoad() {
+		/*
+		 * Since the REST API of PayPal depends on json, which is
+		 * well formed, no additional processing is required.
+		 */
 		return payLoad;
 	}
 

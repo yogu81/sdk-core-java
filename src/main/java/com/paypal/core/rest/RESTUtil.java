@@ -33,19 +33,19 @@ public final class RESTUtil {
 				// Form a object array using the passed CreateFromAuthorizationCodeParameters
 				finalParameters = splitParameters(pattern,
 						((CreateFromAuthorizationCodeParameters) parameters[0]).getContainerMap());
-			} if (parameters != null && parameters.length == 1
+			} else if (parameters != null && parameters.length == 1
 					&& parameters[0] instanceof CreateFromRefreshTokenParameters) {
 
 				// Form a object array using the passed CreateFromRefreshTokenParameters
 				finalParameters = splitParameters(pattern,
 						((CreateFromRefreshTokenParameters) parameters[0]).getContainerMap());
-			} if (parameters != null && parameters.length == 1
+			} else if (parameters != null && parameters.length == 1
 					&& parameters[0] instanceof UserinfoParameters) {
 
 				// Form a object array using the passed UserinfoParameters
 				finalParameters = splitParameters(pattern,
 						((UserinfoParameters) parameters[0]).getContainerMap());
-			} if (parameters != null && parameters.length == 1
+			} else if (parameters != null && parameters.length == 1
 					&& parameters[0] instanceof QueryParameters) {
 
 				// Form a object array using the passed UserinfoParameters
