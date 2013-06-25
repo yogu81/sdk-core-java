@@ -62,10 +62,10 @@ public class APIContext {
 	 *            API service. The token should be of the form 'Bearer xxxx..'.
 	 *            See {@link OAuthTokenCredential} to generate OAuthToken
 	 * @param requestId
-	 *            Unique requestId required for the call. Idempotency id, Calling
-	 *            setMaskRequestId(true) will override the requestId getter to
-	 *            return null, which can be used by the client to forcibly not
-	 *            sent requestId in the API call.
+	 *            Unique requestId required for the call. Idempotency id,
+	 *            Calling setMaskRequestId(true) will override the requestId
+	 *            getter to return null, which can be used by the client (null
+	 *            check) to forcibly not sent requestId in the API call.
 	 */
 	public APIContext(String accessToken, String requestId) {
 		this(accessToken);
