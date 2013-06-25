@@ -9,7 +9,11 @@ import com.paypal.sdk.openidconnect.CreateFromAuthorizationCodeParameters;
 import com.paypal.sdk.openidconnect.CreateFromRefreshTokenParameters;
 import com.paypal.sdk.openidconnect.UserinfoParameters;
 
-
+/**
+ * <code>RESTUtil</code> acts as utility class used by REST API system
+ * @author kjayakumar
+ *
+ */
 public final class RESTUtil {
 	
 	private RESTUtil() {}
