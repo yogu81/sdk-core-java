@@ -16,7 +16,7 @@ public class RESTConfigurationTestCase {
 		try {
 			Map<String, String> configurationMap = new HashMap<String, String>();
 			configurationMap.put("service.EndPoint", "https://localhost.sandbox.paypal.com");
-			RESTConfiguration restConfiguration = new RESTConfiguration(configurationMap);
+			RESTAPICallPreHandler restConfiguration = new RESTAPICallPreHandler(configurationMap);
 			restConfiguration.setResourcePath("/a/b/c");
 			URL url = restConfiguration.getBaseURL();
 			Assert.assertEquals(true, url.toString().endsWith("/"));
@@ -29,7 +29,7 @@ public class RESTConfigurationTestCase {
 	public void testRESTHeaderConfiguration() {
 			Map<String, String> configurationMap = new HashMap<String, String>();
 			configurationMap.put("service.EndPoint", "https://localhost.sandbox.paypal.com");
-			RESTConfiguration restConfiguration = new RESTConfiguration(configurationMap);
+			RESTAPICallPreHandler restConfiguration = new RESTAPICallPreHandler(configurationMap);
 			restConfiguration.setResourcePath("/a/b/c");
 			Map<String, String> headers = restConfiguration.getHeaderMap();
 			Assert.assertEquals(headers.size() != 0, true);
@@ -44,7 +44,7 @@ public class RESTConfigurationTestCase {
 		try {
 			Map<String, String> configurationMap = new HashMap<String, String>();
 			configurationMap.put("service.EndPoint", "https://localhost.sandbox.paypal.com");
-			RESTConfiguration restConfiguration = new RESTConfiguration(configurationMap);
+			RESTAPICallPreHandler restConfiguration = new RESTAPICallPreHandler(configurationMap);
 			restConfiguration.setResourcePath("/a/b/c");
 			String urlString = "https://sample.com";
 			restConfiguration.setUrl(urlString);

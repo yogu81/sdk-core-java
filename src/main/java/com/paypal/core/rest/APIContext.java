@@ -14,7 +14,7 @@ import java.util.UUID;
 public class APIContext {
 
 	/**
-	 * Access Token
+	 * OAuth Token
 	 */
 	private String accessToken;
 
@@ -41,7 +41,8 @@ public class APIContext {
 	}
 
 	/**
-	 * APIContext
+	 * APIContext, requestId is auto generated, calling setMaskRequestId(true)
+	 * will override the requestId getter to return null
 	 * 
 	 * @param accessToken
 	 *            AccessToken required for the call.
@@ -57,9 +58,14 @@ public class APIContext {
 	 * APIContext
 	 * 
 	 * @param accessToken
-	 *            AccessToken required for the call.
+	 *            OAuthToken required for the call. OAuth token used by the REST
+	 *            API service. The token should be of the form 'Bearer xxxx..'.
+	 *            See {@link OAuthTokenCredential} to generate OAuthToken
 	 * @param requestId
-	 *            Unique requestId required for the call.
+	 *            Unique requestId required for the call. Idempotency id, Calling
+	 *            setMaskRequestId(true) will override the requestId getter to
+	 *            return null, which can be used by the client to forcibly not
+	 *            sent requestId in the API call.
 	 */
 	public APIContext(String accessToken, String requestId) {
 		this(accessToken);
