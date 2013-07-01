@@ -7,14 +7,14 @@ public class RESTUtilTest {
 	
 	@Test()
 	public void testFormatURIPathForNull() {
-		String nullString = RESTUtil.formatURIPath(null, null);
+		String nullString = RESTUtil.formatURIPath((String) null, (Object []) null);
 		Assert.assertNull(nullString);
 	}
 	
 	@Test(dependsOnMethods = {"testFormatURIPathForNull"})
 	public void testFormatURIPathNoPattern() {
 		String pattern = "/a/b/c";
-		String uriPath = RESTUtil.formatURIPath(pattern, null);
+		String uriPath = RESTUtil.formatURIPath(pattern, (Object []) null);
 		Assert.assertEquals(uriPath, pattern);
 	}
 	

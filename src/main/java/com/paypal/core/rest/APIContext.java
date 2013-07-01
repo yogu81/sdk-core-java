@@ -4,9 +4,11 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * <code>APIContext</code> holds wire-level parameters for the API call.
- * AccessToken is treated as a mandatory parameter. RequestId is generated if
- * not supplied
+ * <code>APIContext</code> wraps wire-level parameters for the API call.
+ * AccessToken, which is essentially a OAuth token, is treated as a mandatory
+ * parameter for (PayPal REST APIs). RequestId is generated if not supplied for
+ * marking Idempotency of the API call. OAuth token can be generated using
+ * {@link OAuthTokenCredential}
  * 
  * @author kjayakumar
  * 
@@ -45,7 +47,9 @@ public class APIContext {
 	 * will override the requestId getter to return null
 	 * 
 	 * @param accessToken
-	 *            AccessToken required for the call.
+	 *            OAuthToken required for the call. OAuth token used by the REST
+	 *            API service. The token should be of the form 'Bearer xxxx..'.
+	 *            See {@link OAuthTokenCredential} to generate OAuthToken
 	 */
 	public APIContext(String accessToken) {
 		if (accessToken == null || accessToken.length() <= 0) {
