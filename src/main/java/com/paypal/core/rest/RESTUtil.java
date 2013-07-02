@@ -135,9 +135,11 @@ public final class RESTUtil {
 		formattedURIPath = pattern;
 		if (queryParameters != null && queryParameters.size() > 0) {
 			StringBuilder stringBuilder = new StringBuilder(formattedURIPath);
-			if (stringBuilder.toString().contains("?")
-					&& !stringBuilder.toString().endsWith("&")) {
-				stringBuilder.append("&");
+			if (stringBuilder.toString().contains("?")) {
+				if (!(stringBuilder.toString().endsWith("?")
+						|| stringBuilder.toString().endsWith("&"))) {
+					stringBuilder.append("&");
+				}
 			} else {
 				stringBuilder.append("?");
 			}
