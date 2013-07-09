@@ -222,18 +222,20 @@ public abstract class PayPalResource {
 		Map<String, String> cMap = null;
 		String accessToken = null;
 		String requestId = null;
+		Map<String, String> headersMap = null;
 		if (apiContext != null) {
 			cMap = apiContext.getConfigurationMap();
 			accessToken = apiContext.getAccessToken();
 			requestId = apiContext.getRequestId();
+			headersMap = apiContext.getHeadersMap();
 		}
 		return configureAndExecute(cMap, accessToken, httpMethod, resourcePath,
-				null, payLoad, requestId, clazz);
+				headersMap, payLoad, requestId, clazz);
 	}
 
 	/**
 	 * Configures and executes REST call: Supports JSON
-	 * 
+	 * @deprecated
 	 * @param <T>
 	 * @param apiContext
 	 *            {@link APIContext} to be used for the call.
@@ -322,16 +324,10 @@ public abstract class PayPalResource {
 	 *            PayPal Request Id
 	 * @return
 	 */
-	protected static APICallPreHandler createAPICallPreHandler(
+	public static APICallPreHandler createAPICallPreHandler(
 			Map<String, String> configurationMap, String payLoad,
 			String resourcePath, Map<String, String> headersMap,
 			String accessToken, String requestId) {
-		
-		/*
-		 * Override this method in the subclass level to return 
-		 * any implementation of APICallPreHandler for the
-		 * system
-		 */
 		if (apiCallPreHandlerFactory == null) {
 			setPreHandlerFactory(new RESTAPICallPreHandlerFactory());
 		}

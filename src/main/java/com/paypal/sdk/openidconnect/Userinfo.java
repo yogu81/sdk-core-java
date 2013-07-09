@@ -444,8 +444,10 @@ public class Userinfo {
 		Object[] parameters = new Object[] { userinfoParameters };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = "";
-		return PayPalResource.configureAndExecute(null, HttpMethod.GET,
-				resourcePath, null, payLoad, Userinfo.class);
+		APIContext apiContext = new APIContext();
+		apiContext.setMaskRequestId(true);
+		return PayPalResource.configureAndExecute(apiContext, HttpMethod.GET,
+				resourcePath, payLoad, Userinfo.class);
 	}
 
 	/**
@@ -465,7 +467,7 @@ public class Userinfo {
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
 		String payLoad = "";
 		return PayPalResource.configureAndExecute(apiContext, HttpMethod.GET,
-				resourcePath, null, payLoad, Userinfo.class);
+				resourcePath, payLoad, Userinfo.class);
 	}
 
 	/**
