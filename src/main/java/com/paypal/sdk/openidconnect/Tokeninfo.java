@@ -195,8 +195,11 @@ public class Tokeninfo {
 		resourcePath = resourcePath.substring(0, resourcePath.indexOf('?'));
 		Map<String, String> headersMap = new HashMap<String, String>();
 		headersMap.put(Constants.HTTP_CONTENT_TYPE_HEADER, Constants.HTTP_CONFIG_DEFAULT_CONTENT_TYPE);
-		return PayPalResource.configureAndExecute(null, HttpMethod.POST,
-				resourcePath, headersMap, payLoad, Tokeninfo.class);
+		APIContext apiContext = new APIContext();
+		apiContext.setMaskRequestId(true);
+		apiContext.setHeadersMap(headersMap);
+		return PayPalResource.configureAndExecute(apiContext, HttpMethod.POST,
+				resourcePath, payLoad, Tokeninfo.class);
 	}
 
 	/**
@@ -220,8 +223,13 @@ public class Tokeninfo {
 		resourcePath = resourcePath.substring(0, resourcePath.indexOf('?'));
 		Map<String, String> headersMap = new HashMap<String, String>();
 		headersMap.put(Constants.HTTP_CONTENT_TYPE_HEADER, Constants.HTTP_CONFIG_DEFAULT_CONTENT_TYPE);
+		if (apiContext == null) {
+			apiContext = new APIContext();
+			apiContext.setMaskRequestId(true);
+		}
+		apiContext.setHeadersMap(headersMap);
 		return PayPalResource.configureAndExecute(apiContext, HttpMethod.POST,
-				resourcePath, headersMap, payLoad, Tokeninfo.class);
+				resourcePath, payLoad, Tokeninfo.class);
 	}
 
 	/**
@@ -249,8 +257,11 @@ public class Tokeninfo {
 		resourcePath = resourcePath.substring(0, resourcePath.indexOf('?'));
 		Map<String, String> headersMap = new HashMap<String, String>();
 		headersMap.put(Constants.HTTP_CONTENT_TYPE_HEADER, Constants.HTTP_CONFIG_DEFAULT_CONTENT_TYPE);
-		return PayPalResource.configureAndExecute(null, HttpMethod.POST,
-				resourcePath, headersMap, payLoad, Tokeninfo.class);
+		APIContext apiContext = new APIContext();
+		apiContext.setMaskRequestId(true);
+		apiContext.setHeadersMap(headersMap);
+		return PayPalResource.configureAndExecute(apiContext, HttpMethod.POST,
+				resourcePath, payLoad, Tokeninfo.class);
 	}
 
 	/**
@@ -280,8 +291,13 @@ public class Tokeninfo {
 		resourcePath = resourcePath.substring(0, resourcePath.indexOf('?'));
 		Map<String, String> headersMap = new HashMap<String, String>();
 		headersMap.put(Constants.HTTP_CONTENT_TYPE_HEADER, Constants.HTTP_CONFIG_DEFAULT_CONTENT_TYPE);
+		if (apiContext == null) {
+			apiContext = new APIContext();
+			apiContext.setMaskRequestId(true);
+		}
+		apiContext.setHeadersMap(headersMap);
 		return PayPalResource.configureAndExecute(apiContext, HttpMethod.POST,
-				resourcePath, headersMap, payLoad, Tokeninfo.class);
+				resourcePath, payLoad, Tokeninfo.class);
 	}
 
 	/**

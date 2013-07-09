@@ -34,7 +34,12 @@ public class APIContext {
 	 * Configuration Map used for dynamic configuration
 	 */
 	private Map<String, String> configurationMap;
-
+	
+	/**
+	 * Custom HTTP headers
+	 */
+	private Map<String, String> headersMap;
+	
 	/**
 	 * Default Constructor
 	 */
@@ -126,6 +131,20 @@ public class APIContext {
 	 */
 	public void setMaskRequestId(boolean maskRequestId) {
 		this.maskRequestId = maskRequestId;
+	}
+
+	/**
+	 * @return the headersMap
+	 */
+	public Map<String, String> getHeadersMap() {
+		return headersMap;
+	}
+
+	/**
+	 * @param headersMap the headersMap to set
+	 */
+	public void setHeadersMap(Map<String, String> headersMap) {
+		this.headersMap = headersMap;
 	}
 
 }
