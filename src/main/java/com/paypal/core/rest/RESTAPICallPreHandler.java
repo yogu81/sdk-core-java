@@ -134,6 +134,22 @@ public class RESTAPICallPreHandler implements APICallPreHandler {
 	public Map<String, String> getHeaderMap() {
 		return getProcessedHeaderMap();
 	}
+	
+	public String getPayLoad() {
+		return getProcessedPayLoad();
+	}
+
+	public String getEndPoint() {
+		return getProcessedEndPoint();
+	}
+
+	public ICredential getCredential() {
+		return null;
+	}
+
+	public void validate() throws ClientActionRequiredException {
+		// TODO
+	}
 
 	/**
 	 * Returns the base URL configured in application resources
@@ -232,21 +248,7 @@ public class RESTAPICallPreHandler implements APICallPreHandler {
 		return base64ClientID;
 	}
 
-	public String getPayLoad() {
-		return getProcessedPayLoad();
-	}
-
-	public String getEndPoint() {
-		return getProcessedEndPoint();
-	}
-
-	public ICredential getCredential() {
-		return null;
-	}
-
-	public void validate() throws ClientActionRequiredException {
-		// TODO
-	}
+	
 
 	/**
 	 * Override this method to process EndPoint

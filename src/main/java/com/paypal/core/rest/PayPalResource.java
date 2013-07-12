@@ -5,13 +5,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import com.paypal.core.APICallPreHandler;
-import com.paypal.core.APICallPreHandlerFactory;
 import com.paypal.core.ConfigManager;
 import com.paypal.core.ConnectionManager;
 import com.paypal.core.Constants;
@@ -29,7 +27,7 @@ public abstract class PayPalResource {
 
 	/*
 	 * The class uses an implementation APICallPreHandler (here
-	 * RESTAPICallPreHandler)to get access to endpoint, HTTP headers, payload.
+	 * RESTAPICallPreHandler)to get access to endpoint, HTTP headers, and payload.
 	 */
 	/**
 	 * SDK ID used in User-Agent HTTP header
@@ -52,11 +50,6 @@ public abstract class PayPalResource {
 	private static boolean configInitialized = false;
 	
 	/**
-	 * Default {@link APICallPreHandlerFactory}
-	 */
-	private static APICallPreHandlerFactory apiCallPreHandlerFactory = new RESTAPICallPreHandlerFactory();
-
-	/**
 	 * Last request sent to Service
 	 */
 	private static final ThreadLocal<String> LASTREQUEST = new ThreadLocal<String>();
@@ -65,15 +58,6 @@ public abstract class PayPalResource {
 	 * Last response returned form Service
 	 */
 	private static final ThreadLocal<String> LASTRESPONSE = new ThreadLocal<String>();
-
-	/**
-	 * Sets a custom {@link APICallPreHandlerFactory}, the new system  may also want to
-	 * override the class level createAPICallPreHandler(...) method 
-	 * @param preHandlerFactory the preHandlerFactory to set
-	 */
-	static void setPreHandlerFactory(APICallPreHandlerFactory apiCallPreHandlerFactory) {
-		PayPalResource.apiCallPreHandlerFactory = apiCallPreHandlerFactory;
-	}
 
 	/**
 	 * Initialize the system using a File(Properties file). The system is
@@ -179,7 +163,7 @@ public abstract class PayPalResource {
 	 * @param <T>
 	 *            Response Type for de-serialization
 	 * @param accessToken
-	 *            AccessToken to be used for the call.
+	 *            OAuth AccessToken to be used for the call.
 	 * @param httpMethod
 	 *            Http Method verb
 	 * @param resourcePath
@@ -328,17 +312,15 @@ public abstract class PayPalResource {
 			Map<String, String> configurationMap, String payLoad,
 			String resourcePath, Map<String, String> headersMap,
 			String accessToken, String requestId) {
-		if (apiCallPreHandlerFactory == null) {
-			setPreHandlerFactory(new RESTAPICallPreHandlerFactory());
-		}
-		RESTAPICallPreHandlerFactory restAPICallPreHandlerFactory = (RESTAPICallPreHandlerFactory) apiCallPreHandlerFactory;
-		restAPICallPreHandlerFactory.setConfigurationMap(configurationMap);
-		restAPICallPreHandlerFactory.setHeadersMap(headersMap);
-		restAPICallPreHandlerFactory.setResourcePath(resourcePath);
-		restAPICallPreHandlerFactory.setRequestId(requestId);
-		restAPICallPreHandlerFactory.setAuthorizationToken(accessToken);
-		restAPICallPreHandlerFactory.setPayLoad(payLoad);
-		return apiCallPreHandlerFactory.createAPICallPreHandler();
+		APICallPreHandler apiCallPreHandler = null;
+		RESTAPICallPreHandler restAPICallPreHandler = new RESTAPICallPreHandler(
+				configurationMap, headersMap);
+		restAPICallPreHandler.setResourcePath(resourcePath);
+		restAPICallPreHandler.setRequestId(requestId);
+		restAPICallPreHandler.setAuthorizationToken(accessToken);
+		restAPICallPreHandler.setPayLoad(payLoad);
+		apiCallPreHandler = restAPICallPreHandler;
+		return apiCallPreHandler;
 	}
 
 	/**
@@ -436,105 +418,6 @@ public abstract class PayPalResource {
 		httpConfiguration.setIpAddress(configurationMap
 				.get(Constants.DEVICE_IP_ADDRESS));
 		return httpConfiguration;
-	}
-
-	/**
-	 * Implementation of {@link APICallPreHandlerFactory} that returns an instance of
-	 * {@link RESTAPICallPreHandler}
-	 * @author kjayakumar
-	 *
-	 */
-	private static class RESTAPICallPreHandlerFactory implements
-			APICallPreHandlerFactory {
-		
-		/**
-		 * Configuration map
-		 */
-		Map<String, String> configurationMap = null;
-		
-		/**
-		 * Raw Payload
-		 */
-		String payLoad = null;
-		
-		/**
-		 * Resource URI path
-		 */
-		String resourcePath = null;
-		
-		/**
-		 * Custom HTTP headers map
-		 */
-		Map<String, String> headersMap = null;
-		
-		/**
-		 * Authorization Token
-		 */
-		String authorizationToken = null;
-		
-		/**
-		 * Request Id
-		 */
-		String requestId = null;
-		
-		RESTAPICallPreHandlerFactory() {
-			
-		}
-
-		/**
-		 * @param configurationMap the configurationMap to set
-		 */
-		void setConfigurationMap(Map<String, String> configurationMap) {
-			this.configurationMap = configurationMap;
-		}
-
-		/**
-		 * @param payLoad the payLoad to set
-		 */
-		void setPayLoad(String payLoad) {
-			this.payLoad = payLoad;
-		}
-
-		/**
-		 * @param resourcePath the resourcePath to set
-		 */
-		void setResourcePath(String resourcePath) {
-			this.resourcePath = resourcePath;
-		}
-
-		/**
-		 * @param headersMap the headersMap to set
-		 */
-		void setHeadersMap(Map<String, String> headersMap) {
-			this.headersMap = headersMap;
-		}
-
-		/**
-		 * @param authorizationToken the authorizationToken to set
-		 */
-		void setAuthorizationToken(String authorizationToken) {
-			this.authorizationToken = authorizationToken;
-		}
-
-		/**
-		 * @param requestId the requestId to set
-		 */
-		void setRequestId(String requestId) {
-			this.requestId = requestId;
-		}
-
-		public APICallPreHandler createAPICallPreHandler() {
-			APICallPreHandler apiCallPreHandler = null;
-			RESTAPICallPreHandler restAPICallPreHandler = new RESTAPICallPreHandler(
-					configurationMap, headersMap);
-			restAPICallPreHandler.setResourcePath(resourcePath);
-			restAPICallPreHandler.setRequestId(requestId);
-			restAPICallPreHandler.setAuthorizationToken(authorizationToken);
-			restAPICallPreHandler.setPayLoad(payLoad);
-			apiCallPreHandler = restAPICallPreHandler;
-			return apiCallPreHandler;
-		}
-
 	}
 
 }
