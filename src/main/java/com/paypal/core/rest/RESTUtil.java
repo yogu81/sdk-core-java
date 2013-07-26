@@ -233,7 +233,11 @@ public final class RESTUtil {
 						String key = params[0].trim();
 						if (containerMap.containsKey(key)) {
 							Object object = containerMap.get(key);
-							objectList.add(object);
+							try {
+								objectList.add(URLEncoder.encode((String)object, "UTF-8"));
+							} catch (UnsupportedEncodingException e) {
+								e.printStackTrace();
+							}
 						} else {
 							objectList.add(null);
 						}

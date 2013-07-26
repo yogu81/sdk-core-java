@@ -28,19 +28,20 @@ public class OpenIdTest {
 	Map<String, String> configurationMap = new HashMap<String, String>();
 
 	public OpenIdTest() {
-		 /*configurationMap.put("clientId", "");
-		 configurationMap.put("clientSecret", "");
-		 configurationMap.put("mode", "live");*/
+//		 configurationMap.put("clientId", "");
+//		 configurationMap.put("clientSecret", "");
+//		 configurationMap.put("mode", "live");
 	}
 
 	@Test(enabled = false)
 	public void testCreateFromAuthorizationCodeDynamic()
 			throws PayPalRESTException, UnsupportedEncodingException {
 		CreateFromAuthorizationCodeParameters param = new CreateFromAuthorizationCodeParameters();
-		param.setCode("xxxxx");
+		param.setCode("xxxx");
 		APIContext apiContext = new APIContext();
 		apiContext.setConfigurationMap(configurationMap);
 		info = Tokeninfo.createFromAuthorizationCode(apiContext, param);
+		Assert.assertEquals(info.getAccessToken() != null, true);
 		logger.info("Generated Access Token : " + info.getAccessToken());
 		logger.info("Generated Refrest Token: " + info.getRefreshToken());
 	}
@@ -51,6 +52,7 @@ public class OpenIdTest {
 		APIContext apiContext = new APIContext();
 		apiContext.setConfigurationMap(configurationMap);
 		info = info.createFromRefreshToken(apiContext, param);
+		Assert.assertEquals(info.getAccessToken() != null, true);
 		logger.info("Regenerated Access Token: " + info.getAccessToken());
 		logger.info("Refresh Token: " + info.getRefreshToken());
 	}
@@ -62,6 +64,7 @@ public class OpenIdTest {
 		APIContext apiContext = new APIContext();
 		apiContext.setConfigurationMap(configurationMap);
 		Userinfo userInfo = Userinfo.getUserinfo(apiContext, param);
+		Assert.assertEquals(userInfo != null, true);
 		logger.info("User Info Email: " + userInfo.getEmail());
 		logger.info("User Info Account Type: " + userInfo.getAccountType());
 		logger.info("User Info Name: " + userInfo.getGivenName());
