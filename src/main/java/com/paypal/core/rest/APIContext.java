@@ -5,10 +5,12 @@ import java.util.UUID;
 
 /**
  * <code>APIContext</code> wraps wire-level parameters for the API call.
- * AccessToken, which is essentially a OAuth token, is treated as a mandatory
+ * AccessToken, which is essentially an OAuth token, is treated as a mandatory
  * parameter for (PayPal REST APIs). RequestId is generated if not supplied for
  * marking Idempotency of the API call. OAuth token can be generated using
- * {@link OAuthTokenCredential}
+ * {@link OAuthTokenCredential}. The Application Header property may be used by
+ * clients to access application level headers. The clients are responsible to
+ * cast the Application Header property to appropriate type.
  * 
  * @author kjayakumar
  * 
@@ -34,12 +36,17 @@ public class APIContext {
 	 * Configuration Map used for dynamic configuration
 	 */
 	private Map<String, String> configurationMap;
-	
+
 	/**
 	 * Custom HTTP headers
 	 */
 	private Map<String, String> headersMap;
-	
+
+	/**
+	 * Application Header
+	 */
+	private Object applicationHeader;
+
 	/**
 	 * Default Constructor
 	 */
@@ -141,10 +148,34 @@ public class APIContext {
 	}
 
 	/**
-	 * @param headersMap the headersMap to set
+	 * @param headersMap
+	 *            the headersMap to set
 	 */
 	public void setHeadersMap(Map<String, String> headersMap) {
 		this.headersMap = headersMap;
+	}
+
+	/**
+	 * Returns the Application Header. The exact interpretation of Application
+	 * Header is left to the clients. The clients should cast the Application
+	 * Header to appropriate sub-type as required.
+	 * 
+	 * @return the applicationHeader
+	 */
+	public Object getApplicationHeader() {
+		return applicationHeader;
+	}
+
+	/**
+	 * Set the Application Header used by the system. The exact interpretation
+	 * of Application Header is left to the clients. The clients should cast the
+	 * Application Header to appropriate sub-type as required.
+	 * 
+	 * @param applicationHeader
+	 *            the Application Header to set
+	 */
+	public void setApplicationHeader(Object applicationHeader) {
+		this.applicationHeader = applicationHeader;
 	}
 
 }

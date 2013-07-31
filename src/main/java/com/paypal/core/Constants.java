@@ -146,6 +146,9 @@ public final class Constants {
 
 	// HTTP Content Type JSON
 	public static final String HTTP_CONTENT_TYPE_JSON = "application/json";
+	
+	// HTTP Content Type JSON
+	public static final String HTTP_CONTENT_TYPE_XML = "text/xml";
 
 	// IPN endpoint property name
 	public static final String IPN_ENDPOINT = "service.IPNEndpoint";

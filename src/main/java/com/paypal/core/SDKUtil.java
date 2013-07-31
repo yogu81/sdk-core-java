@@ -173,6 +173,24 @@ public final class SDKUtil {
 		}
 		return response;
 	}
+	
+	/**
+	 * Method replaces invalid XML entities with proper escapes, this method
+	 * depends on regular expressions
+	 * 
+	 * @param longContent
+	 *            Long object
+	 * @return Replaced text
+	 */
+	public static String escapeInvalidXmlCharsRegex(Long longContent) {
+		String response = null;
+		String textContent = null;
+		if (longContent != null) {
+			textContent = longContent.toString();
+			response = escapeInvalidXmlCharsRegex(textContent);
+		}
+		return response;
+	}
 
 	/**
 	 * Method replaces invalid XML entities with proper escapes, this method
@@ -205,6 +223,24 @@ public final class SDKUtil {
 		String textContent = null;
 		if (doubleContent != null) {
 			textContent = doubleContent.toString();
+			response = escapeInvalidXmlCharsRegex(textContent);
+		}
+		return response;
+	}
+	
+	/**
+	 * Method replaces invalid XML entities with proper escapes, this method
+	 * depends on regular expressions
+	 * 
+	 * @param floatContent
+	 *            Float object
+	 * @return Replaced text
+	 */
+	public static String escapeInvalidXmlCharsRegex(Float floatContent) {
+		String response = null;
+		String textContent = null;
+		if (floatContent != null) {
+			textContent = floatContent.toString();
 			response = escapeInvalidXmlCharsRegex(textContent);
 		}
 		return response;
