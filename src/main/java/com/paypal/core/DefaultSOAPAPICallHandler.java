@@ -13,7 +13,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -29,7 +28,6 @@ import org.xml.sax.SAXException;
 
 import com.paypal.core.credential.ICredential;
 import com.paypal.core.message.XMLMessageSerializer;
-import com.paypal.core.rest.APIContext;
 import com.paypal.exception.ClientActionRequiredException;
 
 /**
@@ -166,9 +164,9 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	private String methodName = null;
 
 	/**
-	 * {@link APIContext} instance
+	 * {@link BaseAPIContext} instance
 	 */
-	private APIContext apiContext;
+	private BaseAPIContext baseAPIContext;
 
 	/**
 	 * Instance of {@link XMLMessageSerializer} for SOAP Header
@@ -269,39 +267,36 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	/**
 	 * <code>DefaultSOAPAPICallHandler</code> taking
 	 * {@link XMLMessageSerializer} instance for SOAP Body part. SOAP Header
-	 * part is set in {@link APIContext} as Application Header property (The
+	 * part is set in {@link BaseAPIContext} as Application Header property (The
 	 * Application Header should be an instance of {@link XMLMessageSerializer}
 	 * ). Dynamic configuration can be set using the configurationMap property
-	 * of {@link APIContext} which will take higher precedence than the one set
+	 * of {@link BaseAPIContext} which will take higher precedence than the one set
 	 * in the Service level
 	 * 
 	 * @param soapBodyContent
 	 *            SOAP Body Serializer
-	 * @param apiContext
-	 *            {@link APIContext} instance
+	 * @param baseAPIContext
+	 *            {@link BaseAPIContext} instance
 	 * @param configurationMap
 	 *            ConfigurationMap used for Dynamic configuration
 	 * @param methodName
 	 *            SOAP API operation name
 	 */
 	public DefaultSOAPAPICallHandler(XMLMessageSerializer soapBodyContent,
-			APIContext apiContext, Map<String, String> configurationMap,
+			BaseAPIContext baseAPIContext, Map<String, String> configurationMap,
 			String methodName) {
-		this.apiContext = apiContext;
+		this.baseAPIContext = baseAPIContext;
 		this.methodName = methodName;
-		this.configurationMap = apiContext.getConfigurationMap() == null ? configurationMap
-				: SDKUtil.combineDefaultMap(apiContext.getConfigurationMap());
-		if (apiContext.getApplicationHeader() instanceof XMLMessageSerializer) {
-			this.soapHeaderContent = (XMLMessageSerializer) apiContext
-					.getApplicationHeader();
-		}
+		this.configurationMap = baseAPIContext.getConfigurationMap() == null ? configurationMap
+				: SDKUtil.combineDefaultMap(baseAPIContext.getConfigurationMap());
+		this.soapHeaderContent = (XMLMessageSerializer) baseAPIContext.getSOAPHeader();
 		this.soapBodyContent = soapBodyContent;
 	}
 
 	public Map<String, String> getHeaderMap() {
 		Map<String, String> headersMap = null;
-		if (apiContext != null) {
-			headersMap = apiContext.getHeadersMap();
+		if (baseAPIContext != null) {
+			headersMap = baseAPIContext.getHTTPHeaders();
 		}
 		if (headersMap == null) {
 			headersMap = new HashMap<String, String>();
@@ -421,12 +416,9 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 			SAXException, IOException {
 		Node envelopeNode = null;
 		Document soapDocument = getSoapEnvelopeAsDocument();
-
-		// Add any namespaces set in XmlNamespaceProvider implementation
-		setNamespaces(soapDocument.getDocumentElement());
 		if (soapHeaderContent != null) {
 			Node headerContentNode = soapDocument.importNode(
-					getNode(soapHeaderContent.serializeAsXML()), true);
+					getNode(soapHeaderContent.toXMLString()), true);
 			soapDocument
 					.getDocumentElement()
 					.getElementsByTagNameNS(
@@ -437,7 +429,7 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 		}
 		if (soapBodyContent != null) {
 			Node bodyContentNode = soapDocument.importNode(
-					getNode(soapBodyContent.serializeAsXML()), true);
+					getNode(soapBodyContent.toXMLString()), true);
 			soapDocument
 					.getDocumentElement()
 					.getElementsByTagNameNS(
@@ -462,6 +454,8 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 				.newDocumentBuilder().getDOMImplementation();
 		Document soapDocument = domImpl.createDocument(SOAP_ENV_NS,
 				SOAP_ENVELOPE_QNAME, null);
+
+		// Add any namespaces set in XmlNamespaceProvider implementation
 		setNamespaces(soapDocument.getDocumentElement());
 		Element soapHeader = soapDocument.createElementNS(SOAP_ENV_NS,
 				SOAP_HEADER_QNAME);

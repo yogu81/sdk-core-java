@@ -3,6 +3,8 @@ package com.paypal.core.rest;
 import java.util.Map;
 import java.util.UUID;
 
+import com.paypal.core.BaseAPIContext;
+
 /**
  * <code>APIContext</code> wraps wire-level parameters for the API call.
  * AccessToken, which is essentially an OAuth token, is treated as a mandatory
@@ -15,7 +17,7 @@ import java.util.UUID;
  * @author kjayakumar
  * 
  */
-public class APIContext {
+public class APIContext extends BaseAPIContext {
 
 	/**
 	 * OAuth Token
@@ -33,25 +35,10 @@ public class APIContext {
 	private boolean maskRequestId;
 
 	/**
-	 * Configuration Map used for dynamic configuration
-	 */
-	private Map<String, String> configurationMap;
-
-	/**
-	 * Custom HTTP headers
-	 */
-	private Map<String, String> headersMap;
-
-	/**
-	 * Application Header
-	 */
-	private Object applicationHeader;
-
-	/**
 	 * Default Constructor
 	 */
 	public APIContext() {
-
+		super();
 	}
 
 	/**
@@ -64,6 +51,7 @@ public class APIContext {
 	 *            See {@link OAuthTokenCredential} to generate OAuthToken
 	 */
 	public APIContext(String accessToken) {
+		super();
 		if (accessToken == null || accessToken.length() <= 0) {
 			throw new IllegalArgumentException("AccessToken cannot be null");
 		}
@@ -118,21 +106,6 @@ public class APIContext {
 	}
 
 	/**
-	 * @return the configurationMap
-	 */
-	public Map<String, String> getConfigurationMap() {
-		return configurationMap;
-	}
-
-	/**
-	 * @param configurationMap
-	 *            the configurationMap to set
-	 */
-	public void setConfigurationMap(Map<String, String> configurationMap) {
-		this.configurationMap = configurationMap;
-	}
-
-	/**
 	 * @param maskRequestId
 	 *            the maskRequestId to set
 	 */
@@ -141,41 +114,20 @@ public class APIContext {
 	}
 
 	/**
+	 * @deprecated Use getHTTPHeaders() instead
 	 * @return the headersMap
 	 */
 	public Map<String, String> getHeadersMap() {
-		return headersMap;
+		return super.getHTTPHeaders();
 	}
 
 	/**
+	 * @deprecated
 	 * @param headersMap
 	 *            the headersMap to set
 	 */
 	public void setHeadersMap(Map<String, String> headersMap) {
-		this.headersMap = headersMap;
-	}
-
-	/**
-	 * Returns the Application Header. The exact interpretation of Application
-	 * Header is left to the clients. The clients should cast the Application
-	 * Header to appropriate sub-type as required.
-	 * 
-	 * @return the applicationHeader
-	 */
-	public Object getApplicationHeader() {
-		return applicationHeader;
-	}
-
-	/**
-	 * Set the Application Header used by the system. The exact interpretation
-	 * of Application Header is left to the clients. The clients should cast the
-	 * Application Header to appropriate sub-type as required.
-	 * 
-	 * @param applicationHeader
-	 *            the Application Header to set
-	 */
-	public void setApplicationHeader(Object applicationHeader) {
-		this.applicationHeader = applicationHeader;
+		super.setHTTPHeaders(headersMap);
 	}
 
 }

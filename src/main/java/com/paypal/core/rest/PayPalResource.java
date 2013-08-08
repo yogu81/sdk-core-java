@@ -211,7 +211,7 @@ public abstract class PayPalResource {
 			cMap = apiContext.getConfigurationMap();
 			accessToken = apiContext.getAccessToken();
 			requestId = apiContext.getRequestId();
-			headersMap = apiContext.getHeadersMap();
+			headersMap = apiContext.getHTTPHeaders();
 		}
 		return configureAndExecute(cMap, accessToken, httpMethod, resourcePath,
 				headersMap, payLoad, requestId, clazz);
