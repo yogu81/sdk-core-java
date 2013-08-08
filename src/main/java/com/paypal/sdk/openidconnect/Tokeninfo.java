@@ -216,7 +216,7 @@ public class Tokeninfo {
 			apiContext = new APIContext();
 		}
 		apiContext.setMaskRequestId(true);
-		apiContext.setHeadersMap(headersMap);
+		apiContext.setHTTPHeaders(headersMap);
 		return PayPalResource.configureAndExecute(apiContext, HttpMethod.POST,
 				resourcePath, payLoad, Tokeninfo.class);
 	}
@@ -266,7 +266,7 @@ public class Tokeninfo {
 			apiContext = new APIContext();
 		}
 		apiContext.setMaskRequestId(true);
-		apiContext.setHeadersMap(headersMap);
+		apiContext.setHTTPHeaders(headersMap);
 		return PayPalResource.configureAndExecute(apiContext, HttpMethod.POST,
 				resourcePath, payLoad, Tokeninfo.class);
 	}

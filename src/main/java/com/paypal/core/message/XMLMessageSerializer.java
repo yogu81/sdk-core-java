@@ -13,6 +13,6 @@ public interface XMLMessageSerializer {
 	 * 
 	 * @return Serialized object as XML String
 	 */
-	String serializeAsXML();
+	String toXMLString();
 
 }

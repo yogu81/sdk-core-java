@@ -72,7 +72,11 @@ public final class JSONFormatter {
 	 */
 	public static <T> T fromJSON(String responseString, Class<T> clazz) {
 		T t = null;
-		t = GSON.fromJson(responseString, clazz);
+		if (clazz.isAssignableFrom(responseString.getClass())) {
+			t = clazz.cast(responseString);
+		} else {
+			t = GSON.fromJson(responseString, clazz);
+		}
 		return t;
 	}
 
