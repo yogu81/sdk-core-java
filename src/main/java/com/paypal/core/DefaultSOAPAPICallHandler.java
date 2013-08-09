@@ -253,15 +253,19 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	 *            (ex: <soapenv:Header>{1}</soapenv:Header>)element that can be
 	 *            used for decorating purpose
 	 * @param configurationMap
-	 *            {@link Map} used for Dynamic configuration
+	 *            {@link Map} used for Dynamic configuration, mandatory
+	 *            parameter
 	 */
 	public DefaultSOAPAPICallHandler(String rawPayLoad, String namespaces,
 			String headerString, Map<String, String> configurationMap) {
-		super();
+		if (configurationMap == null) {
+			throw new IllegalArgumentException(
+					"configurationMap cannot be null");
+		}
 		this.rawPayLoad = rawPayLoad;
 		this.namespaces = namespaces;
 		this.headerString = headerString;
-		this.configurationMap = configurationMap;
+		this.configurationMap = SDKUtil.combineDefaultMap(configurationMap);
 	}
 
 	/**
@@ -270,8 +274,10 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	 * part is set in {@link BaseAPIContext} as Application Header property (The
 	 * Application Header should be an instance of {@link XMLMessageSerializer}
 	 * ). Dynamic configuration can be set using the configurationMap property
-	 * of {@link BaseAPIContext} which will take higher precedence than the one set
-	 * in the Service level
+	 * of {@link BaseAPIContext} which will take higher precedence than the one
+	 * set in the Service level. ConfigurationMap is treated as a mandatory
+	 * parameter picked either from the argument or {@link BaseAPIContext}
+	 * configurationMap parameter in that order of precedence.
 	 * 
 	 * @param soapBodyContent
 	 *            SOAP Body Serializer
@@ -283,13 +289,22 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	 *            SOAP API operation name
 	 */
 	public DefaultSOAPAPICallHandler(XMLMessageSerializer soapBodyContent,
-			BaseAPIContext baseAPIContext, Map<String, String> configurationMap,
-			String methodName) {
+			BaseAPIContext baseAPIContext,
+			Map<String, String> configurationMap, String methodName) {
+		Map<String, String> configMap = configurationMap != null ? configurationMap
+				: baseAPIContext != null ? baseAPIContext.getConfigurationMap()
+						: null;
+		if (configMap == null) {
+			throw new IllegalArgumentException(
+					"configurationMap cannot be null");
+		}
+		this.configurationMap = SDKUtil.combineDefaultMap(configMap);
 		this.baseAPIContext = baseAPIContext;
 		this.methodName = methodName;
-		this.configurationMap = baseAPIContext.getConfigurationMap() == null ? configurationMap
-				: SDKUtil.combineDefaultMap(baseAPIContext.getConfigurationMap());
-		this.soapHeaderContent = (XMLMessageSerializer) baseAPIContext.getSOAPHeader();
+		if (baseAPIContext != null) {
+			this.soapHeaderContent = (XMLMessageSerializer) baseAPIContext
+					.getSOAPHeader();
+		}
 		this.soapBodyContent = soapBodyContent;
 	}
 
@@ -301,9 +316,10 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 		if (headersMap == null) {
 			headersMap = new HashMap<String, String>();
 		}
-		
+
 		// Append HTTP Content-Type text/xml
-		headersMap.put(Constants.HTTP_CONTENT_TYPE_HEADER, Constants.HTTP_CONTENT_TYPE_XML);
+		headersMap.put(Constants.HTTP_CONTENT_TYPE_HEADER,
+				Constants.HTTP_CONTENT_TYPE_XML);
 		return headersMap;
 	}
 
@@ -450,8 +466,9 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	 */
 	private Document getSoapEnvelopeAsDocument()
 			throws ParserConfigurationException {
-		DOMImplementation domImpl = DocumentBuilderFactory.newInstance()
-				.newDocumentBuilder().getDOMImplementation();
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DOMImplementation domImpl = factory.newDocumentBuilder()
+				.getDOMImplementation();
 		Document soapDocument = domImpl.createDocument(SOAP_ENV_NS,
 				SOAP_ENVELOPE_QNAME, null);
 
@@ -517,7 +534,7 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 		Transformer transformer = TransformerFactory.newInstance()
 				.newTransformer();
 		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		//transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		transformer.transform(new DOMSource(node), new StreamResult(
 				stringWriter));
 		return stringWriter.toString();
