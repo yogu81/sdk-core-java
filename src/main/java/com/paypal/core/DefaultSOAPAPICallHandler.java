@@ -276,8 +276,8 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	 * ). Dynamic configuration can be set using the configurationMap property
 	 * of {@link BaseAPIContext} which will take higher precedence than the one
 	 * set in the Service level. ConfigurationMap is treated as a mandatory
-	 * parameter picked either from the argument or {@link BaseAPIContext}
-	 * configurationMap parameter in that order of precedence.
+	 * parameter picked either from {@link BaseAPIContext}
+	 * configurationMap parameter or configurationMap argument in that order of precedence.
 	 * 
 	 * @param soapBodyContent
 	 *            SOAP Body Serializer
@@ -291,9 +291,10 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 	public DefaultSOAPAPICallHandler(XMLMessageSerializer soapBodyContent,
 			BaseAPIContext baseAPIContext,
 			Map<String, String> configurationMap, String methodName) {
-		Map<String, String> configMap = configurationMap != null ? configurationMap
-				: baseAPIContext != null ? baseAPIContext.getConfigurationMap()
-						: null;
+		Map<String, String> configMap = (baseAPIContext != null && baseAPIContext
+				.getConfigurationMap() != null) ? baseAPIContext
+				.getConfigurationMap() : configurationMap;
+
 		if (configMap == null) {
 			throw new IllegalArgumentException(
 					"configurationMap cannot be null");
@@ -534,7 +535,7 @@ public class DefaultSOAPAPICallHandler implements APICallPreHandler {
 		Transformer transformer = TransformerFactory.newInstance()
 				.newTransformer();
 		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-		//transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		// transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		transformer.transform(new DOMSource(node), new StreamResult(
 				stringWriter));
 		return stringWriter.toString();
