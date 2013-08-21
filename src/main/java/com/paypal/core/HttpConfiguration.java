@@ -118,7 +118,6 @@ public class HttpConfiguration {
 
 		this.httpMethod = Constants.HTTP_CONFIG_DEFAULT_HTTP_METHOD;
 
-		this.contentType = Constants.HTTP_CONFIG_DEFAULT_CONTENT_TYPE;
 	}
 
 	/**
