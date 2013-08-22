@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.paypal.core.BaseAPIContext;
+import com.paypal.core.SDKVersion;
 
 /**
  * <code>APIContext</code> wraps wire-level parameters for the API call.
@@ -33,6 +34,11 @@ public class APIContext extends BaseAPIContext {
 	 * Parameter to mask RequestId
 	 */
 	private boolean maskRequestId;
+	
+	/**
+	 * {@link SDKVersion} instance
+	 */
+	private SDKVersion sdkVersion;
 
 	/**
 	 * Default Constructor
@@ -111,6 +117,20 @@ public class APIContext extends BaseAPIContext {
 	 */
 	public void setMaskRequestId(boolean maskRequestId) {
 		this.maskRequestId = maskRequestId;
+	}
+
+	/**
+	 * @return the sdkVersion
+	 */
+	public SDKVersion getSdkVersion() {
+		return sdkVersion;
+	}
+
+	/**
+	 * @param sdkVersion the sdkVersion to set
+	 */
+	public void setSdkVersion(SDKVersion sdkVersion) {
+		this.sdkVersion = sdkVersion;
 	}
 
 	/**

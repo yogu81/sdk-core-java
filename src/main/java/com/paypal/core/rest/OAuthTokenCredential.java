@@ -12,6 +12,7 @@ import com.paypal.core.Constants;
 import com.paypal.core.HttpConfiguration;
 import com.paypal.core.HttpConnection;
 import com.paypal.core.SDKUtil;
+import com.paypal.core.SDKVersion;
 import com.paypal.core.codec.binary.Base64;
 import com.paypal.core.credential.ICredential;
 import com.paypal.sdk.util.UserAgentHeader;
@@ -61,6 +62,11 @@ public final class OAuthTokenCredential implements ICredential {
 	private Map<String, String> configurationMap;
 
 	/**
+	 * {@link SDKVersion} instance
+	 */
+	private SDKVersion sdkVersion;
+
+	/**
 	 * Sets the URI path for the OAuth Token service. If not set it defaults to
 	 * "/v1/oauth2/token"
 	 * 
@@ -104,6 +110,48 @@ public final class OAuthTokenCredential implements ICredential {
 		this.clientID = clientID;
 		this.clientSecret = clientSecret;
 		this.configurationMap = SDKUtil.combineDefaultMap(configurationMap);
+	}
+
+	/**
+	 * @param clientID
+	 *            Client ID for the OAuth
+	 * @param clientSecret
+	 *            Client Secret for OAuth
+	 * @param sdkVersion
+	 *            {@link SDKVersion} instance
+	 */
+	public OAuthTokenCredential(String clientID, String clientSecret,
+			SDKVersion sdkVersion) {
+		super();
+		this.clientID = clientID;
+		this.clientSecret = clientSecret;
+		this.configurationMap = SDKUtil.combineDefaultMap(ConfigManager
+				.getInstance().getConfigurationMap());
+		this.sdkVersion = sdkVersion;
+	}
+
+	/**
+	 * Configuration Constructor for dynamic configuration
+	 * 
+	 * @param clientID
+	 *            Client ID for the OAuth
+	 * @param clientSecret
+	 *            Client Secret for OAuth
+	 * @param configurationMap
+	 *            Dynamic configuration map which should have an entry for
+	 *            'oauth.EndPoint' or 'service.EndPoint'. If either are not
+	 *            present then there should be entry for 'mode' with values
+	 *            sandbox/live, wherein PayPals endpoints are used.
+	 * @param sdkVersion
+	 *            {@link SDKVersion} instance
+	 */
+	public OAuthTokenCredential(String clientID, String clientSecret,
+			Map<String, String> configurationMap, SDKVersion sdkVersion) {
+		super();
+		this.clientID = clientID;
+		this.clientSecret = clientSecret;
+		this.configurationMap = SDKUtil.combineDefaultMap(configurationMap);
+		this.sdkVersion = sdkVersion;
 	}
 
 	/**
@@ -174,7 +222,8 @@ public final class OAuthTokenCredential implements ICredential {
 					+ base64ClientID);
 			headers.put(Constants.HTTP_ACCEPT_HEADER, "*/*");
 			UserAgentHeader userAgentHeader = new UserAgentHeader(
-					PayPalResource.SDK_ID, PayPalResource.SDK_VERSION);
+					sdkVersion != null ? sdkVersion.getSDKId() : null,
+					sdkVersion != null ? sdkVersion.getSDKVersion() : null);
 			headers.putAll(userAgentHeader.getHeader());
 			String postRequest = getRequestPayload();
 			String jsonResponse = connection.execute("", postRequest, headers);
