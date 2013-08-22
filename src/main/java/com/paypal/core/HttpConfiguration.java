@@ -79,6 +79,7 @@ public class HttpConfiguration {
 
 	/**
 	 * HTTP Content Type value, defaulted to 'application/x-www-form-urlencoded'
+	 * @deprecated Set Content-Type in HTTP Headers property of {@link BaseAPIContext}
 	 */
 	private String contentType;
 
@@ -328,6 +329,7 @@ public class HttpConfiguration {
 	}
 
 	/**
+	 * @deprecated Set/Get Content-Type HTTP Header in {@link BaseAPIContext} HTTPHeaders parameter
 	 * @return the contentType
 	 */
 	public String getContentType() {
@@ -335,6 +337,7 @@ public class HttpConfiguration {
 	}
 
 	/**
+	 * @deprecated Set/Get Content-Type HTTP Header in {@link BaseAPIContext} HTTPHeaders parameter
 	 * @param contentType
 	 *            the contentType to set
 	 */

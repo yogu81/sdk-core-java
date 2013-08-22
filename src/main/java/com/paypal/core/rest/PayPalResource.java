@@ -17,28 +17,18 @@ import com.paypal.core.HttpConfiguration;
 import com.paypal.core.HttpConnection;
 import com.paypal.core.LoggingManager;
 import com.paypal.core.SDKUtil;
+import com.paypal.core.SDKVersion;
 
 /**
- * PayPalResource acts as a base class for REST enabled resources. The class
- * operates by using a {@link APICallPreHandler} as an abstraction for making
- * calls.
+ * PayPalResource acts as a base class for REST enabled resources.
  */
 public abstract class PayPalResource {
 
 	/*
-	 * The class uses an implementation APICallPreHandler (here
-	 * RESTAPICallPreHandler)to get access to endpoint, HTTP headers, and payload.
+	 * The class relies on an implementation of APICallPreHandler (here
+	 * RESTAPICallPreHandler)to get access to endpoint, HTTP headers, and
+	 * payload.
 	 */
-	/**
-	 * SDK ID used in User-Agent HTTP header
-	 */
-	public static final String SDK_ID = "rest-sdk-java";
-
-	/**
-	 * SDK Version used in User-Agent HTTP header
-	 */
-	public static final String SDK_VERSION = "0.6.0";
-
 	/**
 	 * Map used in dynamic configuration
 	 */
@@ -48,7 +38,7 @@ public abstract class PayPalResource {
 	 * Configuration enabled flag
 	 */
 	private static boolean configInitialized = false;
-	
+
 	/**
 	 * Last request sent to Service
 	 */
@@ -203,22 +193,43 @@ public abstract class PayPalResource {
 	public static <T> T configureAndExecute(APIContext apiContext,
 			HttpMethod httpMethod, String resourcePath, String payLoad,
 			Class<T> clazz) throws PayPalRESTException {
+		T t = null;
 		Map<String, String> cMap = null;
 		String accessToken = null;
 		String requestId = null;
 		Map<String, String> headersMap = null;
 		if (apiContext != null) {
-			cMap = apiContext.getConfigurationMap();
+			if (apiContext.getConfigurationMap() != null) {
+				cMap = SDKUtil.combineDefaultMap(apiContext
+						.getConfigurationMap());
+			} else {
+				if (!configInitialized) {
+					initializeToDefault();
+				}
+
+				/*
+				 * The Map returned here is already combined with default values
+				 */
+				cMap = new HashMap<String, String>(
+						PayPalResource.configurationMap);
+			}
+			headersMap = apiContext.getHTTPHeaders();
 			accessToken = apiContext.getAccessToken();
 			requestId = apiContext.getRequestId();
-			headersMap = apiContext.getHTTPHeaders();
+
+			APICallPreHandler apiCallPreHandler = createAPICallPreHandler(cMap,
+					payLoad, resourcePath, headersMap, accessToken, requestId,
+					apiContext.getSdkVersion());
+			HttpConfiguration httpConfiguration = createHttpConfiguration(cMap,
+					httpMethod, apiCallPreHandler);
+			t = execute(apiCallPreHandler, httpConfiguration, clazz);
 		}
-		return configureAndExecute(cMap, accessToken, httpMethod, resourcePath,
-				headersMap, payLoad, requestId, clazz);
+		return t;
 	}
 
 	/**
 	 * Configures and executes REST call: Supports JSON
+	 * 
 	 * @deprecated
 	 * @param <T>
 	 * @param apiContext
@@ -272,22 +283,12 @@ public abstract class PayPalResource {
 			cMap = new HashMap<String, String>(PayPalResource.configurationMap);
 		}
 
-		/*
-		 * Search for Content-Type header passed as a part of headersMap remove
-		 * the header and pass it to HttpConfiguration object with creates the
-		 * base connection
-		 */
-		String contentType = (headersMap != null && headersMap
-				.containsKey(Constants.HTTP_CONTENT_TYPE_HEADER)) ? headersMap
-				.remove(Constants.HTTP_CONTENT_TYPE_HEADER) : null;
-
 		APICallPreHandler apiCallPreHandler = createAPICallPreHandler(cMap,
-				payLoad, resourcePath, headersMap, accessToken, requestId);
+				payLoad, resourcePath, headersMap, accessToken, requestId, null);
 		HttpConfiguration httpConfiguration = createHttpConfiguration(cMap,
-				httpMethod, contentType, apiCallPreHandler);
+				httpMethod, apiCallPreHandler);
 		t = execute(apiCallPreHandler, httpConfiguration, clazz);
 		return t;
-
 	}
 
 	/**
@@ -306,12 +307,14 @@ public abstract class PayPalResource {
 	 *            OAuth Token
 	 * @param requestId
 	 *            PayPal Request Id
+	 * @param sdkVersion
+	 *            {@link SDKVersion} instance
 	 * @return
 	 */
 	public static APICallPreHandler createAPICallPreHandler(
 			Map<String, String> configurationMap, String payLoad,
 			String resourcePath, Map<String, String> headersMap,
-			String accessToken, String requestId) {
+			String accessToken, String requestId, SDKVersion sdkVersion) {
 		APICallPreHandler apiCallPreHandler = null;
 		RESTAPICallPreHandler restAPICallPreHandler = new RESTAPICallPreHandler(
 				configurationMap, headersMap);
@@ -319,6 +322,7 @@ public abstract class PayPalResource {
 		restAPICallPreHandler.setRequestId(requestId);
 		restAPICallPreHandler.setAuthorizationToken(accessToken);
 		restAPICallPreHandler.setPayLoad(payLoad);
+		restAPICallPreHandler.setSdkVersion(sdkVersion);
 		apiCallPreHandler = restAPICallPreHandler;
 		return apiCallPreHandler;
 	}
@@ -384,13 +388,10 @@ public abstract class PayPalResource {
 	 */
 	private static HttpConfiguration createHttpConfiguration(
 			Map<String, String> configurationMap, HttpMethod httpMethod,
-			String contentType, APICallPreHandler apiCallPreHandler) {
+			APICallPreHandler apiCallPreHandler) {
 		HttpConfiguration httpConfiguration = new HttpConfiguration();
 		httpConfiguration.setHttpMethod(httpMethod.toString());
 		httpConfiguration.setEndPointUrl(apiCallPreHandler.getEndPoint());
-		httpConfiguration.setContentType((contentType != null && contentType
-				.trim().length() > 0) ? (contentType)
-				: Constants.HTTP_CONTENT_TYPE_JSON);
 		httpConfiguration
 				.setGoogleAppEngine(Boolean.parseBoolean(configurationMap
 						.get(Constants.GOOGLE_APP_ENGINE)));

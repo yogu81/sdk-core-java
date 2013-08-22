@@ -7,14 +7,30 @@ import com.paypal.core.Constants;
 
 public class UserAgentHeader {
 
+	/**
+	 * Product Id
+	 */
 	private String productId;
 
+	/**
+	 * Product Version
+	 */
 	private String productVersion;
 
+	/**
+	 * UserAgentHeader
+	 * 
+	 * @param productId
+	 *            Product Id: Defaults to empty string if null or empty
+	 * @param productVersion
+	 *            Product Version : Defaults to empty string if null or empty
+	 */
 	public UserAgentHeader(String productId, String productVersion) {
 		super();
-		this.productId = productId;
-		this.productVersion = productVersion;
+		this.productId = productId != null && productId.trim().length() > 0 ? productId
+				: "";
+		this.productVersion = productVersion != null
+				&& productVersion.trim().length() > 0 ? productVersion : "";
 	}
 
 	/**

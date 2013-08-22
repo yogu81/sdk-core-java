@@ -9,6 +9,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
 
+import com.paypal.core.SDKVersion;
+
 public class OAuthTokenCredentialTestCase {
 
 	private static final Logger logger = Logger
@@ -28,7 +30,7 @@ public class OAuthTokenCredentialTestCase {
 		Map<String, String> configurationMap = new HashMap<String, String>();
 		configurationMap.put("service.EndPoint", "https://api.sandbox.paypal.com");
 		OAuthTokenCredential merchantTokenCredential = new OAuthTokenCredential(
-				clientID, clientSecret, configurationMap);
+				clientID, clientSecret, configurationMap, new SDKVersionImpl());
 		String accessToken = merchantTokenCredential.getAccessToken();
 		logger.info("Generated Access Token = " + accessToken);
 		Assert.assertEquals(true, accessToken.length() > 0);
@@ -40,10 +42,22 @@ public class OAuthTokenCredentialTestCase {
 			Map<String, String> configurationMap = new HashMap<String, String>();
 			configurationMap.put("service.EndPoint", "https://localhost.sandbox.paypal.com");
 			OAuthTokenCredential merchantTokenCredential = new OAuthTokenCredential(
-					clientID, clientSecret, configurationMap);
+					clientID, clientSecret, configurationMap, new SDKVersionImpl());
 			merchantTokenCredential.getAccessToken();
 		} catch (PayPalRESTException e) {
 			Assert.assertEquals(true, e.getCause() instanceof IOException);
 		}
+	}
+	
+	private static class SDKVersionImpl implements SDKVersion {
+
+		public String getSDKId() {
+			return "rest-sdk-java";
+		}
+
+		public String getSDKVersion() {
+			return "0.6.0";
+		}
+		
 	}
 }
