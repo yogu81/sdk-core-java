@@ -89,6 +89,7 @@ public final class OAuthTokenCredential implements ICredential {
 		this.clientSecret = clientSecret;
 		this.configurationMap = SDKUtil.combineDefaultMap(ConfigManager
 				.getInstance().getConfigurationMap());
+		this.sdkVersion = new SDKVersionImpl();
 	}
 
 	/**
@@ -110,48 +111,7 @@ public final class OAuthTokenCredential implements ICredential {
 		this.clientID = clientID;
 		this.clientSecret = clientSecret;
 		this.configurationMap = SDKUtil.combineDefaultMap(configurationMap);
-	}
-
-	/**
-	 * @param clientID
-	 *            Client ID for the OAuth
-	 * @param clientSecret
-	 *            Client Secret for OAuth
-	 * @param sdkVersion
-	 *            {@link SDKVersion} instance
-	 */
-	public OAuthTokenCredential(String clientID, String clientSecret,
-			SDKVersion sdkVersion) {
-		super();
-		this.clientID = clientID;
-		this.clientSecret = clientSecret;
-		this.configurationMap = SDKUtil.combineDefaultMap(ConfigManager
-				.getInstance().getConfigurationMap());
-		this.sdkVersion = sdkVersion;
-	}
-
-	/**
-	 * Configuration Constructor for dynamic configuration
-	 * 
-	 * @param clientID
-	 *            Client ID for the OAuth
-	 * @param clientSecret
-	 *            Client Secret for OAuth
-	 * @param configurationMap
-	 *            Dynamic configuration map which should have an entry for
-	 *            'oauth.EndPoint' or 'service.EndPoint'. If either are not
-	 *            present then there should be entry for 'mode' with values
-	 *            sandbox/live, wherein PayPals endpoints are used.
-	 * @param sdkVersion
-	 *            {@link SDKVersion} instance
-	 */
-	public OAuthTokenCredential(String clientID, String clientSecret,
-			Map<String, String> configurationMap, SDKVersion sdkVersion) {
-		super();
-		this.clientID = clientID;
-		this.clientSecret = clientSecret;
-		this.configurationMap = SDKUtil.combineDefaultMap(configurationMap);
-		this.sdkVersion = sdkVersion;
+		this.sdkVersion = new SDKVersionImpl();
 	}
 
 	/**
@@ -264,6 +224,30 @@ public final class OAuthTokenCredential implements ICredential {
 				.setGoogleAppEngine(Boolean.parseBoolean(configurationMap
 						.get(Constants.GOOGLE_APP_ENGINE)));
 		return httpConfiguration;
+	}
+
+	/**
+	 * Implemenation of {@link SDKVersion} for User-Agent HTTP header
+	 * 
+	 * @author kjayakumar
+	 * 
+	 */
+	private static class SDKVersionImpl implements SDKVersion {
+
+		public String getSDKId() {
+			/**
+			 * Java SDK-ID
+			 */
+			return Constants.SDK_ID;
+		}
+
+		public String getSDKVersion() {
+			/**
+			 * Java SDK Core Version
+			 */
+			return Constants.SDK_VERSION;
+		}
+
 	}
 
 }
