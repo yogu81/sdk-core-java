@@ -28,9 +28,10 @@ public class OAuthTokenCredentialTestCase {
 	@Test(priority = 20)
 	public void testGetAccessToken() throws PayPalRESTException {
 		Map<String, String> configurationMap = new HashMap<String, String>();
-		configurationMap.put("service.EndPoint", "https://api.sandbox.paypal.com");
+		configurationMap.put("service.EndPoint",
+				"https://api.sandbox.paypal.com");
 		OAuthTokenCredential merchantTokenCredential = new OAuthTokenCredential(
-				clientID, clientSecret, configurationMap, new SDKVersionImpl());
+				clientID, clientSecret, configurationMap);
 		String accessToken = merchantTokenCredential.getAccessToken();
 		logger.info("Generated Access Token = " + accessToken);
 		Assert.assertEquals(true, accessToken.length() > 0);
@@ -40,24 +41,14 @@ public class OAuthTokenCredentialTestCase {
 	public void testErrorAccessToken() {
 		try {
 			Map<String, String> configurationMap = new HashMap<String, String>();
-			configurationMap.put("service.EndPoint", "https://localhost.sandbox.paypal.com");
+			configurationMap.put("service.EndPoint",
+					"https://localhost.sandbox.paypal.com");
 			OAuthTokenCredential merchantTokenCredential = new OAuthTokenCredential(
-					clientID, clientSecret, configurationMap, new SDKVersionImpl());
+					clientID, clientSecret, configurationMap);
 			merchantTokenCredential.getAccessToken();
 		} catch (PayPalRESTException e) {
 			Assert.assertEquals(true, e.getCause() instanceof IOException);
 		}
 	}
-	
-	private static class SDKVersionImpl implements SDKVersion {
 
-		public String getSDKId() {
-			return "rest-sdk-java";
-		}
-
-		public String getSDKVersion() {
-			return "0.6.0";
-		}
-		
-	}
 }

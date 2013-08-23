@@ -5,20 +5,25 @@ public final class Constants {
 	private Constants() {}
 
 	// General Constants
+	// UTF-8 Encoding format
 	public static final String ENCODING_FORMAT = "UTF-8";
+	
+	// Empty String
 	public static final String EMPTY_STRING = "";
+	
+	// Account prefix used in config properties file
 	public static final String ACCOUNT_PREFIX = "acct";
 
+	// SOAP Payload format
 	public static final String PAYLOAD_FORMAT_SOAP = "SOAP";
+	
+	// NVP Payload format
 	public static final String PAYLOAD_FORMAT_NVP = "NV";
-	public static final String SDK_NAME = "";
-	public static final String SDK_VERSION = "";
 
 	// Default SDK configuration file name
 	public static final String DEFAULT_CONFIGURATION_FILE = "sdk_config.properties";
 
 	// HTTP Header Constants
-
 	// HTTP Content-Type Header
 	public static final String HTTP_CONTENT_TYPE_HEADER = "Content-Type";
 
@@ -206,5 +211,11 @@ public final class Constants {
 
 	// Client Secret
 	public static final String CLIENT_SECRET = "clientSecret";
+
+	// Java SDK_ID for paypal-core
+	public static final String SDK_ID = "paypal-core-java";
+	
+	// Java SDK_VERSION for paypal-core
+	public static final String SDK_VERSION = "1.5.0";
 
 }
