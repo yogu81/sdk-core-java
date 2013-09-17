@@ -191,7 +191,7 @@ public class OpenIdTest {
 		apiContext.setConfigurationMap(m);
 		String logoutURL = Session.getLogoutUrl("http://google.com", "tokenId",
 				apiContext);
-		logger.info("Redirect URL: " + logoutURL);
+		logger.info("Logout URL: " + logoutURL);
 		Assert.assertEquals(
 				logoutURL,
 				"https://www.paypal.com/webapps/auth/protocol/openidconnect/v1/endsession?id_token=tokenId&redirect_uri=http%3A%2F%2Fgoogle.com&logout=true");
@@ -205,7 +205,7 @@ public class OpenIdTest {
 		apiContext.setConfigurationMap(m);
 		String logoutURL = Session.getLogoutUrl("http://google.com", "tokenId",
 				apiContext);
-		logger.info("Redirect URL: " + logoutURL);
+		logger.info("Logout URL: " + logoutURL);
 		Assert.assertEquals(
 				logoutURL,
 				"https://www.sandbox.paypal.com/webapps/auth/protocol/openidconnect/v1/endsession?id_token=tokenId&redirect_uri=http%3A%2F%2Fgoogle.com&logout=true");
@@ -219,7 +219,7 @@ public class OpenIdTest {
 		apiContext.setConfigurationMap(m);
 		String logoutURL = Session.getLogoutUrl("http://google.com", "tokenId",
 				apiContext);
-		logger.info("Redirect URL: " + logoutURL);
+		logger.info("Logout URL: " + logoutURL);
 		Assert.assertEquals(
 				logoutURL,
 				"https://www.paypal.com/webapps/auth/protocol/openidconnect/v1/endsession?id_token=tokenId&redirect_uri=http%3A%2F%2Fgoogle.com&logout=true");
