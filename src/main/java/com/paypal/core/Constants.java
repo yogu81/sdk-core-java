@@ -204,7 +204,7 @@ public final class Constants {
 	public static final String OPENID_REDIRECT_URI_CONSTANT_LIVE = "https://www.paypal.com/webapps/auth/protocol/openidconnect";
 	
 	// Open Id redirect URI Constant Sandbox
-	public static final String OPENID_REDIRECT_URI_CONSTANT_SANDBOX = "https://www.sanbox.paypal.com/webapps/auth/protocol/openidconnect";
+	public static final String OPENID_REDIRECT_URI_CONSTANT_SANDBOX = "https://www.sandbox.paypal.com/webapps/auth/protocol/openidconnect";
 
 	// Client ID
 	public static final String CLIENT_ID = "clientId";

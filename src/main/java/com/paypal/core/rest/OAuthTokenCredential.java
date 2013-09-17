@@ -117,7 +117,7 @@ public final class OAuthTokenCredential implements ICredential {
 	/**
 	 * Computes Access Token by placing a call to OAuth server using ClientID
 	 * and ClientSecret. The token is appended to the token type (Bearer).
-	 *
+	 * 
 	 * @return the accessToken
 	 * @throws PayPalRESTException
 	 */
@@ -127,11 +127,11 @@ public final class OAuthTokenCredential implements ICredential {
 		}
 		return accessToken;
 	}
-	
+
 	/**
-	 * Computes Access Token by doing a Base64 encoding on the ClientID
-	 * and ClientSecret. The token is appended to the String "Basic ".
-	 *
+	 * Computes Access Token by doing a Base64 encoding on the ClientID and
+	 * ClientSecret. The token is appended to the String "Basic ".
+	 * 
 	 * @return the accessToken
 	 * @throws PayPalRESTException
 	 */
@@ -180,7 +180,10 @@ public final class OAuthTokenCredential implements ICredential {
 			Map<String, String> headers = new HashMap<String, String>();
 			headers.put(Constants.AUTHORIZATION_HEADER, "Basic "
 					+ base64ClientID);
-			headers.put(Constants.HTTP_ACCEPT_HEADER, "*/*");
+
+			// Accept only json output
+			headers.put(Constants.HTTP_ACCEPT_HEADER,
+					Constants.HTTP_CONTENT_TYPE_JSON);
 			UserAgentHeader userAgentHeader = new UserAgentHeader(
 					sdkVersion != null ? sdkVersion.getSDKId() : null,
 					sdkVersion != null ? sdkVersion.getSDKVersion() : null);
@@ -230,22 +233,22 @@ public final class OAuthTokenCredential implements ICredential {
 			}
 		}
 		if (Boolean
-			.parseBoolean(configurationMap.get(Constants.USE_HTTP_PROXY))) {
-		    httpConfiguration.setProxySet(true);
-		    httpConfiguration.setProxyHost(configurationMap
-			    .get(Constants.HTTP_PROXY_HOST));
-		    httpConfiguration.setProxyPort(Integer.parseInt(configurationMap
-			    .get(Constants.HTTP_PROXY_PORT)));
+				.parseBoolean(configurationMap.get(Constants.USE_HTTP_PROXY))) {
+			httpConfiguration.setProxySet(true);
+			httpConfiguration.setProxyHost(configurationMap
+					.get(Constants.HTTP_PROXY_HOST));
+			httpConfiguration.setProxyPort(Integer.parseInt(configurationMap
+					.get(Constants.HTTP_PROXY_PORT)));
 
-		    String proxyUserName = configurationMap
-			    .get(Constants.HTTP_PROXY_USERNAME);
-		    String proxyPassword = configurationMap
-			    .get(Constants.HTTP_PROXY_PASSWORD);
+			String proxyUserName = configurationMap
+					.get(Constants.HTTP_PROXY_USERNAME);
+			String proxyPassword = configurationMap
+					.get(Constants.HTTP_PROXY_PASSWORD);
 
-		    if (proxyUserName != null && proxyPassword != null) {
-			httpConfiguration.setProxyUserName(proxyUserName);
-			httpConfiguration.setProxyPassword(proxyPassword);
-		    }
+			if (proxyUserName != null && proxyPassword != null) {
+				httpConfiguration.setProxyUserName(proxyUserName);
+				httpConfiguration.setProxyPassword(proxyPassword);
+			}
 		}
 		endPointUrl = (endPointUrl.endsWith("/")) ? endPointUrl.substring(0,
 				endPointUrl.length() - 1) : endPointUrl;

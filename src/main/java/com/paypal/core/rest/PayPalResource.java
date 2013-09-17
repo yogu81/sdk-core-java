@@ -252,11 +252,15 @@ public abstract class PayPalResource {
 			Map<String, String> headersMap, String payLoad, Class<T> clazz)
 			throws PayPalRESTException {
 		Map<String, String> cMap = null;
+		String accessToken = null;
+		String requestId = null;
 		if (apiContext != null) {
 			cMap = apiContext.getConfigurationMap();
+			accessToken = apiContext.getAccessToken();
+			requestId = apiContext.getRequestId();
 		}
-		return configureAndExecute(cMap, null, httpMethod, resourcePath,
-				headersMap, payLoad, null, clazz);
+		return configureAndExecute(cMap, accessToken, httpMethod, resourcePath,
+				headersMap, payLoad, requestId, clazz);
 	}
 
 	private static <T> T configureAndExecute(

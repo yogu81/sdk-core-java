@@ -339,6 +339,15 @@ public class RESTAPICallPreHandler implements APICallPreHandler {
 		if (headersMap != null && headersMap.size() > 0) {
 			headers.putAll(headersMap);
 		}
+
+		// Add application/json as the default Content-Type
+		// backward compatibility for PayPal rest sdks which
+		// does not add Content-Type HTTP header in the sdk
+		// stubs
+		if (!headers.containsKey(Constants.HTTP_CONTENT_TYPE_HEADER)) {
+			headers.put(Constants.HTTP_CONTENT_TYPE_HEADER,
+					Constants.HTTP_CONTENT_TYPE_JSON);
+		}
 		return headers;
 	}
 
