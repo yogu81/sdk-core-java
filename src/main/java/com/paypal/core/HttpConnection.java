@@ -20,6 +20,11 @@ import com.paypal.exception.SSLConfigurationException;
  * 
  */
 public abstract class HttpConnection {
+	
+	/**
+	 * HTTP Methods that are not supported by JDK
+	 */
+	protected String[] OVERRIDDEN_HTTP_METHODS = { "PATCH" };
 
 	/**
 	 * Subclasses must set the http configuration in the

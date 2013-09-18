@@ -1,13 +1,16 @@
 package com.paypal.core;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
+import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.SocketAddress;
 import java.net.URL;
+import java.util.Arrays;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -80,7 +83,33 @@ public class DefaultHttpConnection extends HttpConnection {
 		System.setProperty("sun.net.http.errorstream.enableBuffering", "true");
 		this.connection.setDoInput(true);
 		this.connection.setDoOutput(true);
-		this.connection.setRequestMethod(config.getHttpMethod());
+		
+		// Added HTTP PATCH support,
+		// Added a workaround as suggested in
+		// https://java.net/jira/browse/JERSEY-639
+		try {
+			this.connection.setRequestMethod(config.getHttpMethod().toUpperCase());
+		} catch (ProtocolException protocolException) {
+			if (Arrays.asList(OVERRIDDEN_HTTP_METHODS).contains(
+					config.getHttpMethod().toUpperCase())) {
+				try {
+					final Class<?> httpURLConnectionClass = this.connection
+							.getClass();
+					final Field methodField = httpURLConnectionClass
+							.getSuperclass().getDeclaredField("method");
+					methodField.setAccessible(true);
+					methodField.set(this.connection, config.getHttpMethod()
+							.toUpperCase());
+				} catch (final Exception reflectionException) {
+					throw new RuntimeException("Unable to set HTTP method: "
+							+ config.getHttpMethod().toUpperCase(),
+							reflectionException);
+				}
+			} else {
+				throw protocolException;
+			}
+
+		}
 		this.connection.setConnectTimeout(this.config.getConnectionTimeout());
 		this.connection.setReadTimeout(this.config.getReadTimeout());
 	}
