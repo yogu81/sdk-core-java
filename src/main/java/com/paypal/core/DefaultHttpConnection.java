@@ -83,23 +83,78 @@ public class DefaultHttpConnection extends HttpConnection {
 		System.setProperty("sun.net.http.errorstream.enableBuffering", "true");
 		this.connection.setDoInput(true);
 		this.connection.setDoOutput(true);
-		
+
 		// Added HTTP PATCH support,
 		// Added a workaround as suggested in
 		// https://java.net/jira/browse/JERSEY-639
 		try {
-			this.connection.setRequestMethod(config.getHttpMethod().toUpperCase());
+			this.connection.setRequestMethod(config.getHttpMethod()
+					.toUpperCase());
 		} catch (ProtocolException protocolException) {
 			if (Arrays.asList(OVERRIDDEN_HTTP_METHODS).contains(
 					config.getHttpMethod().toUpperCase())) {
 				try {
-					final Class<?> httpURLConnectionClass = this.connection
-							.getClass();
-					final Field methodField = httpURLConnectionClass
-							.getSuperclass().getDeclaredField("method");
-					methodField.setAccessible(true);
-					methodField.set(this.connection, config.getHttpMethod()
-							.toUpperCase());
+					if (this.connection
+							.getClass()
+							.getName()
+							.equalsIgnoreCase(
+									"sun.net.www.protocol.https.HttpsURLConnectionImpl")) {
+
+						// HTTPS urls
+						final Field delegateField = this.connection.getClass()
+								.getDeclaredField("delegate");
+						delegateField.setAccessible(true);
+						Object delegate = delegateField.get(this.connection);
+						if (HttpURLConnection.class.isAssignableFrom(delegate
+								.getClass())) {
+							Class<?> clazz = delegate.getClass();
+							while (clazz != HttpURLConnection.class) {
+								clazz = clazz.getSuperclass();
+							}
+							final Field methodField = clazz
+									.getDeclaredField("method");
+							methodField.setAccessible(true);
+							methodField.set(delegate, config.getHttpMethod()
+									.toUpperCase());
+						} else {
+							throw new RuntimeException(
+									"Unable to set HTTP method: "
+											+ config.getHttpMethod()
+													.toUpperCase()
+											+ ", underlying class not a HttpURLConnection");
+						}
+					} else if (this.connection
+							.getClass()
+							.getName()
+							.equalsIgnoreCase(
+									"sun.net.www.protocol.http.HttpURLConnection")) {
+						
+						// HTTP urls
+						if (HttpURLConnection.class
+								.isAssignableFrom(this.connection.getClass())) {
+							Class<?> clazz = this.connection.getClass();
+							while (clazz != HttpURLConnection.class) {
+								clazz = clazz.getSuperclass();
+							}
+							final Field methodField = clazz
+									.getDeclaredField("method");
+							methodField.setAccessible(true);
+							methodField.set(this.connection, config
+									.getHttpMethod().toUpperCase());
+
+						} else {
+							throw new RuntimeException(
+									"Unable to set HTTP method: "
+											+ config.getHttpMethod()
+													.toUpperCase()
+											+ ", underlying class not a HttpURLConnection");
+						}
+					} else {
+						throw new RuntimeException(
+								"Unable to set HTTP method: "
+										+ config.getHttpMethod().toUpperCase()
+										+ ", underlying class not a HttpURLConnection");
+					}
 				} catch (final Exception reflectionException) {
 					throw new RuntimeException("Unable to set HTTP method: "
 							+ config.getHttpMethod().toUpperCase(),

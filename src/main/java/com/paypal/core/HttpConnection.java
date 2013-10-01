@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.paypal.core.rest.HttpMethod;
 import com.paypal.exception.ClientActionRequiredException;
 import com.paypal.exception.HttpErrorException;
 import com.paypal.exception.InvalidResponseDataException;
@@ -72,7 +73,8 @@ public abstract class HttpConnection {
 			int retry = 0;
 			do {
 				try {
-					if ("POST".equalsIgnoreCase(connection.getRequestMethod())) {
+					if (HttpMethod.POST.name().equalsIgnoreCase(connection.getRequestMethod())
+							|| HttpMethod.PATCH.name().equalsIgnoreCase(connection.getRequestMethod())) {
 						writer = new OutputStreamWriter(
 								this.connection.getOutputStream(),
 								Charset.forName(Constants.ENCODING_FORMAT));
