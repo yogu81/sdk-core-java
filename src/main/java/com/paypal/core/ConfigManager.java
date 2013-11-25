@@ -13,7 +13,7 @@ import java.util.Set;
 import com.paypal.sdk.util.ResourceLoader;
 
 /**
- * <code>ConfigManager</code> loads configuration from 'skd_config.properties'
+ * <code>ConfigManager</code> loads configuration from 'sdk_config.properties'
  * file found in the classpath. There are certain default parameters that the
  * system chooses to use if not seen a part of the configuration. They are
  * enumerated below with the defaults is parenthesis
