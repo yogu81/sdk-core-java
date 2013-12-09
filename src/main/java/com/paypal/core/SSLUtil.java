@@ -57,7 +57,7 @@ public abstract class SSLUtil {
 			SSLContext ctx = SSLContext.getInstance("SSL"); // TLS, SSLv3, SSL
 			SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 			random.setSeed(System.currentTimeMillis());
-			ctx.init(keymanagers, null, random);
+			ctx.init(keymanagers, null, null);
 			return ctx;
 		} catch (Exception e) {
 			throw new SSLConfigurationException(e.getMessage(), e);
