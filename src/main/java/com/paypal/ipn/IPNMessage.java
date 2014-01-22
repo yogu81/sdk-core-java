@@ -100,20 +100,22 @@ public class IPNMessage {
 		initialize();
 		payload = new StringBuffer("cmd=_notify-validate");
 		if (ipnMap != null) {
+			String[] encodingParam = ipnMap.get("charset");
+			String encoding = encodingParam != null && encodingParam.length > 0 ?
+				 encodingParam[0] : ENCODING;
 			for (Map.Entry<String, String[]> entry : ipnMap.entrySet()) {
 				String name = entry.getKey();
 				String[] value = entry.getValue();
 				try {
-					this.ipnMap.put(URLDecoder.decode(name, ENCODING),
-							URLDecoder.decode(value[0], ENCODING));
+					this.ipnMap.put(name,
+							 URLDecoder.decode(value[0], encoding));
 					payload.append("&").append(name).append("=")
-							.append(URLEncoder.encode(value[0], ENCODING));
+							.append(URLEncoder.encode(value[0], encoding));
 				} catch (Exception e) {
 					LoggingManager.debug(IPNMessage.class, e.getMessage());
 				}
 			}
 		}
-
 	}
 
 	/**

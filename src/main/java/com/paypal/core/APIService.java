@@ -158,7 +158,7 @@ public class APIService {
 		httpConfiguration.setEndPointUrl(url);
 		headers = apiCallPreHandler.getHeaderMap();
 		String payLoad = apiCallPreHandler.getPayLoad();
-		LoggingManager.info(APIService.class, payLoad);
+		LoggingManager.info(APIService.class, payLoadToLog(payLoad));
 		if (apiCallPreHandler.getCredential() instanceof CertificateCredential) {
 			CertificateCredential credential = (CertificateCredential) apiCallPreHandler
 					.getCredential();
@@ -176,6 +176,17 @@ public class APIService {
 		response = connection.execute(url, payLoad, headers);
 		LoggingManager.info(APIService.class, response);
 		return response;
+	}
+	
+	private String payLoadToLog(String payload) {
+		int startI = payload.indexOf("<ebl:Password>");
+		int endI = payload.indexOf("</ebl:Password>");
+		String passSub = payload;
+		if(startI != -1 && endI != -1) {
+			passSub = payload.replaceAll(payload.substring(startI, endI), "<ebl:Password>****************");
+			
+		}
+		return passSub;
 	}
 
 	/**
