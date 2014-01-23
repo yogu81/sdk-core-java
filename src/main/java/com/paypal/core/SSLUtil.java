@@ -6,7 +6,6 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.HashMap;
@@ -55,8 +54,6 @@ public abstract class SSLUtil {
 			throws SSLConfigurationException {
 		try {
 			SSLContext ctx = SSLContext.getInstance("SSL"); // TLS, SSLv3, SSL
-			SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-			random.setSeed(System.currentTimeMillis());
 			ctx.init(keymanagers, null, null);
 			return ctx;
 		} catch (Exception e) {
