@@ -20,7 +20,7 @@ public final class LoggingManager {
 			synchronized (loggerMap) {
 				if (loggerMap.get(thisClass) == null) {
 					loggerMap.put(thisClass,
-							Logger.getLogger(thisClass.toString()));
+							Logger.getLogger(thisClass.getCanonicalName()));
 				}
 			}
 		}
