@@ -215,6 +215,37 @@ public class Tokeninfo {
 		String pattern = "v1/identity/openidconnect/tokenservice?grant_type={0}&code={1}&redirect_uri={2}";
 		Object[] parameters = new Object[] { createFromAuthorizationCodeParameters };
 		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
+		return createFromAuthorizationCodeParameters(apiContext, createFromAuthorizationCodeParameters, resourcePath);
+	}
+
+	/**
+	 * Creates an Access and a Refresh Tokens from an Authorization Code for future payment.
+	 * 
+	 * @param apiContext
+	 *            {@link APIContext} to be used for the call.
+	 * @param createFromAuthorizationCodeParameters
+	 *            Query parameters used for API call
+	 * @return Tokeninfo
+	 * @throws PayPalRESTException
+	 */
+	public static Tokeninfo createFromAuthorizationCodeForFpp(
+			APIContext apiContext,
+			CreateFromAuthorizationCodeParameters createFromAuthorizationCodeParameters)
+			throws PayPalRESTException {
+		String pattern = "v1/oauth2/token?grant_type=authorization_code&response_type=token&redirect_uri=urn:ietf:wg:oauth:2.0:oob&code={0}";
+		Object[] parameters = new Object[] { createFromAuthorizationCodeParameters.getContainerMap().get("code") };
+		String resourcePath = RESTUtil.formatURIPath(pattern, parameters);
+		if (apiContext.getHTTPHeaders() == null) {
+			apiContext.setHTTPHeaders(new HashMap<String, String>());
+		}
+		return createFromAuthorizationCodeParameters(apiContext, createFromAuthorizationCodeParameters, resourcePath);
+	}
+	
+	private static Tokeninfo createFromAuthorizationCodeParameters(
+			APIContext apiContext,
+			CreateFromAuthorizationCodeParameters createFromAuthorizationCodeParameters,
+			String resourcePath)
+			throws PayPalRESTException {
 		String payLoad = resourcePath.substring(resourcePath.indexOf('?') + 1);
 		resourcePath = resourcePath.substring(0, resourcePath.indexOf('?'));
 		Map<String, String> headersMap = new HashMap<String, String>();
@@ -241,11 +272,13 @@ public class Tokeninfo {
 		}
 		headersMap.put(Constants.HTTP_CONTENT_TYPE_HEADER,
 				Constants.HTTP_CONFIG_DEFAULT_CONTENT_TYPE);
+		headersMap.put(Constants.HTTP_ACCEPT_HEADER,
+				Constants.HTTP_CONTENT_TYPE_JSON);
 		apiContext.setHTTPHeaders(headersMap);
 		return PayPalResource.configureAndExecute(apiContext, HttpMethod.POST,
 				resourcePath, payLoad, Tokeninfo.class);
 	}
-
+	
 	/**
 	 * Creates an Access Token from an Refresh Token.
 	 * 

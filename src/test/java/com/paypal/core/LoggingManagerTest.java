@@ -2,6 +2,7 @@ package com.paypal.core;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -18,7 +19,10 @@ public class LoggingManagerTest {
 		Method method = LoggingManager.class.getDeclaredMethod("getLogger",
 				Class.class);
 		method.setAccessible(true);
-		Assert.assertNotNull(method.invoke(LoggingManager.class,
-				APIService.class));
+		Object obj= method.invoke(LoggingManager.class,
+				APIService.class);
+		Assert.assertNotNull(obj);
+		Assert.assertTrue(Logger.class.isAssignableFrom(obj.getClass()));
+		Assert.assertEquals("com.paypal.core.APIService", ((Logger)obj).getName());
 	}
 }
