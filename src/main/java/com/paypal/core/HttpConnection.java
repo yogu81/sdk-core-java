@@ -61,7 +61,16 @@ public abstract class HttpConnection {
 		connection.setRequestProperty("Content-Length", ""
 				+ payload.trim().length());
 		if (headers != null) {
+			LoggingManager.debug(HttpConnection.class, "curl command: ");
+			LoggingManager.debug(HttpConnection.class, "curl -v '" + connection.getURL().toString() + "' \\");
 			setHttpHeaders(headers);
+			Iterator<String> keyIter = headers.keySet().iterator();
+			while (keyIter.hasNext()) {
+				String key = keyIter.next();
+				String value = headers.get(key);
+				LoggingManager.debug(HttpConnection.class, "-H \"" + key + ": " + value + "\" \\");
+			}
+			LoggingManager.debug(HttpConnection.class, "-d '" + payload + "'");
 		}
 		try {
 			int retry = 0;
