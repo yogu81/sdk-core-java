@@ -180,8 +180,8 @@ public class APIService {
 	}
 	
 	private String payLoadToLog(String payload) {
-    	Pattern p= Pattern.compile("(<(ebl:(Username|Password|Subject|Signature|CreditCardNumber|CVV2))>)[\\W\\w]+(</\\2>)");
-    	String passSub= (p.matcher(payload).replaceAll("$1****************$4"));
+		Pattern p= Pattern.compile("(<(ebl:(Username|Password|Subject|Signature|CreditCardNumber|CVV2))>)[\\W\\w]+(</\\2>)");
+		String passSub= p.matcher(payload).replaceAll("$1****************$4");
 		return passSub;
 	}
 
