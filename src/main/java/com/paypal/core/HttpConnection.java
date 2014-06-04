@@ -99,29 +99,33 @@ public abstract class HttpConnection {
 										+ " with response : " + successResponse);
 					}
 				} catch (IOException e) {
-					responsecode = connection.getResponseCode();
-					if (connection.getErrorStream() != null) {
-						reader = new BufferedReader(new InputStreamReader(
-								connection.getErrorStream(),
-								Constants.ENCODING_FORMAT));
-						errorResponse = read(reader);
-						LoggingManager.severe(HttpConnection.class,
-								"Error code : " + responsecode
-										+ " with response : " + errorResponse);
-					}
-					if ((errorResponse == null)
-							|| (errorResponse.length() == 0)) {
-						errorResponse = e.getMessage();
-					}
-					if (responsecode <= 500) {
-						throw new HttpErrorException("Error code : "
-								+ responsecode + " with response : "
-								+ errorResponse, e);
+					try {
+						responsecode = connection.getResponseCode();
+						if (connection.getErrorStream() != null) {
+							reader = new BufferedReader(new InputStreamReader(
+									connection.getErrorStream(),
+									Constants.ENCODING_FORMAT));
+							errorResponse = read(reader);
+							LoggingManager.severe(HttpConnection.class,
+									"Error code : " + responsecode
+											+ " with response : " + errorResponse);
+						}
+						if ((errorResponse == null)
+								|| (errorResponse.length() == 0)) {
+							errorResponse = e.getMessage();
+						}
+						if (responsecode <= 500) {
+							throw new HttpErrorException("Error code : "
+									+ responsecode + " with response : "
+									+ errorResponse, e);
+						}
+					} catch (Exception ex) {
+						LoggingManager.severe(this.getClass(), "Caught exception while handling error response", ex);
 					}
 				}
 				retry++;
 				if (retry > 0) {
-					LoggingManager.debug(HttpConnection.class, " Retry  No : "
+					LoggingManager.severe(HttpConnection.class, " Retry  No : "
 							+ retry + "...");
 					Thread.sleep(this.config.getRetryDelay());
 				}
