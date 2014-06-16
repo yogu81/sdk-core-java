@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
 
 import com.paypal.core.SDKVersion;
+import com.paypal.exception.HttpErrorException;
 
 public class OAuthTokenCredentialTestCase {
 
@@ -47,7 +48,7 @@ public class OAuthTokenCredentialTestCase {
 					clientID, clientSecret, configurationMap);
 			merchantTokenCredential.getAccessToken();
 		} catch (PayPalRESTException e) {
-			Assert.assertEquals(true, e.getCause() instanceof IOException);
+			Assert.assertEquals(true, e.getCause() instanceof HttpErrorException);
 		}
 	}
 
