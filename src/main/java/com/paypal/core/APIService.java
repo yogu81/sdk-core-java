@@ -2,6 +2,7 @@ package com.paypal.core;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.paypal.core.credential.CertificateCredential;
 import com.paypal.exception.ClientActionRequiredException;
@@ -179,13 +180,8 @@ public class APIService {
 	}
 	
 	private String payLoadToLog(String payload) {
-		int startI = payload.indexOf("<ebl:Password>");
-		int endI = payload.indexOf("</ebl:Password>");
-		String passSub = payload;
-		if(startI != -1 && endI != -1) {
-			passSub = payload.replaceAll(payload.substring(startI, endI), "<ebl:Password>****************");
-			
-		}
+		Pattern p= Pattern.compile("(<(ebl:(Username|Password|Subject|Signature|CreditCardNumber|CVV2))>)[\\W\\w]+(</\\2>)");
+		String passSub= p.matcher(payload).replaceAll("$1****************$4");
 		return passSub;
 	}
 
