@@ -74,6 +74,7 @@ public abstract class HttpConnection {
 		}
 		try {
 			int retry = 0;
+			retryLoop:
 			do {
 				try {
 					if ("POST".equalsIgnoreCase(connection.getRequestMethod())) {
@@ -91,7 +92,7 @@ public abstract class HttpConnection {
 						successResponse = read(reader);
 						LoggingManager.debug(HttpConnection.class,
 								"Response : " + successResponse);
-						break;
+						break retryLoop;
 					} else {
 						successResponse = read(reader);
 						throw new ClientActionRequiredException(
