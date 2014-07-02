@@ -116,7 +116,9 @@ public abstract class HttpConnection {
 							errorResponse = e.getMessage();
 						}
 						if (responsecode <= 500) {
-							throw new HttpErrorException("Error code : "
+							throw new HttpErrorException(responsecode,
+									errorResponse,
+									"Error code : "
 									+ responsecode + " with response : "
 									+ errorResponse, e);
 						}
