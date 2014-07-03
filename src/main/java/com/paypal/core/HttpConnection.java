@@ -120,6 +120,8 @@ public abstract class HttpConnection {
 									+ responsecode + " with response : "
 									+ errorResponse, e);
 						}
+					} catch (HttpErrorException ex) {
+						throw ex;
 					} catch (Exception ex) {
 						LoggingManager.severe(this.getClass(), "Caught exception while handling error response", ex);
 					}
