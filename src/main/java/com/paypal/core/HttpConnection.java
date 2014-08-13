@@ -116,10 +116,14 @@ public abstract class HttpConnection {
 							errorResponse = e.getMessage();
 						}
 						if (responsecode <= 500) {
-							throw new HttpErrorException("Error code : "
+							throw new HttpErrorException(responsecode,
+									errorResponse,
+									"Error code : "
 									+ responsecode + " with response : "
 									+ errorResponse, e);
 						}
+					} catch (HttpErrorException ex) {
+						throw ex;
 					} catch (Exception ex) {
 						LoggingManager.severe(this.getClass(), "Caught exception while handling error response", ex);
 					}
