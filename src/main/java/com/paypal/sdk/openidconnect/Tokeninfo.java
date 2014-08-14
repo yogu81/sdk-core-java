@@ -135,10 +135,17 @@ public class Tokeninfo {
 	}
 
 	/**
-	 * Getter for accessToken
+	 * Getter for just accessToken without type (e.g., "EEwJ6tF9x5WCIZDYzyZGaz6Khbw7raYRIBV_WxVvgmsG")
 	 */
 	public String getAccessToken() {
 		return this.accessToken;
+	}
+	
+	/**
+	 * Getter for accessToken with token type (e.g., "Bearer: EEwJ6tF9x5WCIZDYzyZGaz6Khbw7raYRIBV_WxVvgmsG")
+	 */
+	public String getAccessTokenWithType() {
+		return this.tokenType + " " + this.accessToken;
 	}
 
 	/**
