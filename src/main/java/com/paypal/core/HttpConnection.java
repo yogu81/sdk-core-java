@@ -77,7 +77,7 @@ public abstract class HttpConnection {
 			retryLoop:
 			do {
 				try {
-					if ("POST".equalsIgnoreCase(connection.getRequestMethod())) {
+					if ("POST".equalsIgnoreCase(connection.getRequestMethod())||"PUT".equalsIgnoreCase(connection.getRequestMethod())) {
 						writer = new OutputStreamWriter(
 								this.connection.getOutputStream(),
 								Charset.forName(Constants.ENCODING_FORMAT));
