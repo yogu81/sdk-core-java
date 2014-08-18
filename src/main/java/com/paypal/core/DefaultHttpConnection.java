@@ -1,13 +1,18 @@
 package com.paypal.core;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
+import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.SocketAddress;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -80,11 +85,87 @@ public class DefaultHttpConnection extends HttpConnection {
 		System.setProperty("sun.net.http.errorstream.enableBuffering", "true");
 		this.connection.setDoInput(true);
 		this.connection.setDoOutput(true);
-		this.connection.setRequestMethod(config.getHttpMethod());
+		setRequestMethodViaJreBugWorkaround(this.connection, config.getHttpMethod());
 		this.connection.setConnectTimeout(this.config.getConnectionTimeout());
 		this.connection.setReadTimeout(this.config.getReadTimeout());
+		
 	}
 
+	 /**
+     * Workaround for a bug in {@code HttpURLConnection.setRequestMethod(String)}
+     * The implementation of Sun/Oracle is throwing a {@code ProtocolException}
+     * when the method is other than the HTTP/1.1 default methods. So to use {@code PATCH}
+     * and others, we must apply this workaround.
+     *
+     * See issue http://java.net/jira/browse/JERSEY-639
+     */
+    private static void setRequestMethodViaJreBugWorkaround(final HttpURLConnection httpURLConnection, final String method) {
+        try {
+            httpURLConnection.setRequestMethod(method); // Check whether we are running on a buggy JRE
+        } catch (final ProtocolException pe) {
+            try {
+                final Class<?> httpURLConnectionClass = httpURLConnection.getClass();
+				AccessController
+						.doPrivileged(new PrivilegedExceptionAction<Object>() {
+							public Object run() throws NoSuchFieldException,
+									IllegalAccessException {
+								try {
+									httpURLConnection.setRequestMethod(method);
+									// Check whether we are running on a buggy
+									// JRE
+								} catch (final ProtocolException pe) {
+									Class<?> connectionClass = httpURLConnection
+											.getClass();
+									Field delegateField = null;
+									try {
+										delegateField = connectionClass
+												.getDeclaredField("delegate");
+										delegateField.setAccessible(true);
+										HttpURLConnection delegateConnection = (HttpURLConnection) delegateField
+												.get(httpURLConnection);
+										setRequestMethodViaJreBugWorkaround(
+												delegateConnection, method);
+									} catch (NoSuchFieldException e) {
+										// Ignore for now, keep going
+									} catch (IllegalArgumentException e) {
+										throw new RuntimeException(e);
+									} catch (IllegalAccessException e) {
+										throw new RuntimeException(e);
+									}
+									try {
+										Field methodField;
+										while (connectionClass != null) {
+											try {
+												methodField = connectionClass
+														.getDeclaredField("method");
+											} catch (NoSuchFieldException e) {
+												connectionClass = connectionClass
+														.getSuperclass();
+												continue;
+											}
+											methodField.setAccessible(true);
+											methodField.set(httpURLConnection,
+													method);
+											break;
+										}
+									} catch (final Exception e) {
+										throw new RuntimeException(e);
+									}
+								}
+								return null;
+							}
+						});
+            } catch (final PrivilegedActionException e) {
+                final Throwable cause = e.getCause();
+                if (cause instanceof RuntimeException) {
+                    throw (RuntimeException) cause;
+                } else {
+                    throw new RuntimeException(cause);
+                }
+            }
+        }
+    }
+	
 	/**
 	 * Private class for password based authentication
 	 * 
