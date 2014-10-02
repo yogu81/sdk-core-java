@@ -1,6 +1,7 @@
 package com.paypal.core.rest;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,6 +56,12 @@ public final class OAuthTokenCredential implements ICredential {
 	 * Access Token that is generated
 	 */
 	private String accessToken;
+
+
+    /**
+     * Lifetime in seconds of the access token
+     */
+    private long expires = 0;
 
 	/**
 	 * Map used for dynamic configuration
@@ -141,6 +148,18 @@ public final class OAuthTokenCredential implements ICredential {
 		return "Basic " + base64EncodedString;
 	}
 
+
+    /**
+     * Specifies how long this token can be used for placing API calls. The
+     * remaining lifetime is given in seconds.
+     *
+     * @return remaining lifetime of this access token in seconds
+     */
+    public long expiresIn(){
+        return expires - new java.util.Date().getTime();
+    }
+
+
 	private String generateAccessToken() throws PayPalRESTException {
 		String generatedToken = null;
 		String base64ClientID = generateBase64String(clientID + ":"
@@ -197,6 +216,9 @@ public final class OAuthTokenCredential implements ICredential {
 					+ " "
 					+ jsonElement.getAsJsonObject().get("access_token")
 							.getAsString();
+            // Save expiry date
+            long tokenLifeTime = jsonElement.getAsJsonObject().get("expires_in").getAsLong();
+            expires = new Date().getTime() + tokenLifeTime;
 		} catch (Exception e) {
 			throw new PayPalRESTException(e.getMessage(), e);
 		}
