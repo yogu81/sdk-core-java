@@ -36,6 +36,7 @@ public class OAuthTokenCredentialTestCase {
 		String accessToken = merchantTokenCredential.getAccessToken();
 		logger.info("Generated Access Token = " + accessToken);
 		Assert.assertEquals(true, accessToken.length() > 0);
+		Assert.assertEquals(true, merchantTokenCredential.expiresIn() > 0);
 	}
 
 	@Test(dependsOnMethods = { "testGetAccessToken" })
