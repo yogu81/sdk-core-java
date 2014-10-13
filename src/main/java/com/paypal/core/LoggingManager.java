@@ -75,7 +75,7 @@ public final class LoggingManager {
 	}
 
 	public static void severe(Class<?> thisClass, Object message, Throwable t) {
-		log(Level.SEVERE, thisClass, message);
+		log(Level.SEVERE, thisClass, message, t);
 	}
 
 }
