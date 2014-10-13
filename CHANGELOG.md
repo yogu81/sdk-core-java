@@ -1,5 +1,9 @@
 ### CHANGELOG
 
+#### V1.6.3 (October 13, 2014)
+
+   * Make PayPalResource.initConfig() return OAuthTokenCredential
+
 #### V1.6.2 (August 13, 2014)
 
    * Change scope of QueryParameters's method
