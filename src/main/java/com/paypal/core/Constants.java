@@ -152,7 +152,8 @@ public final class Constants {
 	// HTTP Content Type JSON
 	public static final String HTTP_CONTENT_TYPE_JSON = "application/json";
 	
-	// HTTP Content Type JSON
+	// HTTP Content Type Patch JSON
+        public static final String HTTP_CONTENT_TYPE_PATCH_JSON = "application/json-patch+json";
 	public static final String HTTP_CONTENT_TYPE_XML = "text/xml";
 
 	// IPN endpoint property name
