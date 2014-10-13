@@ -58,15 +58,16 @@ public abstract class PayPalResource {
 	 * @param file
 	 *            File object of a properties entity
 	 * @throws PayPalRESTException
+	 * @return	OAuthTokenCredential instance with client ID and client secret stored in configuration file.
 	 */
-	public static void initConfig(File file) throws PayPalRESTException {
+	public static OAuthTokenCredential initConfig(File file) throws PayPalRESTException {
 		try {
 			if (!file.exists()) {
 				throw new FileNotFoundException("File doesn't exist: "
 						+ file.getAbsolutePath());
 			}
 			FileInputStream fis = new FileInputStream(file);
-			initConfig(fis);
+			return initConfig(fis);
 		} catch (IOException ioe) {
 			LoggingManager.severe(PayPalResource.class, ioe.getMessage(), ioe);
 			throw new PayPalRESTException(ioe.getMessage(), ioe);
@@ -82,10 +83,12 @@ public abstract class PayPalResource {
 	 * 
 	 * @param properties
 	 *            Properties object
+	 * @return	OAuthTokenCredential instance with client ID and client secret in given properties.
 	 */
-	public static void initConfig(Properties properties) {
+	public static OAuthTokenCredential initConfig(Properties properties) {
 		configurationMap = SDKUtil.constructMap(properties);
 		configInitialized = true;
+		return getOAuthTokenCredential();
 	}
 
 	/**
@@ -100,8 +103,9 @@ public abstract class PayPalResource {
 	 * @param inputStream
 	 *            InputStream
 	 * @throws PayPalRESTException
+	 * @return	OAuthTokenCredential instance with client ID and client secret stored in given inputStream.
 	 */
-	public static void initConfig(InputStream inputStream)
+	public static OAuthTokenCredential initConfig(InputStream inputStream)
 			throws PayPalRESTException {
 		try {
 			Properties properties = new Properties();
@@ -112,10 +116,33 @@ public abstract class PayPalResource {
 			 */
 			configurationMap = SDKUtil.constructMap(properties);
 			configInitialized = true;
+			return getOAuthTokenCredential();
 		} catch (IOException ioe) {
 			LoggingManager.severe(PayPalResource.class, ioe.getMessage(), ioe);
 			throw new PayPalRESTException(ioe.getMessage(), ioe);
 		}
+	}
+	
+	/**
+	 * Return Client ID from configuration Map
+	 */
+	public static String getClientID() {
+		return configurationMap.get(Constants.CLIENT_ID);
+	}
+
+	/**
+	 * Returns Client Secret from configuration Map
+	 */
+	public static String getClientSecret() {
+		return configurationMap.get(Constants.CLIENT_SECRET);
+	}
+	
+	/**
+	 * Returns OAuthTokenCredential instance using client ID and client secret loaded from configuration.
+	 * @return OAuthTokenCredential instance.
+	 */
+	public static OAuthTokenCredential getOAuthTokenCredential() {
+		return new OAuthTokenCredential(getClientID(), getClientSecret());
 	}
 
 	/**
