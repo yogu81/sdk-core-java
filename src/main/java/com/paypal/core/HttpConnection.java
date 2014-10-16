@@ -73,6 +73,8 @@ public abstract class HttpConnection {
 			LoggingManager.debug(HttpConnection.class, "-d '" + payload + "'");
 		}
 		try {
+			// This exception is used to make final log more explicit
+			Exception lastException = null;
 			int retry = 0;
 			retryLoop:
 			do {
@@ -102,6 +104,7 @@ public abstract class HttpConnection {
 										+ " with response : " + successResponse);
 					}
 				} catch (IOException e) {
+					lastException = e;
 					try {
 						responsecode = connection.getResponseCode();
 						if (connection.getErrorStream() != null) {
@@ -127,19 +130,18 @@ public abstract class HttpConnection {
 					} catch (HttpErrorException ex) {
 						throw ex;
 					} catch (Exception ex) {
+						lastException = ex;
 						LoggingManager.severe(this.getClass(), "Caught exception while handling error response", ex);
 					}
 				}
 				retry++;
 				if (retry > 0) {
-					LoggingManager.severe(HttpConnection.class, " Retry  No : "
-							+ retry + "...");
+					LoggingManager.severe(HttpConnection.class, " Retry  No : " + retry + "...");
 					Thread.sleep(this.config.getRetryDelay());
 				}
 			} while (retry < this.config.getMaxRetry());
 			if (successResponse.trim().length() <= 0 && !(responsecode >= 200 && responsecode < 300)) {
-				throw new HttpErrorException(
-						"retry fails..  check log for more information");
+				throw new HttpErrorException("retry fails..  check log for more information", lastException);
 			}
 		} finally {
 			try {
