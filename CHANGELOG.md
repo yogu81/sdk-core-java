@@ -1,4 +1,7 @@
 ### CHANGELOG
+#### V1.6.4 (October 16, 2014)
+
+   * Change SSL to TLS in SSLUtil.java for SSL Poodle issue
 
 #### V1.6.3 (October 13, 2014)
 
